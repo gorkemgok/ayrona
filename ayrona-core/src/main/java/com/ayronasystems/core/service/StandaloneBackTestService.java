@@ -24,7 +24,7 @@ public class StandaloneBackTestService implements BackTestService{
     private MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
 
     public BackTestResult doSimulationBackTest (String code, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
-        MarketData marketData = marketDataService.getOHLC (symbol, period);
+        MarketData marketData = marketDataService.getOHLC (symbol, period, startDate, endDate);
         MarketSimulator marketSimulator = new MarketSimulator (code, marketData);
         BackTestCalculator calculator = new BackTestCalculator ();
         Account account = marketSimulator.simulate ();

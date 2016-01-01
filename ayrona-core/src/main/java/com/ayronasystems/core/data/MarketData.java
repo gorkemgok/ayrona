@@ -3,6 +3,7 @@ package com.ayronasystems.core.data;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.timeseries.moment.Moment;
 import com.ayronasystems.core.util.Interval;
 
@@ -36,6 +37,8 @@ public interface MarketData extends Iterable<Moment> {
 
     MarketData subData(Date beginDate, Date endDate);
 
+    MarketData convert(Period period) throws MarketDataConversionException;
+
     MarketData append(MarketData marketData);
 
     MarketData merge(MarketData marketData);
@@ -43,6 +46,8 @@ public interface MarketData extends Iterable<Moment> {
     MarketData safeMerge(MarketData marketData);
 
     int size ();
+
+    boolean isEmpty();
 
     double[] getPrice (PriceColumn priceColumn);
 

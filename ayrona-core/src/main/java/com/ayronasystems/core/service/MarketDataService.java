@@ -11,10 +11,10 @@ import java.util.Date;
  */
 public interface MarketDataService {
 
-    MarketData getOHLC(Symbol symbol, Period period);
-
     MarketData getOHLC(Symbol symbol, Period period, Date startDate, Date endDate);
 
     MarketData getOHLC(Symbol symbol, Period period, Date startDate);
+
+    public MarketData fetchOHLC (Symbol symbol, Period period, Date startDate, Date endDate);
 
 }

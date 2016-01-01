@@ -4,6 +4,7 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
+import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Moment;
 import com.ayronasystems.core.util.Interval;
@@ -63,6 +64,44 @@ public class OHLC implements MarketData {
         this.highSeries = highSeries;
         this.lowSeries = lowSeries;
         this.closeSeries = closeSeries;
+    }
+
+    private OHLC(Symbol symbol, Period period, List<Bar> barList) throws CorruptedMarketDataException {
+        int size = barList.size ();
+        List<Date> dates = new ArrayList<Date> ();
+        double[] openSeries = new double[size];
+        double[] highSeries = new double[size];
+        double[] lowSeries = new double[size];
+        double[] closeSeries = new double[size];
+        int i = 0;
+        for (Bar bar : barList){
+            dates.add (bar.getDate ());
+            openSeries[i] = bar.getOpen ();
+            highSeries[i] = bar.getHigh ();
+            lowSeries[i] = bar.getLow ();
+            closeSeries[i] = bar.getClose ();
+            i++;
+        }
+        this.symbol = symbol;
+        this.period = period;
+        this.dates = dates;
+        if (dates != null && !dates.isEmpty ()) {
+            this.interval = new Interval (dates.get (0), new Date (dates.get (dates.size () - 1)
+                                                                        .getTime () + period.getAsMillis ()));
+        }else{
+            this.interval = Interval.ZERO;
+        }
+        this.openSeries = openSeries;
+        this.highSeries = highSeries;
+        this.lowSeries = lowSeries;
+        this.closeSeries = closeSeries;
+        if (dates.size () != openSeries.length ||
+                openSeries.length != highSeries.length ||
+                highSeries.length != lowSeries.length ||
+                lowSeries.length != closeSeries.length){
+            // TODO: enter message
+            throw new CorruptedMarketDataException ();
+        }
     }
 
     public OHLC (Symbol symbol, Period period, List<Date> dates, double[] openSeries, double[] highSeries, double[] lowSeries, double[] closeSeries) throws CorruptedMarketDataException {
@@ -139,7 +178,7 @@ public class OHLC implements MarketData {
 
     public MarketData subData (int beginIdx, int endIdx) {
         if (beginIdx < 0 || endIdx < 0 || endIdx > openSeries.length){
-            throw new IndexOutOfBoundsException ();
+            throw new IndexOutOfBoundsException ("Market Data does not contains the interval");
         }
         int size = endIdx - beginIdx + 1;
         double[] newOpenSeries = new double[size];
@@ -175,16 +214,38 @@ public class OHLC implements MarketData {
         endDate = new Date(endDate.getTime () - period.getAsMillis ());
         int beginIdx = -1;
         int endIdx = -1;
+        int i = 0;
         for (Date date : dates){
             if (beginIdx == -1 && (date.equals (beginDate) || date.after (beginDate))){
-                beginIdx = dates.indexOf (beginDate);
+                beginIdx = i;
             }
-            if (endIdx == -1 && (date.equals (endDate) || date.after (beginDate))){
-                endIdx = dates.indexOf (endDate);
-                break;
+            if (endIdx == -1){
+                if (date.equals (endDate)) {
+                    endIdx = i;
+                    break;
+                }else if (date.after (endDate)){
+                    endIdx = i - 1;
+                    break;
+                }
             }
+            i++;
         }
         return subData (beginIdx, endIdx);
+    }
+
+    public MarketData convert (Period period) throws MarketDataConversionException{
+        if (this.period.canDivide (period)){
+            List<Bar> newBarList = new ArrayList<Bar> ();
+            for (Moment moment : this){
+                
+            }
+            try {
+                return new OHLC (symbol, period, newBarList);
+            } catch ( CorruptedMarketDataException e ) {
+                assert false;
+            }
+        }
+        throw new MarketDataConversionException (this.period, period);
     }
 
     public MarketData append(MarketData marketData) {
@@ -220,7 +281,11 @@ public class OHLC implements MarketData {
     }
 
     public MarketData merge(MarketData marketData) {
-        if (marketData.getBeginningDate ().equals (getEndingDate ()) ||
+        if (marketData.isEmpty ()){
+            return this;
+        }else if (isEmpty ()){
+            return marketData;
+        }else if (marketData.getBeginningDate ().equals (getEndingDate ()) ||
                 marketData.getBeginningDate ().after (getEndingDate ())){
             return this.append(marketData);
         }else if(marketData.getLastDate ().equals (getBeginningDate ()) ||
@@ -287,6 +352,10 @@ public class OHLC implements MarketData {
 
     public int size () {
         return dates.size ();
+    }
+
+    public boolean isEmpty () {
+        return dates.isEmpty ();
     }
 
     public double[] getPrice (PriceColumn priceColumn) {

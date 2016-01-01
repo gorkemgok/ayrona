@@ -1,6 +1,6 @@
 package com.ayronasystems.core.util;
 
-import java.util.Date;
+import java.util.*;
 
 /**
  * Created by gorkemgok on 12/06/16.
@@ -102,5 +102,27 @@ public class Interval {
         int result = beginDate.hashCode ();
         result = 31 * result + endDate.hashCode ();
         return result;
+    }
+
+    public List<Interval> extractNot(Interval interval){
+        if (interval.equals (this) || contains (interval)){
+            return Collections.EMPTY_LIST;
+        }
+        boolean contains = interval.contains (this);
+        List<Interval> intervalList = new ArrayList<Interval> ();
+        if ((interval.overlapsAtLeft (this) || contains) &&
+                !interval.getBeginningDate ().equals ( getBeginningDate ()) ){
+            Interval absentInterval = new Interval (interval.getBeginningDate (), getBeginningDate ());
+            intervalList.add (absentInterval);
+        }
+        if ((interval.overlapsAtRight (this) || contains) &&
+                !getEndingDate ().equals (interval.getEndingDate ())){
+            Interval absentInterval = new Interval (getEndingDate (), interval.getEndingDate ());
+            intervalList.add (absentInterval);
+        }
+        if (intervalList.isEmpty ()){
+            return Arrays.asList (interval);
+        }
+        return intervalList;
     }
 }

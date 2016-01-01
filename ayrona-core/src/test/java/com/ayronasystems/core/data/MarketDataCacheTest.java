@@ -212,16 +212,11 @@ public class MarketDataCacheTest {
                                                         ));
 
         assertTrue (r6.hasData());
-        assertEquals (2, r6.getAbsentIntervals ().size ());
+        assertEquals (1, r6.getAbsentIntervals ().size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 00:50:00"),
                       r6.getAbsentIntervals ().get (0).getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:00:00"),
                       r6.getAbsentIntervals ().get (0).getEndingDate ());
-        assertEquals (6, r6.getFoundData ().size ());
-        assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"),
-                      r6.getAbsentIntervals ().get (1).getBeginningDate ());
-        assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"),
-                      r6.getAbsentIntervals ().get (1).getEndingDate ());
         assertEquals (6, r6.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (0), r6.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (1), r6.getFoundData ().getDates ().get (1));

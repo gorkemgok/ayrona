@@ -38,11 +38,13 @@ public class Position {
         }
 
         public Builder openDate(Date date){
+            position.openDate = date;
             position.idealOpenDate = date;
             return this;
         }
 
         public Builder openPrice(double price){
+            position.openPrice = price;
             position.idealOpenPrice = price;
             return this;
         }
@@ -217,8 +219,13 @@ public class Position {
     }
 
     public void close(Date closeDate, double closePrice){
-        this.idealCloseDate = closeDate;
-        this.idealClosePrice = closePrice;
+        this.closeDate = closeDate;
+        this.closePrice = closePrice;
+
+        if (idealCloseDate == null) {
+            this.idealCloseDate = closeDate;
+            this.idealClosePrice = closePrice;
+        }
     }
 
     public boolean isClosed(){

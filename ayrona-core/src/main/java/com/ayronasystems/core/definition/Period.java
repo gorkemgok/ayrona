@@ -29,6 +29,18 @@ public enum Period {
         return periodString;
     }
 
+    public boolean isGreaterThan(Period period){
+        return this.period > period.getAsMillis ();
+    }
+
+    public boolean isLessThan(Period period){
+        return this.period < period.getAsMillis ();
+    }
+
+    public boolean canDivide(Period period){
+        return this.period < period.getAsMillis () && (period.getAsMillis () % this.period) == 0;
+    }
+
     public static Period parse(int minutes){
         switch ( minutes ){
             case 1:

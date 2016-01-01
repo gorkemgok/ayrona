@@ -1,7 +1,12 @@
 package com.ayronasystems.core.util;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Created by gorkemgok on 12/06/16.
@@ -139,6 +144,47 @@ public class IntervalTest {
         assertFalse (false6);
         assertTrue (true0);
         assertTrue (true1);
+    }
+
+    @Test
+    public void extractNot(){
+        Interval interval1 = new Interval (DateUtils.parseDate ("01.01.2016 09:00:00"), DateUtils.parseDate ("01.01.2016 12:00:00"));
+
+        Interval interval2 = new Interval (DateUtils.parseDate ("01.01.2016 08:00:00"), DateUtils.parseDate ("01.01.2016 12:00:00"));
+        Interval interval3 = new Interval (DateUtils.parseDate ("01.01.2016 12:00:00"), DateUtils.parseDate ("01.01.2016 13:00:00"));
+        Interval interval4 = new Interval (DateUtils.parseDate ("01.01.2016 09:00:00"), DateUtils.parseDate ("01.01.2016 13:00:00"));
+        Interval interval5 = new Interval (DateUtils.parseDate ("01.01.2016 07:00:00"), DateUtils.parseDate ("01.01.2016 09:00:00"));
+        Interval interval6 = new Interval (DateUtils.parseDate ("01.01.2016 08:00:00"), DateUtils.parseDate ("01.01.2016 10:00:00"));
+
+        List<Interval> actualAbsentList = interval1.extractNot (interval2);
+        assertEquals (1, actualAbsentList.size ());
+        Interval actualAbsent = actualAbsentList.get (0);
+        assertEquals (DateUtils.parseDate ("01.01.2016 08:00:00"), actualAbsent.getBeginningDate ());
+        assertEquals (DateUtils.parseDate ("01.01.2016 09:00:00"), actualAbsent.getEndingDate ());
+
+        actualAbsentList = interval1.extractNot (interval3);
+        assertEquals (1, actualAbsentList.size ());
+        actualAbsent = actualAbsentList.get (0);
+        assertEquals (DateUtils.parseDate ("01.01.2016 12:00:00"), actualAbsent.getBeginningDate ());
+        assertEquals (DateUtils.parseDate ("01.01.2016 13:00:00"), actualAbsent.getEndingDate ());
+
+        actualAbsentList = interval1.extractNot (interval4);
+        assertEquals (1, actualAbsentList.size ());
+        actualAbsent = actualAbsentList.get (0);
+        assertEquals (DateUtils.parseDate ("01.01.2016 12:00:00"), actualAbsent.getBeginningDate ());
+        assertEquals (DateUtils.parseDate ("01.01.2016 13:00:00"), actualAbsent.getEndingDate ());
+
+        actualAbsentList = interval1.extractNot (interval5);
+        assertEquals (1, actualAbsentList.size ());
+        actualAbsent = actualAbsentList.get (0);
+        assertEquals (DateUtils.parseDate ("01.01.2016 07:00:00"), actualAbsent.getBeginningDate ());
+        assertEquals (DateUtils.parseDate ("01.01.2016 09:00:00"), actualAbsent.getEndingDate ());
+
+        actualAbsentList = interval1.extractNot (interval6);
+        assertEquals (1, actualAbsentList.size ());
+        actualAbsent = actualAbsentList.get (0);
+        assertEquals (DateUtils.parseDate ("01.01.2016 08:00:00"), actualAbsent.getBeginningDate ());
+        assertEquals (DateUtils.parseDate ("01.01.2016 09:00:00"), actualAbsent.getEndingDate ());
     }
 
 }

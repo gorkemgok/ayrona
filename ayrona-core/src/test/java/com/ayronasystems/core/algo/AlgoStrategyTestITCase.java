@@ -28,6 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by gorkemgok on 15/06/16.
+ * THIS TEST NEEDS HUGE AMOUNT OF VOB30 M5 DATA
  */
 public class AlgoStrategyTestITCase {
 
@@ -54,7 +55,7 @@ public class AlgoStrategyTestITCase {
     private AlgoStrategy growingAlgoStrategy;
 
     Date date1 = DateUtils.parseDate ("23.11.2015 00:00:00");
-    Date date2 = DateUtils.parseDate ("01.12.2015 00:00:00");
+    Date date2 = DateUtils.parseDate ("02.12.2015 00:00:00");
     Date date3 = DateUtils.parseDate ("11.12.2015 00:00:00");
 
 
@@ -62,11 +63,11 @@ public class AlgoStrategyTestITCase {
     public void setup () throws Exception {
         FunctionFactory.scanFunctions ();
 
+        allMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date3);
+
         initialMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date2);
 
         liveMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date2, date3);
-
-        allMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date3);
 
         algo = new FatihAlgo().toAlgo ();
 
@@ -112,6 +113,13 @@ public class AlgoStrategyTestITCase {
 
     @Test
     public void compareMarketdataSizes(){
+
+        allMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date3);
+
+        initialMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date2);
+
+        liveMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date2, date3);
+
         assertEquals (allMarketData.size (), initialMarketData.size () + liveMarketData.size ());
     }
 

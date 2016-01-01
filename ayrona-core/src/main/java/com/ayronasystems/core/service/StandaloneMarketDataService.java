@@ -1,17 +1,17 @@
 package com.ayronasystems.core.service;
 
 import com.ayronasystems.core.Singletons;
-import com.ayronasystems.core.dao.mongo.MongoDao;
+import com.ayronasystems.core.configuration.ConfKey;
+import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.MarketDataCache;
 import com.ayronasystems.core.data.MarketDataCacheResult;
 import com.ayronasystems.core.data.OHLC;
-import com.ayronasystems.core.configuration.ConfKey;
-import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
+import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.util.DateUtils;
 import com.ayronasystems.core.util.Interval;
 import com.ayronasystems.core.util.NumberUtils;
@@ -63,21 +63,24 @@ public class StandaloneMarketDataService implements MarketDataService {
         cache = new MarketDataCache();
     }
 
-    public MarketData getOHLC (Symbol symbol, Period period) {
-        for ( OHLC ohlc :
-                ohlcList ) {
-            if ( ohlc.getSymbol ()
-                     .equals (symbol) && ohlc.getPeriod ()
-                                             .equals (period) ) {
-                return ohlc;
+    public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
+        MarketData marketData = _getOHLC (symbol, period, startDate, endDate);
+        List<Interval> absentIntervalList = marketData.getInterval ().extractNot (new Interval (startDate, endDate));
+        if (period.getAsMillis () > Period.M1.getAsMillis () ) {
+            for ( Interval absentInterval : absentIntervalList ) {
+                MarketData m1MarketData = _getOHLC (symbol, Period.M1, absentInterval.getBeginningDate (), absentInterval.getEndingDate ());
+                try {
+                    MarketData m5MarketData = m1MarketData.convert (Period.M1);
+                    marketData = marketData.safeMerge (m5MarketData);
+                } catch ( MarketDataConversionException e ) {
+                    log.error (e.getMessage (), e);
+                }
             }
         }
-        DBCollection collection = mongoClient.getDB (conf.getString(ConfKey.MONGODB_MDS))
-                .getCollection (symbol.getSymbolString ().toLowerCase ());
-        return OHLC.getEmptyData (symbol, period);
+        return marketData;
     }
 
-    public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
+    private MarketData _getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
         long start = System.currentTimeMillis();
         MarketDataCacheResult cacheResult = cache.search(
                 new SymbolPeriod(symbol, period),
@@ -142,7 +145,8 @@ public class StandaloneMarketDataService implements MarketDataService {
             assert(false);
         }
         long end = System.currentTimeMillis();
-        log.info("Fetched market data {}, {} between {}, {} in {} ms",
+        log.info("Fetched market {} data {}, {} between {}, {} in {} ms",
+                ohlc.size (),
                 symbol, period,
                 DateUtils.formatDate(startDate),
                 DateUtils.formatDate(endDate),
