@@ -1,0 +1,7 @@
+target
+*.iml
+.idea
+ignore
+logs
+*.log
+*.log.1
