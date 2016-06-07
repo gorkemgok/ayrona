@@ -9,13 +9,11 @@ public class ConfigurationConstants {
 
     public static final String PROP_SERVICES = TICK4J_PROP_PREFIX + "service.list";
 
-    public static final String PROP_REST_SERVICE_GS_URL = TICK4J_PROP_PREFIX + "service.gs.url";
-
-    public static final String PROP_REST_SERVICE_AOS_URL = TICK4J_PROP_PREFIX + "service.aos.url";
+    public static final String PROP_REST_SERVICE_ATE_URL = TICK4J_PROP_PREFIX + "service.aos.url";
 
     public static final String PROP_REST_SERVICE_DS_URL = TICK4J_PROP_PREFIX + "service.ds.url";
 
-    public static final String PROP_REST_SERVICE_BTS_URL = TICK4J_PROP_PREFIX + "service.bts.url";
+    public static final String PROP_REST_SERVICE_BTE_URL = TICK4J_PROP_PREFIX + "service.bts.url";
 
     public static final String PROP_LORD_OF_THE_TOKEN = TICK4J_PROP_PREFIX + "lordofthetoken";
 
@@ -27,35 +25,41 @@ public class ConfigurationConstants {
 
     public static final String PROP_RATEDB_PROPERTIESFILE = TICK4J_PROP_PREFIX + "ratedb.propertiesfile";
 
-    public static final String PROP_JFX_HOST = TICK4J_PROP_PREFIX + "jfx.host";
+    public static final String PROP_MT4_JFX_HOST = TICK4J_PROP_PREFIX + "jfx.host";
 
-    public static final String PROP_JFX_PORT = TICK4J_PROP_PREFIX + "jfx.port";
+    public static final String ENV_MT4_JFX_HOST = "JFX_HOST";
 
-    public static final String PROP_LDS_TERMINAL_HOST = TICK4J_PROP_PREFIX + "ds.terminal.host";
+    public static final String PROP_MT4_JFX_PORT = TICK4J_PROP_PREFIX + "jfx.port";
 
-    public static final String PROP_LDS_TERMINAL_PORT = TICK4J_PROP_PREFIX + "ds.terminal.port";
+    public static final String ENV_MT4_JFX_PORT = "JFX_PORT";
 
-    public static final String PROP_LDS_TERMINAL_BROKER = TICK4J_PROP_PREFIX + "ds.terminal.broker";
+    public static final String PROP_MT4_TERMINAL_HOST = TICK4J_PROP_PREFIX + "ds.terminal.host";
 
-    public static final String PROP_LDS_TERMINAL_USER_NAME = TICK4J_PROP_PREFIX + "ds.terminal.user.name";
+    public static final String ENV_MT4_TERMINAL_HOST = "TERM_HOST";
 
-    public static final String PROP_LDS_TERMINAL_USER_PASSWORD = TICK4J_PROP_PREFIX + "ds.terminal.user.password";
+    public static final String PROP_MT4_TERMINAL_PORT = TICK4J_PROP_PREFIX + "ds.terminal.port";
+
+    public static final String ENV_MT4_TERMINAL_PORT = "TERM_PORT";
+
+    public static final String PROP_MT4_DS_LISTENER_BROKER = TICK4J_PROP_PREFIX + "ds.terminal.broker";
+
+    public static final String ENV_MT4_DS_LISTENER_BROKER = "LSNR_BROKER";
+
+    public static final String PROP_MT4_DS_LISTENER_LOGIN = TICK4J_PROP_PREFIX + "ds.terminal.user.name";
+
+    public static final String ENV_MT4_DS_LISTENER_LOGIN = "LSNR_LOGIN";
+
+    public static final String PROP_MT4_DS_LISTENER_PASSWORD = TICK4J_PROP_PREFIX + "ds.terminal.user.password";
+
+    public static final String ENV_MT4_DS_LISTENER_PASSWORD = "LSNR_PASS";
 
     public static final String PROP_HOST = TICK4J_PROP_PREFIX + "host";
 
-    public static final String PROP_LDS_AMQ_URI = TICK4J_PROP_PREFIX + "ds.amq.uri";
+    public static final String ENV_HOST = "HOST";
 
-    public static final String PROP_AOS_AMQ_URI = TICK4J_PROP_PREFIX + "aos.amq.uri";
+    public static final String PROP_AMQ_URI = TICK4J_PROP_PREFIX + "ds.amq.uri";
 
-    public static final String PROP_AOS_TERMINAL_HOST = TICK4J_PROP_PREFIX + "aos.terminal.host";
-
-    public static final String PROP_AOS_TERMINAL_PORT = TICK4J_PROP_PREFIX + "aos.terminal.port";
-
-    public static final String PROP_GS_AMQ_URI = TICK4J_PROP_PREFIX + "gs.amq.uri";
-
-    public static final String PROP_GS_THREAD_COUNT = TICK4J_PROP_PREFIX + "gs.thread.count";
-
-    public static final String PROP_BTS_AMQ_URI = TICK4J_PROP_PREFIX + "bts.amq.uri";
+    public static final String ENV_AMQ_URI = "AMQ_URI";
 
     public static final String PROP_CONSUL_HOST = TICK4J_PROP_PREFIX + "consul.host";
 

@@ -13,13 +13,19 @@ public interface Dao {
 
     Optional<UserModel> findUserByLogin(String login);
 
+    //Strategy
     StrategyModel createStrategy(StrategyModel strategyModel);
+
+    void updateStrategy(StrategyModel strategyModel);
 
     List<StrategyModel> findAllStrategies();
 
+    Optional<StrategyModel> findStrategy(String id);
+
     void bindAccountToStrategy(String strategyId, String accountId);
 
-    List<AccountModel> findAccountsByStrategyId(String id);
+    List<AccountModel> findBoundAccounts (String id);
+    //Account
 
     List<AccountModel> findAllAccounts();
 
@@ -29,8 +35,9 @@ public interface Dao {
 
     void deleteAccount(String id);
 
-    void updateAccount(AccountModel accountModel);
+    AccountModel updateAccount(AccountModel accountModel);
 
+    //Batchjob
     Optional<BatchJobModel> findBatchJob(String id);
 
     List<BatchJobModel> findAllBatchJobs();
@@ -41,6 +48,7 @@ public interface Dao {
 
     void updateBatchJob(String id, int progress);
 
+    //Analyze Market Data
     MarketDataAnalyzeModel createMarketDataAnalyze(MarketDataAnalyzeModel marketDataAnalyzeModel);
 
     Optional<MarketDataAnalyzeModel> findMarketDataAnalyze(String id);

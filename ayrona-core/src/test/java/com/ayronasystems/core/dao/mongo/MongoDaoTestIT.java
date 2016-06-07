@@ -185,7 +185,7 @@ public class MongoDaoTestIT {
         assertEquals (1, actualStrategyModel.getBoundAccounts ().size ());
         assertEquals (expectedAccountModel.getId (), actualStrategyModel.getBoundAccounts ().get (0).getId ());
 
-        List<AccountModel> accountModelList = dao.findAccountsByStrategyId (actualStrategyModel.getId ());
+        List<AccountModel> accountModelList = dao.findBoundAccounts (actualStrategyModel.getId ());
         assertEquals (1, accountModelList.size ());
 
         AccountModel actualAccountModel = accountModelList.get (0);
@@ -212,7 +212,7 @@ public class MongoDaoTestIT {
 
         dao.bindAccountToStrategy (expectedStrategyModel.getId (), expectedAccountModel.getId ());
 
-        List<AccountModel> actualAccountList = dao.findAccountsByStrategyId (expectedStrategyModel.getId ());
+        List<AccountModel> actualAccountList = dao.findBoundAccounts (expectedStrategyModel.getId ());
         assertEquals (1, actualAccountList.size ());
 
         AccountModel actualAccountModel = actualAccountList.get (0);

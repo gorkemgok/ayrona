@@ -16,7 +16,9 @@ public class Configuration {
 
     private static Logger log = LoggerFactory.getLogger (Configuration.class);
 
-    private static Configuration configuration = null;
+    private static transient Configuration configuration = null;
+
+    private static Object lock = new Object ();
 
     private Configuration () {
         String confFileName = getConfDir () + "/tick4j.properties";
@@ -37,16 +39,30 @@ public class Configuration {
         }
 
         if ( System.getProperty ("jfx_server_host") == null ) {
-            System.setProperty ("jfx_server_host", getString (ConfKey.JFX_HOST));
+            String jfxHost = System.getProperty (ConfKey.MT4_JFX_HOST.getName ());
+            if (jfxHost == null && ConfKey.MT4_JFX_HOST.hasEnvName ()){
+                jfxHost = System.getenv (ConfKey.MT4_JFX_HOST.getEnvName ());
+                jfxHost = jfxHost != null ? jfxHost : ConfKey.MT4_JFX_HOST.getDefaultValue ();
+            }
+            System.setProperty ("jfx_server_host", jfxHost);
         }
         if ( System.getProperty ("jfx_server_port") == null ) {
-            System.setProperty ("jfx_server_port", getString (ConfKey.JFX_PORT));
+            String jfxPort = System.getProperty (ConfKey.MT4_JFX_PORT.getName ());
+            if (jfxPort == null && ConfKey.MT4_JFX_PORT.hasEnvName ()){
+                jfxPort = System.getenv (ConfKey.MT4_JFX_PORT.getEnvName ());
+                jfxPort = jfxPort != null ? jfxPort : ConfKey.MT4_JFX_HOST.getDefaultValue ();
+            }
+            System.setProperty ("jfx_server_port", jfxPort);
         }
     }
 
     public static Configuration getInstance () {
         if (configuration == null){
-            configuration = new Configuration ();
+            synchronized (lock){
+                if (configuration == null){
+                    configuration = new Configuration ();
+                }
+            }
         }
         return configuration;
     }
@@ -65,7 +81,7 @@ public class Configuration {
     }
 
     public String getConfDir(){
-        String dir = System.getenv ("T4J_CONF");
+        String dir = System.getenv ("AYRN_CONF");
         if (dir == null){
             dir = getString (ConfKey.CONFIG_DIR);
         }
@@ -76,13 +92,13 @@ public class Configuration {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder ("Configuration : ").append ("\n");
         stringBuilder.append ("\t")
-                     .append ("T4J_CONF")
+                     .append ("AYRN_CONF")
                      .append (" = ")
                      .append (Configuration.getInstance ()
                                            .getConfDir ())
                      .append ("\n");
         for (ConfKey confKey : ConfKey.values ()){
-            if (!confKey.equals (ConfKey.LDS_TERMINAL_USER_PASSWORD)) {
+            if (!confKey.equals (ConfKey.MT4_DS_LISTENER_PASSWORD)) {
                 stringBuilder.append ("\t")
                              .append (confKey.name ())
                              .append (" = ")

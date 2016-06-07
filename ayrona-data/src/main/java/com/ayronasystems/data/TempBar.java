@@ -9,6 +9,8 @@ import java.util.Date;
  */
 public class TempBar{
 
+    private long currentMillis;
+
     private double open = 0;
 
     private double high = 0;
@@ -28,7 +30,7 @@ public class TempBar{
     public void beginPeriod (long periodMillis, double open) {
         this.periodMillis = periodMillis;
         this.open = open;
-        isClosed = false;
+        setNewPrice (open);
     }
 
     public void setNewPrice (double price) {
@@ -42,6 +44,14 @@ public class TempBar{
         Bar bar = new Bar (new Date (periodMillis), open, high, low, close, 0);
         reset ();
         return bar;
+    }
+
+    public long getCurrentMillis () {
+        return currentMillis;
+    }
+
+    public void setCurrentMillis (long currentMillis) {
+        this.currentMillis = currentMillis;
     }
 
     private void reset(){

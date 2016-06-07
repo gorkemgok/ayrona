@@ -26,4 +26,13 @@ public enum Symbol {
     public String getSymbolString(){
         return base+secondary;
     }
+
+    public static boolean hasSymbol(String symbolString){
+        for (Symbol symbol : Symbol.values ()){
+            if (symbol.getSymbolString ().equals (symbolString)){
+                return true;
+            }
+        }
+        return false;
+    }
 }

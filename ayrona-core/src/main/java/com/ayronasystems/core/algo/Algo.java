@@ -1,9 +1,9 @@
 package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.Initiator;
-import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
 import com.ayronasystems.core.algo.tree.Node;
+import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.exception.PrerequisiteException;
@@ -12,7 +12,6 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -76,13 +75,20 @@ public class Algo implements SignalGenerator, Initiator {
     }
 
     public static Algo createInstance(String code){
+        return createInstance (code, null);
+    }
+
+    public static Algo createInstance(String code, String name){
         AlgoCreator algoCreator = new AlgoCreator ();
         Context context = Context.enter ();
         Scriptable scope = context.initStandardObjects ();
         Object jsAlgoCreator = Context.javaToJS (algoCreator, scope);
         ScriptableObject.putProperty (scope, "Sistem", jsAlgoCreator);
         Object result = context.evaluateString(scope, code, "<cmd>", 1, null);
-        return new Algo (algoCreator.NAME, algoCreator.BUY, algoCreator.SELL);
+        if (name == null){
+            name = algoCreator.NAME;
+        }
+        return new Algo (name, algoCreator.BUY, algoCreator.SELL);
     }
 
 }

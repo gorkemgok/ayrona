@@ -24,8 +24,16 @@ public class BaseModel {
         return id.toString ();
     }
 
+    public ObjectId getObjectId () {
+        return id;
+    }
+
     public void setId (ObjectId id) {
         this.id = id;
+    }
+
+    public void setId (String id) {
+        this.id = new ObjectId (id);
     }
 
     public Date getCreateDate () {

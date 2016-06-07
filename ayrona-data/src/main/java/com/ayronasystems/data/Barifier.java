@@ -7,8 +7,12 @@ import com.ayronasystems.core.timeseries.moment.Tick;
 import com.ayronasystems.core.timeseries.series.SymbolTimeSeries;
 import com.ayronasystems.core.timeseries.series.TimeSeries;
 import com.google.common.base.Optional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,30 +20,41 @@ import java.util.Map;
  */
 public class Barifier {
 
-    private static final long PERIOD = Period.M1.getAsMillis ();
+    private static Logger log = LoggerFactory.getLogger (Barifier.class);
+
+    private static final Period PERIOD = Period.M1;
+
+    private static final long PERIOD_MILLIS = PERIOD.getAsMillis ();
 
     private Map<Symbol, TempBar> tempStack = new HashMap<Symbol, TempBar> ();
 
     private Map<Symbol, TimeSeries<Bar>> seriesStack = new HashMap<Symbol, TimeSeries<Bar>> ();
 
+    private List<BarListener> barListenerList = new ArrayList<BarListener> ();
+
     private long currentMillis;
 
     public void newTick(Tick tick){
+        System.out.println (tick.getSymbol () +", "+ tick.getDate ()+", "+ tick.getMid ());
         long timeMillis = tick.getDate ().getTime ();
-        long periodMillis = timeMillis - (timeMillis % PERIOD);
+        long periodMillis = timeMillis - (timeMillis % PERIOD_MILLIS);
         TempBar tempBar = getOrCreate (tick.getSymbol ());
         if (tempBar.isClosed()){
             tempBar.beginPeriod (periodMillis, tick.getMid ());
         }else{
-            if (currentMillis != periodMillis){
+            if (tempBar.getCurrentMillis () != periodMillis){
                 Bar bar = tempBar.endPeriod ();
                 getOrCreateSeries (tick.getSymbol ()).addMoment (bar);
+                log.info ("Added {} bar to timeseries: {}", tick.getSymbol (), bar);
+                for (BarListener barListener : barListenerList){
+                    barListener.newBar (tick.getSymbol (), PERIOD, bar);
+                }
                 tempBar.beginPeriod (periodMillis, tick.getMid ());
             }else {
                 tempBar.setNewPrice (tick.getMid ());
             }
         }
-        currentMillis = periodMillis;
+        tempBar.setCurrentMillis (periodMillis);
     }
 
     private TempBar getOrCreate(Symbol symbol){
@@ -66,6 +81,10 @@ public class Barifier {
             return Optional.of (series);
         }
         return Optional.absent ();
+    }
+
+    public void addBarListener(BarListener barListener){
+        barListenerList.add (barListener);
     }
 
 }

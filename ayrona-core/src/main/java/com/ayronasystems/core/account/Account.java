@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface Account {
 
+    String getId();
+
     boolean openPosition (Position position);
 
     boolean closePosition (Position position, Date closeDate, double closePrice);

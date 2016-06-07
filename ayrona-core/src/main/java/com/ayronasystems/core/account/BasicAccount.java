@@ -13,9 +13,19 @@ import java.util.List;
  */
 public class BasicAccount implements Account {
 
+    private String id;
+
     private List<Position> positionList = new ArrayList<Position> ();
 
     private List<Position> openPositionList = new ArrayList<Position> ();
+
+    public BasicAccount (String id) {
+        this.id = id;
+    }
+
+    public BasicAccount () {
+        id = "SIMULATION";
+    }
 
     public boolean openPosition (Position position) {
         positionList.add (position);
@@ -45,5 +55,9 @@ public class BasicAccount implements Account {
 
     public List<Position> getPositions () {
         return positionList;
+    }
+
+    public String getId () {
+        return id;
     }
 }

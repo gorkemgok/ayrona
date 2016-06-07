@@ -17,6 +17,8 @@ public class AccountBinder {
 
     private State state;
 
+    private double lot;
+
     public AccountBinder (String id, State state) {
         this.id = id;
         this.state = state;
@@ -39,5 +41,13 @@ public class AccountBinder {
 
     public void setState (State state) {
         this.state = state;
+    }
+
+    public double getLot () {
+        return lot;
+    }
+
+    public void setLot (double lot) {
+        this.lot = lot;
     }
 }

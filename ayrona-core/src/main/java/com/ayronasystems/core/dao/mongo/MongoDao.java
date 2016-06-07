@@ -69,8 +69,25 @@ public class MongoDao implements Dao{
         return strategyModel;
     }
 
+    public void updateStrategy (StrategyModel strategyModel) {
+        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter ("_id", strategyModel.getObjectId ());
+        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
+                .set ("code", strategyModel.getCode ())
+                .set ("name", strategyModel.getName ());
+        appDatastore.update (query, operations);
+    }
+
     public List<StrategyModel> findAllStrategies () {
         return appDatastore.createQuery (StrategyModel.class).asList ();
+    }
+
+    public Optional<StrategyModel> findStrategy (String id) {
+        StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
+        if (strategyModel == null){
+            return Optional.absent ();
+        }else {
+            return Optional.of (strategyModel);
+        }
     }
 
     public void bindAccountToStrategy (String strategyId, String accountId) {
@@ -82,7 +99,7 @@ public class MongoDao implements Dao{
         appDatastore.update (query, operations);
     }
 
-    public List<AccountModel> findAccountsByStrategyId (String id) {
+    public List<AccountModel> findBoundAccounts (String id) {
         StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
         List<ObjectId> objectIdList = MongoUtils.convertToObjectIdsAB (strategyModel.getBoundAccounts ());
         return appDatastore.get (AccountModel.class, objectIdList).asList ();
@@ -111,8 +128,9 @@ public class MongoDao implements Dao{
         appDatastore.delete (AccountModel.class, new ObjectId (id));
     }
 
-    public void updateAccount (AccountModel accountModel) {
+    public AccountModel updateAccount (AccountModel accountModel) {
         appDatastore.save (accountModel);
+        return accountModel;
     }
 
     public Optional<BatchJobModel> findBatchJob (String id) {

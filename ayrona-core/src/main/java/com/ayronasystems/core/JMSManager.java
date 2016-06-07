@@ -62,11 +62,11 @@ public class JMSManager {
 
     private Map<String, MessageConsumer> consumerMap = new HashMap<String, MessageConsumer> ();
 
-    private JMSManager (String uri) throws JMSException {
+    private JMSManager (String uri){
         this.uri = uri;
     }
 
-    public static JMSManager getManager (String uri) throws JMSException {
+    public static JMSManager getManager (String uri){
         if (managers.containsKey (uri)){
             return managers.get (uri);
         }
@@ -85,12 +85,12 @@ public class JMSManager {
         return newProducer;
     }
 
-    public MessageConsumer getConsumer (JMSDestination JMSDestination, String address) throws JMSException {
-        String fullDestinationName = JMSDestination.getName ()+(address != null? "."+address : "");
+    public MessageConsumer getConsumer (JMSDestination jmsDestination, String address) throws JMSException {
+        String fullDestinationName = jmsDestination.getName ()+(address != null? "."+address : "");
         if (consumerMap.containsKey (fullDestinationName)){
             return consumerMap.get (fullDestinationName);
         }
-        MessageConsumer newConsumer = getSession ().createConsumer (JMSDestination.newDestinationInstance (getSession (), address));
+        MessageConsumer newConsumer = getSession ().createConsumer (jmsDestination.newDestinationInstance (getSession (), address));
         consumerMap.put (fullDestinationName, newConsumer);
         return newConsumer;
     }

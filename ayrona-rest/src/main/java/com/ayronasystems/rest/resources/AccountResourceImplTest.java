@@ -20,16 +20,17 @@ public class AccountResourceImplTest {
     @Before
     public void setup(){
         server = new UndertowJaxrsServer ().start ();
-        server.deploy (AyronaApplication.class);
+        server.deploy (AyronaApplication.class, "/ayrona");
     }
 
     @Test
     public void testApplicationPath() throws Exception
     {
         Client client = ClientBuilder.newClient();
-        String val = client.target(TestPortProvider.generateURL("/test"))
-                           .request().get(String.class);
-        Assert.assertEquals("hello world", val);
+        Object obj = client.target(TestPortProvider.generateURL("ayrona/rest/v1/account/list"))
+                           .request().get();
+
+        Assert.assertEquals("hello world", obj);
         client.close();
     }
 }
