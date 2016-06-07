@@ -1,5 +1,8 @@
 package com.ayronasystems.rest.resources.definition;
 
+import com.ayronasystems.rest.bean.AccountBinderBean;
+import com.ayronasystems.rest.bean.StrategyBean;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -10,24 +13,64 @@ import javax.ws.rs.core.Response;
 @Path ("/strategy")
 public interface StrategyResource {
 
+    @POST
+    @Path ("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response createStrategy(StrategyBean strategyBean);
+
+    @PUT
+    @Path ("/")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateStrategy(StrategyBean strategyBean);
+
     @GET
     @Path ("list")
     @Produces(MediaType.APPLICATION_JSON)
-    Response list();
+    Response getList();
+
+    @GET
+    @Path ("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response get(String id);
 
     @GET
     @Path ("{id}/accounts")
     @Produces(MediaType.APPLICATION_JSON)
-    Response accounts(@PathParam ("id") Long id);
+    Response getBoundAccountList(@PathParam ("id") String id);
 
     @GET
-    @Path ("{id}/start")
+    @Path ("{id}/history")
     @Produces(MediaType.APPLICATION_JSON)
-    Response start(@PathParam ("id") Long id, @QueryParam ("account_id") Long accountId);
+    Response getHistory(@PathParam ("id") String id);
 
     @GET
-    @Path ("{id}/stop")
+    @Path ("{id}/backtest")
     @Produces(MediaType.APPLICATION_JSON)
-    Response stop(@PathParam ("id") Long id, @QueryParam ("account_id") Long accountId);
+    Response getBackTest(@PathParam ("id") String id);
+
+    @POST
+    @Path ("backtest")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response getBackTest(StrategyBean strategyBean);
+
+    @POST
+    @Path ("{id}/boundAccount")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response addAccount(AccountBinderBean accountBinderBean);
+
+    @PUT
+    @Path ("{id}/boundAccount")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    Response updateAccountState(AccountBinderBean accountBinderBean);
+
+    @DELETE
+    @Path ("{id}/boundAccount/{aid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response addAccount(@PathParam ("id") String id, @PathParam ("aid") String accountId);
 
 }

@@ -3,6 +3,7 @@ package com.ayronasystems.core;
 import com.ayronasystems.core.batchjob.BatchJobManager;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
+import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.service.discovery.ConsulServiceExplorer;
 import com.ayronasystems.core.service.discovery.ServiceExplorer;
@@ -29,11 +30,15 @@ public class Singletons {
 
     private transient BatchJobManager batchJobManager = null;
 
+    private transient Dao dao = null;
+
     private final Object lock1 = new Object ();
 
     private final Object lock2 = new Object ();
 
     private final Object lock3 = new Object ();
+
+    private final Object lock4 = new Object ();
 
     private Singletons () {
     }
@@ -51,6 +56,17 @@ public class Singletons {
             }
         }
         return mongoClient;
+    }
+
+    public Dao getDao () {
+        if ( dao == null){
+            synchronized (lock4){
+                if ( dao == null){
+                    dao = new MongoDao (getMongoClient ());
+                }
+            }
+        }
+        return dao;
     }
 
     public ServiceExplorer getServiceExplorer (){

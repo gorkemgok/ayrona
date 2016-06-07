@@ -3,10 +3,7 @@ package com.ayronasystems.core.dao.mongo;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
-import com.ayronasystems.core.dao.model.AccountModel;
-import com.ayronasystems.core.dao.model.BatchJobModel;
-import com.ayronasystems.core.dao.model.LoginDetail;
-import com.ayronasystems.core.dao.model.StrategyModel;
+import com.ayronasystems.core.dao.model.*;
 import com.google.common.base.Optional;
 import com.mongodb.MongoClient;
 import org.junit.Before;
@@ -39,6 +36,42 @@ public class MongoDaoTestIT {
 
         dao = new MongoDao (mongoClient, AYRONA_TEST_DB_NAME, AYRONA_MARKETDATA_TEST_DB_NAME);
 
+    }
+
+    @Test
+    public void createUpdateFindOneAndDeleteAccount () throws Exception {
+        AccountModel expectedAccountModel = new AccountModel ();
+        expectedAccountModel.setAccountantName ("Kemalettin");
+        expectedAccountModel.setType (AccountModel.Type.MT4);
+        LoginDetail loginDetail = new LoginDetail ();
+        loginDetail.setServer ("Gedik");
+        loginDetail.setId ("loginullah");
+        loginDetail.setPassword ("ziyaaaaa");
+        expectedAccountModel.setLoginDetail (loginDetail);
+        String id = dao.createAccount (expectedAccountModel).getId ();
+
+        expectedAccountModel.setType (AccountModel.Type.ATA_CUSTOM);
+        dao.updateAccount (expectedAccountModel);
+
+        Optional<AccountModel> accountModelOptional = dao.findAccount (id);
+        assertTrue (accountModelOptional.isPresent ());
+
+        AccountModel actualAccountModel = accountModelOptional.get ();
+
+        assertEquals (id, actualAccountModel.getId ());
+        assertEquals (expectedAccountModel.getAccountantName (), actualAccountModel.getAccountantName ());
+        assertEquals (expectedAccountModel.getType (), actualAccountModel.getType ());
+        assertEquals (expectedAccountModel.getLoginDetail ().getServer (),
+                      actualAccountModel.getLoginDetail ().getServer ());
+        assertEquals (expectedAccountModel.getLoginDetail ().getId (),
+                      actualAccountModel.getLoginDetail ().getId ());
+        assertEquals (expectedAccountModel.getLoginDetail ().getPassword (),
+                      actualAccountModel.getLoginDetail ().getPassword ());
+
+        dao.deleteAccount (id);
+
+        accountModelOptional = dao.findAccount (id);
+        assertFalse (accountModelOptional.isPresent ());
     }
 
     @Test
@@ -135,7 +168,8 @@ public class MongoDaoTestIT {
         expectedAccountModel.setLoginDetail (loginDetail);
         dao.createAccount (expectedAccountModel);
 
-        expectedStrategyModel.setBoundAccountIds (Arrays.asList (expectedAccountModel.getId ()));
+        expectedStrategyModel.setBoundAccounts (Arrays.asList (new AccountBinder (expectedAccountModel.getId (),
+                                                                                  AccountBinder.State.ACTIVE)));
         dao.createStrategy (expectedStrategyModel);
 
         List<StrategyModel> actualStrategyModelList = dao.findAllStrategies ();
@@ -148,8 +182,8 @@ public class MongoDaoTestIT {
         assertEquals (expectedStrategyModel.getName (), actualStrategyModel.getName ());
         assertEquals (expectedStrategyModel.getCode (), actualStrategyModel.getCode ());
 
-        assertEquals (1, actualStrategyModel.getBoundAccountIds ().size ());
-        assertEquals (expectedAccountModel.getId (), actualStrategyModel.getBoundAccountIds ().get (0));
+        assertEquals (1, actualStrategyModel.getBoundAccounts ().size ());
+        assertEquals (expectedAccountModel.getId (), actualStrategyModel.getBoundAccounts ().get (0).getId ());
 
         List<AccountModel> accountModelList = dao.findAccountsByStrategyId (actualStrategyModel.getId ());
         assertEquals (1, accountModelList.size ());

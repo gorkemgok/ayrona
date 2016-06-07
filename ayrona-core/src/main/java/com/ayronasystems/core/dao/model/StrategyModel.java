@@ -14,14 +14,14 @@ public class StrategyModel extends BaseModel {
 
     private String code;
 
-    private List<String> boundAccountIds;
+    private List<AccountBinder> boundAccounts;
 
-    public List<String> getBoundAccountIds () {
-        return boundAccountIds;
+    public List<AccountBinder> getBoundAccounts () {
+        return boundAccounts;
     }
 
-    public void setBoundAccountIds (List<String> boundAccountIds) {
-        this.boundAccountIds = boundAccountIds;
+    public void setBoundAccounts (List<AccountBinder> boundAccounts) {
+        this.boundAccounts = boundAccounts;
     }
 
     public String getName () {

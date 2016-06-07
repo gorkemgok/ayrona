@@ -74,14 +74,17 @@ public class MongoDao implements Dao{
     }
 
     public void bindAccountToStrategy (String strategyId, String accountId) {
-        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class).add ("boundAccountIds", accountId);
+        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
+                                                                 .add ("boundAccounts",
+                                                                       new AccountBinder (accountId, AccountBinder.State.ACTIVE)
+                                                                 );
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter ("_id", new ObjectId (strategyId));
         appDatastore.update (query, operations);
     }
 
     public List<AccountModel> findAccountsByStrategyId (String id) {
         StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
-        List<ObjectId> objectIdList = MongoUtils.convertToObjectIds (strategyModel.getBoundAccountIds ());
+        List<ObjectId> objectIdList = MongoUtils.convertToObjectIdsAB (strategyModel.getBoundAccounts ());
         return appDatastore.get (AccountModel.class, objectIdList).asList ();
     }
 
@@ -90,9 +93,26 @@ public class MongoDao implements Dao{
         return accountModelList;
     }
 
+    public Optional<AccountModel> findAccount (String id) {
+        AccountModel accountModel = appDatastore.get (AccountModel.class, new ObjectId (id));
+        if (accountModel == null){
+            return Optional.absent ();
+        }else{
+            return Optional.of (accountModel);
+        }
+    }
+
     public AccountModel createAccount (AccountModel accountModel) {
         appDatastore.save (accountModel);
         return accountModel;
+    }
+
+    public void deleteAccount (String id) {
+        appDatastore.delete (AccountModel.class, new ObjectId (id));
+    }
+
+    public void updateAccount (AccountModel accountModel) {
+        appDatastore.save (accountModel);
     }
 
     public Optional<BatchJobModel> findBatchJob (String id) {

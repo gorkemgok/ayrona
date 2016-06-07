@@ -1,5 +1,6 @@
 package com.ayronasystems.rest.resources;
 
+import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.batchjob.BatchJobManager;
 import com.ayronasystems.core.batchjob.impl.ImportMarketDataBatchJob;
 import com.ayronasystems.core.timeseries.moment.Bar;
@@ -30,14 +31,9 @@ public class MarketDataResourceImpl implements MarketDataResource {
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat ("yyyyMMddHHmm");
 
-    private BatchJobManager batchJobManager;
+    private BatchJobManager batchJobManager = Singletons.INSTANCE.getBatchJobManager ();
 
-    private MongoClient mongoClient;
-
-    public MarketDataResourceImpl (MongoClient mongoClient, BatchJobManager batchJobManager) {
-        this.mongoClient = mongoClient;
-        this.batchJobManager = batchJobManager;
-    }
+    private MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
 
     public Response importCsv (MultipartFormDataInput input, String symbol) {
         List<Bar> barList = new ArrayList<Bar> (1000);

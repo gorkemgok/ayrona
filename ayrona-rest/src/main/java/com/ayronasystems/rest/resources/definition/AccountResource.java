@@ -1,5 +1,7 @@
 package com.ayronasystems.rest.resources.definition;
 
+import com.ayronasystems.rest.bean.AccountBean;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -7,31 +9,44 @@ import javax.ws.rs.core.Response;
 /**
  * Created by gorkemgok on 26/05/16.
  */
-@Path ("account")
+@Path ("/account")
 public interface AccountResource {
 
     @GET
     @Path ("list")
     @Produces(MediaType.APPLICATION_JSON)
-    Response list();
+    Response getList();
+
+    @GET
+    @Path ("{id}")
+    @Produces (MediaType.APPLICATION_JSON)
+    Response get(@PathParam ("id") String id);
+
+    @DELETE
+    @Path ("{id}")
+    @Produces (MediaType.APPLICATION_JSON)
+    Response delete(@PathParam ("id") String id);
+
+    @GET
+    @Path ("{id}/strategies")
+    @Produces (MediaType.APPLICATION_JSON)
+    Response getBoundStrategyList(@PathParam ("id") String id);
 
     @GET
     @Path ("{id}/history")
     @Produces (MediaType.APPLICATION_JSON)
-    Response history(@PathParam ("id") Long id);
+    Response getHistory(@PathParam ("id") Long id);
 
-    @GET
-    @Path ("{id}/strategy_list")
+    @POST
+    @Path ("")
     @Produces (MediaType.APPLICATION_JSON)
-    Response strategyList(@PathParam ("id") Long id);
+    @Consumes (MediaType.APPLICATION_JSON)
+    Response createAccount(AccountBean accountBean);
 
-    @GET
-    @Path ("{id}/start")
+    @PUT
+    @Path ("")
     @Produces (MediaType.APPLICATION_JSON)
-    Response start(@PathParam ("id") Long id, @QueryParam ("strategy_id") Long strategyId);
+    @Consumes (MediaType.APPLICATION_JSON)
+    Response updateAccount(AccountBean accountBean);
 
-    @GET
-    @Path ("{id}/stop")
-    @Produces (MediaType.APPLICATION_JSON)
-    Response stop(@PathParam ("id") Long id, @QueryParam ("strategy_id") Long strategyId);
 }

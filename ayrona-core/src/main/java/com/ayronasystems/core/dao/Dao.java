@@ -23,7 +23,13 @@ public interface Dao {
 
     List<AccountModel> findAllAccounts();
 
+    Optional<AccountModel> findAccount(String id);
+
     AccountModel createAccount(AccountModel accountModel);
+
+    void deleteAccount(String id);
+
+    void updateAccount(AccountModel accountModel);
 
     Optional<BatchJobModel> findBatchJob(String id);
 

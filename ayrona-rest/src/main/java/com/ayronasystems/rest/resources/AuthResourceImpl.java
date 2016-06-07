@@ -1,5 +1,6 @@
 package com.ayronasystems.rest.resources;
 
+import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.UserModel;
 import com.ayronasystems.rest.bean.AuthResponseBean;
@@ -24,15 +25,14 @@ public class AuthResourceImpl implements AuthResource{
 
     private static Logger log = LoggerFactory.getLogger (AuthResourceImpl.class);
 
-    private Dao dao;
+    private Dao dao = Singletons.INSTANCE.getDao ();
 
     private TokenManager tokenManager;
 
     @Context
     SecurityContext securityContext;
 
-    public AuthResourceImpl (Dao dao, TokenManager tokenManager) {
-        this.dao = dao;
+    public AuthResourceImpl (TokenManager tokenManager) {
         this.tokenManager = tokenManager;
     }
 
