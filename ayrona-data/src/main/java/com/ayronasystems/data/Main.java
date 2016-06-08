@@ -1,6 +1,7 @@
 package com.ayronasystems.data;
 
 import com.ayronasystems.core.configuration.Configuration;
+import com.ayronasystems.data.integration.MT4DataServiceEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +28,8 @@ public class Main {
 
         System.out.println (conf.toString ());
 
-        DataServiceEngine dataServiceEngine = new DataServiceEngine ();
-        dataServiceEngine.init ();
+        MT4DataServiceEngine MT4DataServiceEngine = new MT4DataServiceEngine ();
+        MT4DataServiceEngine.init ();
 
         while ( true ){
 

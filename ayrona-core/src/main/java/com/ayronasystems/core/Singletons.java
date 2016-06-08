@@ -24,13 +24,13 @@ public class Singletons {
 
     public static final Singletons INSTANCE = new Singletons ();
 
-    private transient MongoClient mongoClient = null;
+    private volatile MongoClient mongoClient = null;
 
-    private transient ConsulServiceExplorer serviceExplorer = null;
+    private volatile ConsulServiceExplorer serviceExplorer = null;
 
-    private transient BatchJobManager batchJobManager = null;
+    private volatile BatchJobManager batchJobManager = null;
 
-    private transient Dao dao = null;
+    private volatile Dao dao = null;
 
     private final Object lock1 = new Object ();
 
@@ -48,7 +48,10 @@ public class Singletons {
             synchronized (lock1){
                 if ( mongoClient == null){
                     try {
-                        mongoClient = new MongoClient (conf.getString (ConfKey.MONGODB_HOST), conf.getInteger (ConfKey.MONGODB_PORT));
+                        String host = conf.getString (ConfKey.MONGODB_HOST);
+                        int port = conf.getInteger (ConfKey.MONGODB_PORT);
+                        mongoClient = new MongoClient (host, port);
+                        log.info ("Connected to mongodb {}:{}", host, port);
                     } catch ( UnknownHostException e ) {
                         log.error ("Can connect to mongoDB", e);
                     }

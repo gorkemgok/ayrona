@@ -1,5 +1,7 @@
 package com.ayronasystems.core.service;
 
+import com.ayronasystems.core.Singletons;
+import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.OHLC;
 import com.ayronasystems.core.configuration.ConfKey;
@@ -8,6 +10,8 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.util.NumberUtils;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,6 +40,8 @@ public class StandaloneMarketDataService implements MarketDataService {
 
     private static Object lock = new Object ();
 
+    private MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
+
     public static MarketDataService getInstance () {
         if (marketDataService == null){
             synchronized (lock){
@@ -48,7 +54,6 @@ public class StandaloneMarketDataService implements MarketDataService {
     }
 
     private StandaloneMarketDataService () {
-        initializeHistorical ();
     }
 
     public MarketData getOHLC (Symbol symbol, Period period) {
@@ -60,6 +65,8 @@ public class StandaloneMarketDataService implements MarketDataService {
                 return ohlc;
             }
         }
+        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME)
+                .getCollection (symbol.getSymbolString ().toLowerCase ());
         return OHLC.getEmptyData (symbol, period);
     }
 

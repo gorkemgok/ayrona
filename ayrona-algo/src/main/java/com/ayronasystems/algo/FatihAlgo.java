@@ -1,4 +1,4 @@
-package com.ayronasystems.core.concrete;
+package com.ayronasystems.algo;
 
 import com.ayronasystems.core.algo.AlgoModule;
 import com.ayronasystems.core.algo.tree.Node;

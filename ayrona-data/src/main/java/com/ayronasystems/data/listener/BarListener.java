@@ -1,4 +1,4 @@
-package com.ayronasystems.data;
+package com.ayronasystems.data.listener;
 
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;

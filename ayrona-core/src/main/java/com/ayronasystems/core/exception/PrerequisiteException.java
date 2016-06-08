@@ -3,7 +3,7 @@ package com.ayronasystems.core.exception;
 /**
  * Created by gorkemgok on 26/12/14.
  */
-public class PrerequisiteException extends Exception {
+public class PrerequisiteException extends RuntimeException {
     /**
 	 * 
 	 */

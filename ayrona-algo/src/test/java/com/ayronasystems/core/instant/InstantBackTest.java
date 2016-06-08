@@ -1,6 +1,6 @@
 package com.ayronasystems.core.instant;
 
-import com.ayronasystems.core.concrete.FatihAlgo;
+import com.ayronasystems.algo.FatihAlgo;
 import com.ayronasystems.core.algo.FunctionFactory;
 import com.ayronasystems.core.backtest.*;
 import com.ayronasystems.core.definition.Period;

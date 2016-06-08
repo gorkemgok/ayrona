@@ -5,3 +5,4 @@ ignore
 logs
 *.log
 *.log.1
+ayrona-data/docker/*.jar

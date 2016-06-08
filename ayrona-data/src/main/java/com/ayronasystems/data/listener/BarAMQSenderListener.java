@@ -1,4 +1,4 @@
-package com.ayronasystems.data;
+package com.ayronasystems.data.listener;
 
 import com.ayronasystems.core.JMSDestination;
 import com.ayronasystems.core.JMSManager;
@@ -15,7 +15,7 @@ import javax.jms.JMSException;
 /**
  * Created by gorkemgok on 07/06/16.
  */
-public class BarAMQSenderListener implements BarListener{
+public class BarAMQSenderListener implements BarListener {
 
     private static Configuration conf = Configuration.getInstance ();
 
@@ -32,6 +32,7 @@ public class BarAMQSenderListener implements BarListener{
             jmsManager.getWorker ().destination (JMSDestination.BARS).send (
                     new LiveBar (symbol, period, bar)
             );
+            log.info ("Added to AMQ {}, {}", symbol, bar);
         } catch ( JMSException e ) {
             log.error ("Can't send bar "+symbol+" - "+period+", "+bar+" to queue", e);
         }

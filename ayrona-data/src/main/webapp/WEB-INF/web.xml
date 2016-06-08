@@ -13,7 +13,7 @@
 
   <listener>
     <listener-class>
-      com.ayronasystems.data.AyronaDSBootstrap
+      com.ayronasystems.data.rest.AyronaDSBootstrap
     </listener-class>
   </listener>
 
@@ -24,7 +24,7 @@
     </servlet-class>
     <init-param>
       <param-name>javax.ws.rs.Application</param-name>
-      <param-value>com.ayronasystems.data.AyronaDSApplication</param-value>
+      <param-value>com.ayronasystems.data.rest.AyronaDSApplication</param-value>
     </init-param>
   </servlet>
 

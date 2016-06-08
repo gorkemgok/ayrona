@@ -1,6 +1,7 @@
-package com.ayronasystems.data;
+package com.ayronasystems.data.integration;
 
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.data.Barifier;
 import com.jfx.MT4;
 import com.jfx.Tick;
 import com.jfx.strategy.Strategy;

@@ -1,4 +1,4 @@
-package com.ayronasystems.data;
+package com.ayronasystems.data.rest;
 
 import com.ayronasystems.rest.resources.DataServiceResourceImpl;
 

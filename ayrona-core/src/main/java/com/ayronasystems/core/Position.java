@@ -67,6 +67,8 @@ public class Position {
 
     }
 
+    private String id;
+
     private Direction direction;
 
     private Symbol symbol;
@@ -98,6 +100,14 @@ public class Position {
     private Initiator initiator;
 
     private Position () {
+    }
+
+    public String getId () {
+        return id;
+    }
+
+    public void setId (String id) {
+        this.id = id;
     }
 
     public double calculateProfit(){

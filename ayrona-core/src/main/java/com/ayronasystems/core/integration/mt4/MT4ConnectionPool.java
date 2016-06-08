@@ -26,13 +26,13 @@ public class MT4ConnectionPool {
         this.terminalPort = terminalPort;
     }
 
-    public static MT4ConnectionPool createManager(String terminalHost, int terminalPort){
+    public static MT4ConnectionPool createPool (String terminalHost, int terminalPort){
         pool = new MT4ConnectionPool (terminalHost, terminalPort);
         return pool;
     }
 
-    public static void initializeManager(String terminalHost, int terminalPort){
-        createManager (terminalHost, terminalPort);
+    public static void initializePool (String terminalHost, int terminalPort){
+        createPool (terminalHost, terminalPort);
     }
 
     public static MT4ConnectionPool getInstance (){
@@ -40,6 +40,7 @@ public class MT4ConnectionPool {
     }
 
     public MT4Connection getConnection(String broker, String login, String password) {
+        log.info ("Connection MT4 Terminal {} with {}", broker, login);
         for (MT4Connection mt4Connection : mt4Connections){
             if (mt4Connection.getBroker ().equals (broker) && mt4Connection.getLogin ().equals (login)){
                 return mt4Connection;

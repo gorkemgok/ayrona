@@ -1,4 +1,4 @@
-package com.ayronasystems.data;
+package com.ayronasystems.data.listener;
 
 import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.definition.Period;
@@ -16,7 +16,7 @@ import java.util.Date;
 /**
  * Created by gorkemgok on 07/06/16.
  */
-public class BarDBSaverListener implements BarListener{
+public class BarDBSaverListener implements BarListener {
 
     private static Logger log = LoggerFactory.getLogger (BarDBSaverListener.class);
 

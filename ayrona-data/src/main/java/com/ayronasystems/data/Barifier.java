@@ -6,6 +6,7 @@ import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Tick;
 import com.ayronasystems.core.timeseries.series.SymbolTimeSeries;
 import com.ayronasystems.core.timeseries.series.TimeSeries;
+import com.ayronasystems.data.listener.BarListener;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
