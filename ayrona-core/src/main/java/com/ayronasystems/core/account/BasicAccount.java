@@ -2,7 +2,11 @@ package com.ayronasystems.core.account;
 
 import com.ayronasystems.core.Initiator;
 import com.ayronasystems.core.Position;
+import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.integration.mt4.MT4AccountRemote;
+import com.ayronasystems.core.integration.mt4.MT4Connection;
+import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,12 +23,21 @@ public class BasicAccount implements Account {
 
     private List<Position> openPositionList = new ArrayList<Position> ();
 
+    private AccountRemote accountRemote;
+
+    public BasicAccount (String id, AccountRemote accountRemote) {
+        this.id = id;
+        this.accountRemote = accountRemote;
+    }
+
     public BasicAccount (String id) {
         this.id = id;
+        this.accountRemote = NoOpAccountRemote.INSTANCE;
     }
 
     public BasicAccount () {
         id = "SIMULATION";
+        accountRemote = NoOpAccountRemote.INSTANCE;
     }
 
     public boolean openPosition (Position position) {
@@ -59,5 +72,19 @@ public class BasicAccount implements Account {
 
     public String getId () {
         return id;
+    }
+
+    //TODO : take this from here
+    public static AccountRemote createUsing(AccountModel accountModel){
+        MT4ConnectionPool mt4ConnectionPool = MT4ConnectionPool.getInstance();
+        if (accountModel.getType() == AccountModel.Type.MT4){
+            MT4Connection mt4Connection = mt4ConnectionPool.getConnection(
+                    accountModel.getLoginDetail().getServer(),
+                    accountModel.getLoginDetail().getId(),
+                    accountModel.getLoginDetail().getPassword()
+            );
+            return new MT4AccountRemote(mt4Connection);
+        }
+        return NoOpAccountRemote.INSTANCE;
     }
 }

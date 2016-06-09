@@ -5,7 +5,6 @@ import com.ayronasystems.core.JMSManager;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
-import com.ayronasystems.core.account.AtaCustomAccount;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.algo.AlgoStrategy;
@@ -22,8 +21,6 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.PrerequisiteException;
-import com.ayronasystems.core.integration.mt4.MT4Account;
-import com.ayronasystems.core.integration.mt4.MT4Connection;
 import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
@@ -97,25 +94,9 @@ public class AlgoTradingEngine {
                 log.info ("Initializing account {} with {} lot", accountBinder.getId (), accountBinder.getLot ());
                 Optional<AccountModel> accountModelOptional = dao.findAccount (accountBinder.getId ());
                 if (accountModelOptional.isPresent ()) {
-                    Account account;
                     AccountModel accountModel = accountModelOptional.get ();
-                    if ( accountModel.getType () == AccountModel.Type.ATA_CUSTOM ) {
-                        account = new AtaCustomAccount (
-                                accountModel.getId (),
-                                accountModel.getLoginDetail ()
-                                            .getId ()
-                        );
-                        log.info ("Initialized account {}", accountModel.getAccountantName ());
-                    } if ( accountModel.getType () == AccountModel.Type.ATA_CUSTOM ) {
-                        MT4Connection mt4Connection = MT4ConnectionPool.getInstance ().getConnection (
-                                accountModel.getLoginDetail ().getServer (),
-                                accountModel.getLoginDetail ().getId (),
-                                accountModel.getLoginDetail ().getPassword ()
-                        );
-                        account = new MT4Account (accountModel.getId (), mt4Connection);
-                    }else {
-                        account = new BasicAccount (accountModel.getId ());
-                    }
+                    Account account = new BasicAccount(accountModel.getId(),
+                            BasicAccount.createUsing(accountModel));
                     accountBindInfoList.add (new AccountBindInfo (account, accountBinder.getLot ()));
                 }
             }

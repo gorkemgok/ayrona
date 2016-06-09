@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ayrona-algo</artifactId>
-    <name>Ayrona Algo Module</name>
+    <name>Ayrona AlgoTrading Engine</name>
     <properties>
         <junit.version>4.12</junit.version>
     </properties>
