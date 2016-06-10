@@ -2,8 +2,11 @@ package com.ayronasystems.core.dao;
 
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.model.*;
+import com.ayronasystems.core.edr.EdrModule;
+import com.ayronasystems.core.edr.EdrType;
 import com.google.common.base.Optional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -52,4 +55,14 @@ public interface Dao {
     MarketDataAnalyzeModel createMarketDataAnalyze(MarketDataAnalyzeModel marketDataAnalyzeModel);
 
     Optional<MarketDataAnalyzeModel> findMarketDataAnalyze(String id);
+
+    EdrModel createEdr(EdrModel edrModel);
+
+    List<EdrModel> findEdr(EdrModule edrModule, Date startDate, Date endDate);
+
+    List<EdrModel> findEdr(EdrType edrType, Date startDate, Date endDate);
+
+    List<EdrModel> findEdrByAccountId(String accountId, Date startDate, Date endDate);
+
+    List<EdrModel> findEdrByStrategyId(String strategyId, Date startDate, Date endDate);
 }

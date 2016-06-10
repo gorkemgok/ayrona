@@ -1,6 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.Initiator;
+import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
 import com.ayronasystems.core.algo.tree.Node;
 import com.ayronasystems.core.data.MarketData;

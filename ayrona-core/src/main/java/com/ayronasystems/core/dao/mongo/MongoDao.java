@@ -3,6 +3,9 @@ package com.ayronasystems.core.dao.mongo;
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.*;
+import com.ayronasystems.core.edr.Edr;
+import com.ayronasystems.core.edr.EdrModule;
+import com.ayronasystems.core.edr.EdrType;
 import com.ayronasystems.core.util.MongoUtils;
 import com.google.common.base.Optional;
 import com.mongodb.BasicDBObject;
@@ -15,6 +18,7 @@ import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -175,5 +179,42 @@ public class MongoDao implements Dao{
             return Optional.absent ();
         }
         return Optional.of (marketDataAnalyzeModel);
+    }
+
+    public EdrModel createEdr(EdrModel edrModel) {
+        appDatastore.save(edrModel);
+        return edrModel;
+    }
+
+    public List<EdrModel> findEdr(EdrModule edrModule, Date startDate, Date endDate) {
+        Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
+                .field("module").equal(edrModule)
+                .field("createDate").greaterThanOrEq(startDate)
+                .field("createDate").lessThanOrEq(endDate);
+        return query.asList();
+    }
+
+    public List<EdrModel> findEdr(EdrType edrType, Date startDate, Date endDate) {
+        Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
+                .field("type").equal(edrType)
+                .field("createDate").greaterThanOrEq(startDate)
+                .field("createDate").lessThanOrEq(endDate);
+        return query.asList();
+    }
+
+    public List<EdrModel> findEdrByAccountId(String accountId, Date startDate, Date endDate) {
+        Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
+                .field("properties.accountId").equal(accountId)
+                .field("createDate").greaterThanOrEq(startDate)
+                .field("createDate").lessThanOrEq(endDate);
+        return query.asList();
+    }
+
+    public List<EdrModel> findEdrByStrategyId(String strategyId, Date startDate, Date endDate) {
+        Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
+                .field("properties.strategytId").equal(strategyId)
+                .field("createDate").greaterThanOrEq(startDate)
+                .field("createDate").lessThanOrEq(endDate);
+        return query.asList();
     }
 }

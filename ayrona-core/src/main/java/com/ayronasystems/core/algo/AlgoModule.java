@@ -1,6 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.Initiator;
+import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.algo.tree.FunctionNode;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
 import com.ayronasystems.core.algo.tree.Node;
@@ -10,7 +10,6 @@ import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.strategy.SignalGenerator;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 

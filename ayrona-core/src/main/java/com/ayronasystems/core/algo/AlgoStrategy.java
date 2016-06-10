@@ -1,9 +1,8 @@
 package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.*;
-import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
-import com.ayronasystems.core.account.AccountStrategyPair;
+import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.Signal;
@@ -11,9 +10,12 @@ import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.strategy.*;
+import com.ayronasystems.core.strategy.concurrent.RunnableOrderHandler;
 import com.ayronasystems.core.timeseries.moment.Bar;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by gorkemgok on 12/05/16.
@@ -26,8 +28,6 @@ public class AlgoStrategy implements Strategy<Bar> {
 
     private OrderGenerator orderGenerator;
 
-    private OrderHandler orderHandler;
-
     private double takeProfitRatio;
 
     private double stopLossRatio;
@@ -36,6 +36,9 @@ public class AlgoStrategy implements Strategy<Bar> {
 
     private StrategyOHLC ohlc;
 
+    private ExecutorService executor;
+
+    //TODO : strategy definition: name in addition to id
     public AlgoStrategy (String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
         this.signalGenerator = signalGenerator;
@@ -44,10 +47,10 @@ public class AlgoStrategy implements Strategy<Bar> {
         this.stopLossRatio = stopLossRatio;
 
         orderGenerator = new BasicOrderGenerator ();
-        orderHandler = new BasicOrderHandler ();
+        executor = Executors.newFixedThreadPool(50);
 
         try {
-            ohlc = StrategyOHLC.valueOf (marketData.subData (signalGenerator.getNeededInputCount ()));
+            ohlc = GrowingStrategyOHLC.valueOf (marketData.subData (signalGenerator.getNeededInputCount ()));
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
@@ -60,24 +63,18 @@ public class AlgoStrategy implements Strategy<Bar> {
         double takeProfit = currentPrice + (currentPrice * takeProfitRatio);
         double stopLoss = currentPrice - (currentPrice * stopLossRatio);
 
-        //long a = System.nanoTime ();
         List<Signal> signalList = signalGenerator.getSignalList (ohlc);
-        //long b = System.nanoTime ();
         List<Order> orderList = orderGenerator.process (ohlc, signalList);
-        //long c = System.nanoTime ();
         for (AccountBindInfo accountBindInfo : accountBindInfoList) {
-            orderHandler.process (orderList,
+            RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler(orderList,
                                   this,
-                                  accountBindInfo.getAccount (),
-                                  accountBindInfo.getLot (),
+                                  accountBindInfo,
                                   takeProfit,
                                   stopLoss
             );
-
+            executor.submit(runnableOrderHandler);
         }
-        //long d = System.nanoTime ();
-        //System.out.println ("\t-"+"a"+(b-a)+"ns, "+"b"+(c-b)+"ns, "+"c"+(d-c)+"ns");
-        ohlc.slideSeries ();
+        ohlc.prepareForNextData ();
     }
 
     public List<AccountBindInfo> getAccountBindInfoList () {

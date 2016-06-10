@@ -2,6 +2,7 @@ package com.ayronasystems.core;
 
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;

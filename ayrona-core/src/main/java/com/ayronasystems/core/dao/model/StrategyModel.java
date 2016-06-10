@@ -3,7 +3,11 @@ package com.ayronasystems.core.dao.model;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.PostLoad;
+import org.mongodb.morphia.annotations.PostPersist;
+import org.mongodb.morphia.annotations.PrePersist;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -70,6 +74,20 @@ public class StrategyModel extends BaseModel {
 
     public void setState (AccountBinder.State state) {
         this.state = state;
+    }
+
+    @PrePersist
+    public void prePersist(){
+        if (boundAccounts == null){
+            boundAccounts = Collections.EMPTY_LIST;
+        }
+    }
+
+    @PostLoad
+    public void postPersist(){
+        if (boundAccounts == null){
+            boundAccounts = Collections.EMPTY_LIST;
+        }
     }
 }
 

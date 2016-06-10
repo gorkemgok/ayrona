@@ -1,4 +1,4 @@
-package com.ayronasystems.core;
+package com.ayronasystems.core.strategy;
 
 /**
  * Created by gorkemgok on 12/05/16.

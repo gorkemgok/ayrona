@@ -22,12 +22,12 @@ public class StrategyOHLCTest {
     @Before
     public void setUp () throws Exception {
         marketData = new OHLC (null, null, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
-        strategyOHLC = new StrategyOHLC (null, null, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
+        strategyOHLC = new SlidingStrategyOHLC(null, null, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
 
     }
 
     @Test
-    public void addNewBar () throws Exception {
+    public void addNewBarToSlidingOHLC () throws Exception {
         Bar bar = new Bar (new Date (), 10, 20, 30, 40, 0);
         strategyOHLC.addNewBar (bar);
 
@@ -55,7 +55,7 @@ public class StrategyOHLCTest {
 
     @Test
     public void createFrom () throws Exception {
-        StrategyOHLC strategyOHLC = StrategyOHLC.valueOf (marketData.subData (3));
+        StrategyOHLC strategyOHLC = SlidingStrategyOHLC.valueOf (marketData.subData (3));
 
         assertEquals (3, strategyOHLC.getDataCount ());
         assertEquals (OPEN_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getData (PriceColumn.OPEN, strategyOHLC.getDataCount () - 1), 0);

@@ -1,7 +1,6 @@
 package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.Initiator;
 import com.ayronasystems.core.Position;
 import com.ayronasystems.core.Order;
 

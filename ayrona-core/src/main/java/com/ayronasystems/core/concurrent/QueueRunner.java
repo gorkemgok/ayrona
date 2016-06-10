@@ -37,15 +37,20 @@ public class QueueRunner<E, R extends QueueRunnable<E>> implements Runnable{
         thread.start ();
     }
 
+    public boolean isIdle(){
+        return queue.isEmpty();
+    }
+
     public void run () {
         try {
             while ( !isStopped ) {
                 synchronized (lock) {
                     while ( !queue.isEmpty () ) {
-                        E element = queue.poll ();
+                        E element = queue.peek ();
                         if ( element != null ) {
                             runnable.process (element);
                         }
+                        queue.remove();
                     }
                     lock.wait ();
                 }

@@ -115,9 +115,13 @@ public class OHLC implements MarketData {
     }
 
     public MarketData subData (int period) {
-        int beginIdx = openSeries.length - period;
-        int endIdx = openSeries.length - 1;
-        return subData (beginIdx, endIdx);
+        if (period <= openSeries.length) {
+            int beginIdx = openSeries.length - period;
+            int endIdx = openSeries.length - 1;
+            return subData(beginIdx, endIdx);
+        }else{
+            return OHLC.getEmptyData(this.symbol, this.period);
+        }
     }
 
     public MarketData subData (int beginIdx, int endIdx) {
@@ -136,9 +140,9 @@ public class OHLC implements MarketData {
             newDates.add (dates.get (j));
             j++;
         }
-        StrategyOHLC strategyOHLC = null;
+        OHLC ohlc = null;
         try {
-            strategyOHLC = new StrategyOHLC (getSymbol (),
+            ohlc = new OHLC (getSymbol (),
                                              getPeriod (),
                                              newDates,
                                              newOpenSeries,
@@ -148,7 +152,7 @@ public class OHLC implements MarketData {
         } catch ( CorruptedMarketDataException e ) {
             assert (false);
         }
-        return strategyOHLC;
+        return ohlc;
     }
 
     public double getOpen(int index){
@@ -214,7 +218,7 @@ public class OHLC implements MarketData {
         double[] emptyArr = new double[0];
         OHLC ohlc = null;
         try {
-            ohlc = new OHLC (symbol, period, Collections.EMPTY_LIST, emptyArr, emptyArr, emptyArr, emptyArr);
+            ohlc = new OHLC (symbol, period, Collections.EMPTY_LIST, emptyArr, emptyArr.clone(), emptyArr.clone(), emptyArr.clone());
         } catch ( CorruptedMarketDataException e ) {
             e.printStackTrace ();
         }

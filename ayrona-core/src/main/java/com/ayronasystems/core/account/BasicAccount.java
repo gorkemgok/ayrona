@@ -1,6 +1,6 @@
 package com.ayronasystems.core.account;
 
-import com.ayronasystems.core.Initiator;
+import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.Position;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.definition.Symbol;

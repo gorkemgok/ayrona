@@ -1,6 +1,6 @@
 package com.ayronasystems.core.backtest;
 
-import com.ayronasystems.core.Initiator;
+import com.ayronasystems.core.strategy.Initiator;
 
 /**
  * Created by gorkemgok on 18/05/16.
