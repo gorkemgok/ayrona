@@ -4,6 +4,7 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.timeseries.moment.Moment;
+import com.ayronasystems.core.util.Interval;
 
 import java.util.Date;
 import java.util.List;
@@ -19,6 +20,8 @@ public interface MarketData extends Iterable<Moment> {
 
     List<Date> getDates();
 
+    Interval getInterval();
+
     Date getBeginningDate();
 
     Date getEndingDate();
@@ -28,6 +31,10 @@ public interface MarketData extends Iterable<Moment> {
     MarketData subData(int period);
 
     MarketData subData(int beginIdx, int endIdx);
+
+    MarketData subData(Date beginDate, Date endDate);
+
+    MarketData append(MarketData marketData);
 
     int getDataCount();
 

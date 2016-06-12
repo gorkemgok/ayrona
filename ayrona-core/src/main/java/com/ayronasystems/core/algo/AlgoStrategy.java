@@ -5,8 +5,7 @@ import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.StrategyOHLC;
-import com.ayronasystems.core.definition.Signal;
-import com.ayronasystems.core.definition.PriceColumn;
+import com.ayronasystems.core.definition.*;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.strategy.*;
@@ -20,7 +19,7 @@ import java.util.concurrent.Executors;
 /**
  * Created by gorkemgok on 12/05/16.
  */
-public class AlgoStrategy implements Strategy<Bar> {
+public class AlgoStrategy implements SPStrategy<Bar> {
 
     private String id;
 
@@ -38,6 +37,8 @@ public class AlgoStrategy implements Strategy<Bar> {
 
     private ExecutorService executor;
 
+    private SymbolPeriod symbolPeriod;
+
     //TODO : strategy definition: name in addition to id
     public AlgoStrategy (String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
@@ -45,12 +46,13 @@ public class AlgoStrategy implements Strategy<Bar> {
         this.accountBindInfoList = accountBindInfoList;
         this.takeProfitRatio = takeProfitRatio;
         this.stopLossRatio = stopLossRatio;
+        this.symbolPeriod = new SymbolPeriod (marketData.getSymbol (), marketData.getPeriod ());
 
         orderGenerator = new BasicOrderGenerator ();
         executor = Executors.newFixedThreadPool(50);
 
         try {
-            ohlc = GrowingStrategyOHLC.valueOf (marketData.subData (signalGenerator.getNeededInputCount ()));
+            ohlc = GrowingStrategyOHLC.valueOf (marketData);
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
@@ -75,6 +77,10 @@ public class AlgoStrategy implements Strategy<Bar> {
             executor.submit(runnableOrderHandler);
         }
         ohlc.prepareForNextData ();
+    }
+
+    public SymbolPeriod getSymbolPeriod () {
+        return symbolPeriod;
     }
 
     public List<AccountBindInfo> getAccountBindInfoList () {

@@ -71,6 +71,7 @@ public class StandaloneMarketDataService implements MarketDataService {
     }
 
     public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
+
         return null;
     }
 

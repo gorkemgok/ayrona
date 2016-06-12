@@ -19,13 +19,12 @@ import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
-import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
+import com.ayronasystems.core.strategy.SPStrategy;
 import com.ayronasystems.core.strategy.SignalGenerator;
-import com.ayronasystems.core.strategy.Strategy;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
@@ -36,9 +35,7 @@ import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by gorkemgok on 07/06/16.
@@ -53,7 +50,7 @@ public class AlgoTradingEngine {
 
     private MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
 
-    private Map<SymbolPeriod, QueueRunner<Bar, Strategy<Bar>>> strategies = new HashMap<SymbolPeriod, QueueRunner<Bar, Strategy<Bar>>> ();
+    private List<QueueRunner<Bar, SPStrategy<Bar>>> strategyRunners = new ArrayList<QueueRunner<Bar, SPStrategy<Bar>>> ();
 
     public void init() throws JMSException {
         MT4ConnectionPool.initializePool (
@@ -101,19 +98,17 @@ public class AlgoTradingEngine {
                 }
             }
 
-            Strategy<Bar> strategy = new AlgoStrategy (
+            SPStrategy<Bar> strategy = new AlgoStrategy (
                     strategyModel.getId (),
                     signalGenerator,
                     marketData,
                     accountBindInfoList,
                     0,0
             );
-            strategies.put (new SymbolPeriod (symbol, period),
-                            new QueueRunner<Bar, Strategy<Bar>> (strategy)
-            );
+            strategyRunners.add (new QueueRunner<Bar, SPStrategy<Bar>> (strategy));
             strategyNames.append (name).append ("\n");
         }
-        log.info ("Initialized strategies. Count {}, List : {}", strategies.size (), strategyNames.toString ());
+        log.info ("Initialized strategyRunners. Count {}, List : {}", strategyRunners.size (), strategyNames.toString ());
     }
 
     private void initializeAMQ() throws JMSException{
@@ -134,12 +129,9 @@ public class AlgoTradingEngine {
     }
 
     public void newBar(LiveBar liveBar){
-        SymbolPeriod smi = new SymbolPeriod (liveBar.getSymbol (), liveBar.getPeriod ());
-        for (Map.Entry<SymbolPeriod, QueueRunner<Bar, Strategy<Bar>>> entry : strategies.entrySet ()){
-            SymbolPeriod symbolPeriod = entry.getKey ();
-            if ( symbolPeriod.isSame (smi)){
-                QueueRunner<Bar ,Strategy<Bar>> strategyRunner = entry.getValue ();
-                Strategy<Bar> strategy = strategyRunner.unwrapRunnable ();
+        for (QueueRunner<Bar, SPStrategy<Bar>> strategyRunner : strategyRunners){
+            SPStrategy<Bar> strategy = strategyRunner.unwrapRunnable ();
+            if ( strategy.getSymbolPeriod ().equals (liveBar.getSymbolPeriod ())){
                 try {
                     strategyRunner.put (liveBar.getBar ());
                     log.info ("Successfully executed strategy {}", strategy.getIdentifier ());

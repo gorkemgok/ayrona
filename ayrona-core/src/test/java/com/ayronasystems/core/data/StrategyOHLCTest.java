@@ -1,14 +1,15 @@
 package com.ayronasystems.core.data;
 
-import static com.ayronasystems.core.data.TestData.*;
-
+import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.timeseries.moment.Bar;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Date;
+
+import static com.ayronasystems.core.data.TestData.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by gorkemgok on 28/05/16.
@@ -21,8 +22,8 @@ public class StrategyOHLCTest {
 
     @Before
     public void setUp () throws Exception {
-        marketData = new OHLC (null, null, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
-        strategyOHLC = new SlidingStrategyOHLC(null, null, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
+        marketData = new OHLC (null, Period.M5, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
+        strategyOHLC = new SlidingStrategyOHLC(null, Period.M5, DATES, OPEN_SERIES, HIGH_SERIES, LOW_SERIES, CLOSE_SERIES);
 
     }
 

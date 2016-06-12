@@ -38,4 +38,9 @@ public class OHLCTest {
 
     }
 
+    @Test
+    public void append () throws Exception {
+        
+
+    }
 }

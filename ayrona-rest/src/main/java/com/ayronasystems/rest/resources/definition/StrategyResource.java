@@ -46,6 +46,11 @@ public interface StrategyResource {
     Response getHistory(@PathParam ("id") String id);
 
     @GET
+    @Path("compile")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response compile(String code);
+
+    @GET
     @Path ("{id}/backtest")
     @Produces(MediaType.APPLICATION_JSON)
     Response getBackTest(@PathParam ("id") String id);

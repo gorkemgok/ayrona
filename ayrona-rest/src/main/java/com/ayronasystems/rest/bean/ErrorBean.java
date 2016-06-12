@@ -10,6 +10,8 @@ public class ErrorBean {
 
     public static final int ERR_UNAUTHORIZED = 403;
 
+    public static final int STRATEGY_COMPILATION_ERROR = 4435;
+
     private int code;
 
     private String message;

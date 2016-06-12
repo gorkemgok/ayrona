@@ -21,7 +21,8 @@ public class SymbolPeriod {
         return period;
     }
 
-    public boolean isSame (Object o) {
+    @Override
+    public boolean equals (Object o) {
         if ( this == o ) {
             return true;
         }
@@ -38,4 +39,10 @@ public class SymbolPeriod {
 
     }
 
+    @Override
+    public int hashCode () {
+        int result = symbol.hashCode ();
+        result = 31 * result + period.hashCode ();
+        return result;
+    }
 }

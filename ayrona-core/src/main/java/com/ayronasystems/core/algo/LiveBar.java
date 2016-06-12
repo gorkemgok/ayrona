@@ -2,6 +2,7 @@ package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.timeseries.moment.Bar;
 
 import java.io.Serializable;
@@ -11,24 +12,17 @@ import java.io.Serializable;
  */
 public class LiveBar implements Serializable{
 
-    private Symbol symbol;
-
-    private Period period;
+    private SymbolPeriod symbolPeriod;
 
     private Bar bar;
 
     public LiveBar (Symbol symbol, Period period, Bar bar) {
-        this.symbol = symbol;
-        this.period = period;
+        this.symbolPeriod = new SymbolPeriod (symbol, period);
         this.bar = bar;
     }
 
-    public Symbol getSymbol () {
-        return symbol;
-    }
-
-    public Period getPeriod () {
-        return period;
+    public SymbolPeriod getSymbolPeriod () {
+        return symbolPeriod;
     }
 
     public Bar getBar () {

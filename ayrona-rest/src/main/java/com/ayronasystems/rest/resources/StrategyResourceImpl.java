@@ -1,13 +1,17 @@
 package com.ayronasystems.rest.resources;
 
 import com.ayronasystems.core.Singletons;
+import com.ayronasystems.core.algo.Algo;
+import com.ayronasystems.core.backtest.MarketSimulator;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.rest.bean.AccountBean;
 import com.ayronasystems.rest.bean.AccountBinderBean;
+import com.ayronasystems.rest.bean.ErrorBean;
 import com.ayronasystems.rest.bean.StrategyBean;
 import com.ayronasystems.rest.resources.definition.StrategyResource;
+import org.mozilla.javascript.EcmaError;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -57,7 +61,19 @@ public class StrategyResourceImpl implements StrategyResource {
         return null;
     }
 
+    public Response compile (String code) {
+        try {
+            Algo.createInstance (code);
+            return Response.ok ().build ();
+        }catch ( EcmaError e ){
+            return Response.status (Response.Status.BAD_REQUEST)
+                           .entity (new ErrorBean (ErrorBean.STRATEGY_COMPILATION_ERROR, e.getMessage ())).build ();
+        }
+    }
+
     public Response getBackTest (String id) {
+
+
         return null;
     }
 
