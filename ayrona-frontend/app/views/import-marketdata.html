@@ -1,0 +1,10 @@
+<div class="container-fluid">
+  <div class="row well">
+    <input type="file" nv-file-select="" uploader="uploader" />
+    <button type="button" class="btn btn-success btn-xs"
+            ng-click="uploader.uploadAll()"
+            ng-disabled="!uploader.getNotUploadedItems().length">
+      <span class="glyphicon glyphicon-upload"></span> Upload all
+    </button>
+  </div>
+</div>

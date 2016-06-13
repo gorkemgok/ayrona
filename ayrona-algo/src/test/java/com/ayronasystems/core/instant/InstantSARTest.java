@@ -1,11 +1,10 @@
 package com.ayronasystems.core.instant;
 
 import com.ayronasystems.core.algo.FIOExchange;
-import com.ayronasystems.core.algo.Function;
 import com.ayronasystems.core.algo.FunctionFactory;
-import com.ayronasystems.core.algo.indicator.SAR;
 import com.ayronasystems.core.algo.tree.FunctionNode;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
+import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.Period;
@@ -17,7 +16,6 @@ import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Moment;
-import com.ayronasystems.core.util.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,7 +32,7 @@ public class InstantSARTest {
         FunctionFactory.scanFunctions ();
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
         MarketData marketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5);
-        StrategyOHLC strategyMarketData = StrategyOHLC.valueOf (marketData.subData (0 , SAR_PER));
+        StrategyOHLC strategyMarketData = GrowingStrategyOHLC.valueOf (marketData.subData (0 , SAR_PER));
         MarketData simMarketData = marketData.subData (SAR_PER, marketData.getDataCount () - 1);
 
         FunctionNode fn = new FunctionNode("SAR",
@@ -51,7 +49,7 @@ public class InstantSARTest {
                 FIOExchange sfio = fn.calculate (strategyMarketData);
                 double[] d = sfio.getData (0);
                 simSarResult.add (d[d.length - 1]);
-                strategyMarketData.slideSeries ();
+                strategyMarketData.prepareForNextData ();
             }
             int c = Math.min (sarResult.length, simSarResult.size ());
             int diff = Math.abs (sarResult.length - simSarResult.size ());

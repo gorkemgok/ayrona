@@ -5,5 +5,5 @@ package com.ayronasystems.rest.bean;
  */
 public interface BeanPrerequisite<T> {
 
-    PrerequisiteBean check(T t);
+    PrerequisiteCheck check(T t);
 }

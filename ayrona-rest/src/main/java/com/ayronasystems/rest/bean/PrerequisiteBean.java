@@ -1,41 +1,35 @@
 package com.ayronasystems.rest.bean;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Created by gorkemgok on 06/06/16.
+ * Created by gorkemgok on 13/06/16.
  */
 public class PrerequisiteBean {
 
-    public enum ShouldBe{
-        NOT_EMPTY,
-        ALPHANUMERIC,
-        NUMBER,
-        DATE,
-        EMAIL
-    }
+    private String field;
 
-    public static final PrerequisiteBean OK = new PrerequisiteBean (true);
-
-    private boolean isOk;
-
-    private Map<String, ShouldBe> shouldBe = new HashMap<String, ShouldBe> ();
-
-    public PrerequisiteBean (boolean isOk) {
-        this.isOk = isOk;
-    }
+    private String check;
 
     public PrerequisiteBean () {
-        isOk = true;
     }
 
-    public void shouldBe(String field, ShouldBe shouldBe){
-        isOk = false;
-        this.shouldBe.put (field, shouldBe);
+    public PrerequisiteBean (String field, String check) {
+        this.field = field;
+        this.check = check;
     }
 
-    public boolean isOk () {
-        return isOk;
+    public String getField () {
+        return field;
+    }
+
+    public void setField (String field) {
+        this.field = field;
+    }
+
+    public String getCheck () {
+        return check;
+    }
+
+    public void setCheck (String check) {
+        this.check = check;
     }
 }

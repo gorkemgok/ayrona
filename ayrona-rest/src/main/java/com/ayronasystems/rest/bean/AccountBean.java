@@ -2,7 +2,6 @@ package com.ayronasystems.rest.bean;
 
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.LoginDetail;
-import org.bson.types.ObjectId;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -85,8 +84,9 @@ public class AccountBean {
 
     public AccountModel toAccountModel(){
         AccountModel accountModel = new AccountModel ();
-        accountModel.setId (new ObjectId (id));
+        accountModel.setId (id);
         accountModel.setType (AccountModel.Type.valueOf (type));
+        accountModel.setAccountantName (name);
         LoginDetail loginDetail = new LoginDetail ();
         loginDetail.setId (accountNo);
         loginDetail.setPassword (accountPassword);

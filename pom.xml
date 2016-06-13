@@ -14,6 +14,7 @@
         <module>ayrona-algo</module>
         <module>ayrona-rest</module>
         <module>ayrona-data</module>
+        <module>ayrona-frontend</module>
     </modules>
 
 

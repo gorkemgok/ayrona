@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>Hesaplar <small><button class="btn btn-xs btn-success" ng-click="gotoCreateAccount()">Ekle</button> </small></h1>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <th>İsim</th>
+                    <th>Hesap No</th>
+                    <th>Hesap Tipi</th>
+                    <th>Hesap Sunucusu</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="account in accounts">
+                        <td>{{ account.name }}</td>
+                        <td>{{ account.accountNo }}</td>
+                        <td>{{ account.type | accountType }}</td>
+                        <td>{{ account.server }}</td>
+                        <td>
+                            <button class="btn btn-xs btn-danger" ng-click="delete(account.id)">Sil</button>
+                            <button class="btn btn-xs btn-primary" ng-click="gotoEditAccount(account.id)">Düzenle</button>
+                          </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                {{ sessions.totalCount }}
+            </p>
+            <nav>
+                <ul class="pagination">
+                    <li ng-repeat="page in pages" ng-class="{'active' : page.active}" ><a ng-click="gotoPage(page.no)">{{ page.no }}</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>

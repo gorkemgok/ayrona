@@ -6,12 +6,18 @@ package com.ayronasystems.rest.bean;
 public class Prerequisites {
 
     public static final BeanPrerequisite<AccountBean> SAVE_ACCOUNT = new BeanPrerequisite<AccountBean> () {
-        public PrerequisiteBean check (AccountBean accountBean) {
-            PrerequisiteBean prerequisiteBean = new PrerequisiteBean ();
+        public PrerequisiteCheck check (AccountBean accountBean) {
+            PrerequisiteCheck prerequisiteCheck = new PrerequisiteCheck ();
             if (accountBean.getName () == null || accountBean.getName ().isEmpty ()){
-                prerequisiteBean.shouldBe ("name", PrerequisiteBean.ShouldBe.NOT_EMPTY);
+                prerequisiteCheck.shouldBe ("name", PrerequisiteCheck.ShouldBe.NOT_EMPTY);
             }
-            return prerequisiteBean;
+            if (accountBean.getType () == null){
+                prerequisiteCheck.shouldBe ("type", PrerequisiteCheck.ShouldBe.SELECTED);
+            }
+            if (accountBean.getAccountNo () == null || accountBean.getAccountNo ().isEmpty ()){
+                prerequisiteCheck.shouldBe ("accountNo", PrerequisiteCheck.ShouldBe.NOT_EMPTY);
+            }
+            return prerequisiteCheck;
         }
     };
 

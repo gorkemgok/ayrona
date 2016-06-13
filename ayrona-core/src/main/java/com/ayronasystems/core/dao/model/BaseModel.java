@@ -33,7 +33,9 @@ public class BaseModel {
     }
 
     public void setId (String id) {
-        this.id = new ObjectId (id);
+        if (id != null) {
+            this.id = new ObjectId (id);
+        }
     }
 
     public Date getCreateDate () {

@@ -39,6 +39,21 @@ public class MongoDaoTestIT {
     }
 
     @Test
+    public void createAndFindUser(){
+        UserModel expectedUserModel = new UserModel ();
+        expectedUserModel.setName ("Görkem the user");
+        expectedUserModel.setLogin ("gorko");
+        expectedUserModel.setPassword ("123456");
+        dao.createUser (expectedUserModel);
+
+        Optional<UserModel> actualUserModelOptional = dao.findUserByLogin ("gorko");
+
+        assertTrue (actualUserModelOptional.isPresent ());
+        UserModel actualUserModel = actualUserModelOptional.get ();
+        assertEquals (expectedUserModel.getId (), actualUserModel.getId ());
+    }
+
+    @Test
     public void createUpdateFindOneAndDeleteAccount () throws Exception {
         AccountModel expectedAccountModel = new AccountModel ();
         expectedAccountModel.setAccountantName ("Kemalettin");

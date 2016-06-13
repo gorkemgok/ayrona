@@ -1,8 +1,11 @@
 package com.ayronasystems.core.dao.model;
 
+import org.mongodb.morphia.annotations.Entity;
+
 /**
  * Created by gorkemgok on 26/05/16.
  */
+@Entity("user")
 public class UserModel extends BaseModel{
 
     private String name;

@@ -14,7 +14,10 @@ import java.util.List;
  */
 public interface Dao {
 
+    //User
     Optional<UserModel> findUserByLogin(String login);
+
+    UserModel createUser(UserModel userModel);
 
     //Strategy
     StrategyModel createStrategy(StrategyModel strategyModel);

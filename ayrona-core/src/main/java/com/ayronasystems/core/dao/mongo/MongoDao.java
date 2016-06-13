@@ -3,7 +3,6 @@ package com.ayronasystems.core.dao.mongo;
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.*;
-import com.ayronasystems.core.edr.Edr;
 import com.ayronasystems.core.edr.EdrModule;
 import com.ayronasystems.core.edr.EdrType;
 import com.ayronasystems.core.util.MongoUtils;
@@ -66,6 +65,11 @@ public class MongoDao implements Dao{
         }else{
             return Optional.absent ();
         }
+    }
+
+    public UserModel createUser (UserModel userModel) {
+        appDatastore.save (userModel);
+        return userModel;
     }
 
     public StrategyModel createStrategy (StrategyModel strategyModel) {

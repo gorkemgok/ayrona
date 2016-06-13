@@ -12,6 +12,8 @@ public class ErrorBean {
 
     public static final int STRATEGY_COMPILATION_ERROR = 4435;
 
+    public static final int PREREQUISITE_ERROR = 5112;
+
     private int code;
 
     private String message;

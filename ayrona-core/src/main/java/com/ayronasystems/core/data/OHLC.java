@@ -185,56 +185,61 @@ public class OHLC implements MarketData {
         OHLC ohlc;
         if (marketData.getBeginningDate ().equals (getEndingDate ())){
             int count = marketData.getDataCount () + getDataCount ();
-            List<Date> dates = new ArrayList<Date> (count);
+            List<Date> newDates = new ArrayList<Date> (count);
             double[] newOpenSeries = new double[count];
             double[] newHighSeries = new double[count];
             double[] newLowSeries = new double[count];
             double[] newCloseSeries = new double[count];
             int c = 0;
-            for ( int i = 0; i < getDataCount () - 1; i++ ) {
-                dates.add (getDate (i));
-                openSeries[c] = getOpen (i);
-                highSeries[c] = getHigh (i);
-                lowSeries[c] = getLow (i);
-                closeSeries[c] = getClose (i);
+            for ( int i = 0; i < getDataCount (); i++ ) {
+                newDates.add (getDate (i));
+                newOpenSeries[c] = getOpen (i);
+                newHighSeries[c] = getHigh (i);
+                newLowSeries[c] = getLow (i);
+                newCloseSeries[c] = getClose (i);
+                c++;
             }
-            for ( int i = 0; i < marketData.getDataCount () - 1; i++ ) {
-                dates.add (marketData.getDate (i));
-                openSeries[c] = marketData.getData (PriceColumn.OPEN,i);
-                highSeries[c] = marketData.getData (PriceColumn.HIGH,i);
-                lowSeries[c] = marketData.getData (PriceColumn.LOW,i);
-                closeSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+            for ( int i = 0; i < marketData.getDataCount (); i++ ) {
+                newDates.add (marketData.getDate (i));
+                newOpenSeries[c] = marketData.getData (PriceColumn.OPEN,i);
+                newHighSeries[c] = marketData.getData (PriceColumn.HIGH,i);
+                newLowSeries[c] = marketData.getData (PriceColumn.LOW,i);
+                newCloseSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+                c++;
             }
+
             try {
-                ohlc = new OHLC (symbol, period, dates, openSeries, highSeries, lowSeries, closeSeries);
+                ohlc = new OHLC (symbol, period, newDates, newOpenSeries, newHighSeries, newLowSeries, newCloseSeries);
             } catch ( CorruptedMarketDataException e ) {
                 return this;
             }
         }else if(marketData.getEndingDate ().equals (getBeginningDate ())){
             int count = marketData.getDataCount () + getDataCount ();
-            List<Date> dates = new ArrayList<Date> (count);
+            List<Date> newDates = new ArrayList<Date> (count);
             double[] newOpenSeries = new double[count];
             double[] newHighSeries = new double[count];
             double[] newLowSeries = new double[count];
             double[] newCloseSeries = new double[count];
             int c = 0;
-            for ( int i = 0; i < marketData.getDataCount () - 1; i++ ) {
-                dates.add (marketData.getDate (i));
-                openSeries[c] = marketData.getData (PriceColumn.OPEN,i);
-                highSeries[c] = marketData.getData (PriceColumn.HIGH,i);
-                lowSeries[c] = marketData.getData (PriceColumn.LOW,i);
-                closeSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+            for ( int i = 0; i < marketData.getDataCount (); i++ ) {
+                newDates.add (marketData.getDate (i));
+                newOpenSeries[c] = marketData.getData (PriceColumn.OPEN,i);
+                newHighSeries[c] = marketData.getData (PriceColumn.HIGH,i);
+                newLowSeries[c] = marketData.getData (PriceColumn.LOW,i);
+                newCloseSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+                c++;
             }
-            for ( int i = 0; i < getDataCount () - 1; i++ ) {
-                dates.add (getDate (i));
-                openSeries[c] = getOpen (i);
-                highSeries[c] = getHigh (i);
-                lowSeries[c] = getLow (i);
-                closeSeries[c] = getClose (i);
+            for ( int i = 0; i < getDataCount (); i++ ) {
+                newDates.add (getDate (i));
+                newOpenSeries[c] = getOpen (i);
+                newHighSeries[c] = getHigh (i);
+                newLowSeries[c] = getLow (i);
+                newCloseSeries[c] = getClose (i);
+                c++;
             }
 
             try {
-                ohlc = new OHLC (symbol, period, dates, openSeries, highSeries, lowSeries, closeSeries);
+                ohlc = new OHLC (symbol, period, newDates, newOpenSeries, newHighSeries, newLowSeries, newCloseSeries);
             } catch ( CorruptedMarketDataException e ) {
                 return this;
             }

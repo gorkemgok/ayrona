@@ -3,6 +3,7 @@ package com.ayronasystems.core.instant;
 import com.ayronasystems.core.Order;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.algo.FunctionFactory;
+import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.Period;
@@ -47,7 +48,7 @@ public class InstantBackTestSimulationCompare {
             List<Signal> btSignals = signalGenerator.getSignalList (baseMarketData);
             List<Order> btOrders = btOrderGenerator.process (baseMarketData, btSignals);
             List<Order> simOrders = new ArrayList<Order> ();
-            StrategyOHLC strategyOHLC = StrategyOHLC.valueOf (initialMarketData);
+            StrategyOHLC strategyOHLC = GrowingStrategyOHLC.valueOf (initialMarketData);
             List<Signal> simSignals = new ArrayList();
             for ( Moment moment: simulationMarketData) {
                 Bar bar = (Bar)moment;
@@ -60,7 +61,7 @@ public class InstantBackTestSimulationCompare {
                 for (Order order : orders){
                     simOrders.add (order);
                 }
-                strategyOHLC.slideSeries ();
+                strategyOHLC.prepareForNextData ();
             }
             System.out.println (btOrders.size ());
             System.out.println (simOrders.size ());

@@ -1,0 +1,50 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-offset-3 col-sm-6  well">
+        <form class="form-horizontal">
+            <div class="form-group" ng-class="{'has-error':prerequisite.name}">
+                <label for="name" class="col-sm-3 control-label">İsim</label>
+                <div class="col-sm-6">
+                    <input id="name" class="form-control input-sm" ng-model="account.name">
+                    <span ng-if="prerequisite.name" class="help-block">{{prerequisite.name}}</span>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error':prerequisite.type}">
+                <label for="type" class="col-sm-3 control-label">Hesap Türü</label>
+                <div class="col-sm-6">
+                    <select id="type" ng-model="account.type" class="form-control input-sm">
+                        <option value="ATA_CUSTOM">Ata Online Hesabı</option>
+                        <option value="MT4">MetaTrader 4 Hesabı</option>
+                    </select>
+                    <span ng-if="prerequisite.type" class="help-block">{{prerequisite.type}}</span>
+                </div>
+            </div>
+            <div class="form-group" ng-class="{'has-error':prerequisite.accountNo}">
+                <label for="accountNo" class="col-sm-3 control-label">Hesap No</label>
+                <div class="col-sm-6">
+                    <input id="accountNo" class="form-control input-sm" ng-model="account.accountNo">
+                    <span ng-if="prerequisite.accountNo" class="help-block">{{prerequisite.accountNo}}</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="accountPassword" class="col-sm-3 control-label">Hesap Şifresi</label>
+                <div class="col-sm-6">
+                    <input id="accountPassword" class="form-control input-sm" ng-model="account.accountPassword">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="server" class="col-sm-3 control-label">Hesap Sunucusu</label>
+                <div class="col-sm-6">
+                    <input id="server" class="form-control input-sm" ng-model="account.server">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-3 col-sm-1">
+                    <button ng-hide="account.id" class="btn btn-sm btn-primary" ng-click="create(account)">Kaydet</button>
+                    <button ng-show="account.id" class="btn btn-sm btn-primary" ng-click="update(account)">Güncelle</button>
+                </div>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
