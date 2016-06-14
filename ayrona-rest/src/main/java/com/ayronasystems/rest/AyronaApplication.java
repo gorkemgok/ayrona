@@ -1,9 +1,7 @@
 package com.ayronasystems.rest;
 
-import com.ayronasystems.rest.resources.AccountResourceImpl;
-import com.ayronasystems.rest.resources.AuthResourceImpl;
-import com.ayronasystems.rest.resources.MarketDataResourceImpl;
-import com.ayronasystems.rest.resources.StrategyResourceImpl;
+import com.ayronasystems.rest.resources.*;
+import com.ayronasystems.rest.security.SecurityFilter;
 import com.ayronasystems.rest.security.TokenManager;
 
 import javax.ws.rs.core.Application;
@@ -18,6 +16,8 @@ public class AyronaApplication extends Application {
     private Set<Object> resources = new HashSet<Object> ();
 
     public AyronaApplication () {
+        resources.add (new SecurityFilter ());
+        resources.add (new DashboardResourceImpl ());
         resources.add (new StrategyResourceImpl ());
         resources.add (new AuthResourceImpl (TokenManager.getInstance ()));
         resources.add (new AccountResourceImpl ());

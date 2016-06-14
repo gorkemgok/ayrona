@@ -14,7 +14,8 @@ angular.module('ayronaApp', [
     'restangular',
     'chart.js',
     'base64',
-    'angularFileUpload'
+    'angularFileUpload',
+    'ui.ace'
     ])
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/dashboard');

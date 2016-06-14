@@ -1,6 +1,7 @@
 package com.ayronasystems.rest.resources.definition;
 
 import com.ayronasystems.rest.bean.AccountBinderBean;
+import com.ayronasystems.rest.bean.BackTestBean;
 import com.ayronasystems.rest.bean.StrategyBean;
 
 import javax.ws.rs.*;
@@ -33,7 +34,7 @@ public interface StrategyResource {
     @GET
     @Path ("{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    Response get(String id);
+    Response get(@PathParam ("id") String id);
 
     @GET
     @Path ("{id}/accounts")
@@ -45,21 +46,16 @@ public interface StrategyResource {
     @Produces(MediaType.APPLICATION_JSON)
     Response getHistory(@PathParam ("id") String id);
 
-    @GET
+    @POST
     @Path("compile")
     @Produces(MediaType.APPLICATION_JSON)
     Response compile(String code);
-
-    @GET
-    @Path ("{id}/backtest")
-    @Produces(MediaType.APPLICATION_JSON)
-    Response getBackTest(@PathParam ("id") String id);
 
     @POST
     @Path ("backtest")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response getBackTest(StrategyBean strategyBean);
+    Response doBackTest(BackTestBean backTestBean);
 
     @POST
     @Path ("{id}/boundAccount")

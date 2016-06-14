@@ -72,6 +72,12 @@ public class MongoDao implements Dao{
         return userModel;
     }
 
+    public StrategyStat getStrategyStat () {
+        long activeCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.ACTIVE));
+        long inactiveCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.INACTIVE));
+        return new StrategyStat (activeCount, inactiveCount);
+    }
+
     public StrategyModel createStrategy (StrategyModel strategyModel) {
         appDatastore.save (strategyModel);
         return strategyModel;
@@ -81,7 +87,9 @@ public class MongoDao implements Dao{
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter ("_id", strategyModel.getObjectId ());
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
                 .set ("code", strategyModel.getCode ())
-                .set ("name", strategyModel.getName ());
+                .set ("name", strategyModel.getName ())
+                .set ("symbol", strategyModel.getSymbol ())
+                .set ("period", strategyModel.getPeriod ());
         appDatastore.update (query, operations);
     }
 
@@ -111,6 +119,10 @@ public class MongoDao implements Dao{
         StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
         List<ObjectId> objectIdList = MongoUtils.convertToObjectIdsAB (strategyModel.getBoundAccounts ());
         return appDatastore.get (AccountModel.class, objectIdList).asList ();
+    }
+
+    public long getAccountCount () {
+        return appDatastore.getCount (appDatastore.createQuery (AccountModel.class));
     }
 
     public List<AccountModel> findAllAccounts () {

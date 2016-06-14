@@ -5,6 +5,8 @@ import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.mongo.MongoDao;
+import com.ayronasystems.core.service.BackTestService;
+import com.ayronasystems.core.service.StandaloneBackTestService;
 import com.ayronasystems.core.service.discovery.ConsulServiceExplorer;
 import com.ayronasystems.core.service.discovery.ServiceExplorer;
 import com.mongodb.MongoClient;
@@ -30,6 +32,8 @@ public class Singletons {
 
     private volatile BatchJobManager batchJobManager = null;
 
+    private volatile BackTestService backTestService = null;
+
     private volatile Dao dao = null;
 
     private final Object lock1 = new Object ();
@@ -39,6 +43,8 @@ public class Singletons {
     private final Object lock3 = new Object ();
 
     private final Object lock4 = new Object ();
+
+    private final Object lock5 = new Object ();
 
     private Singletons () {
     }
@@ -92,5 +98,16 @@ public class Singletons {
             }
         }
         return batchJobManager;
+    }
+
+    public BackTestService getBackTestService () {
+        if ( backTestService == null){
+            synchronized (lock5){
+                if ( backTestService == null){
+                    backTestService = new StandaloneBackTestService ();
+                }
+            }
+        }
+        return backTestService;
     }
 }

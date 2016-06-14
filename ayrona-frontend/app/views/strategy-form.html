@@ -1,0 +1,53 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6 well">
+            <form class="form-horizontal">
+                <div class="form-group">
+                    <div class="col-sm-offset-8 col-sm-4">
+                        <button class="btn btn-sm btn-success" ng-click="compile(strategy.code)">Derle</button>
+                        <button ng-hide="strategy.id" class="btn btn-sm btn-primary" ng-click="create(strategy)">Kaydet</button>
+                        <button ng-show="strategy.id" class="btn btn-sm btn-primary" ng-click="update(strategy)">Kaydet</button>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.strategy.name}">
+                    <label for="name" class="col-sm-2 control-label">Strateji</label>
+                    <div class="col-sm-6">
+                        <input id="name" class="form-control input-sm" ng-model="strategy.name">
+                        <span ng-if="prerequisite.strategy.name" class="help-block">{{prerequisite.strategy.name}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.strategy.symbol}">
+                    <label for="symbol" class="col-sm-2 control-label">Sembol</label>
+                    <div class="col-sm-4">
+                        <select id="symbol" ng-model="strategy.symbol" class="form-control input-sm">
+                            <option value="VOB30">Vob 30</option>
+                            <option value="EURUSD">EURUSD</option>
+                            <option value="USDTRY">USDTRY</option>
+                        </select>
+                        <span ng-if="prerequisite.strategy.symbol" class="help-block">{{prerequisite.strategy.symbol}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.strategy.period}">
+                    <label for="period" class="col-sm-2 control-label">Periyot</label>
+                    <div class="col-sm-4">
+                        <select id="period" ng-model="strategy.period" class="form-control input-sm">
+                            <option value="M1">1 dk</option>
+                            <option value="M5">5 dk</option>
+                        </select>
+                        <span ng-if="prerequisite.strategy.period" class="help-block">{{prerequisite.strategy.period}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.strategy.code}">
+                    <div class="col-sm-12">
+                        <textarea ui-ace="{mode:'javascript', theme:'terminal'}" id="code" class="form-control input-sm" ng-model="strategy.code"></textarea>
+                        <span ng-if="prerequisite.strategy.code" class="help-block">{{prerequisite.strategy.code}}</span>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="col-sm-6 well">
+            <div ng-show="compilationResult == 0" class="alert alert-sm alert-success alert-dismissible" role="alert">{{ compilationMessage }}</div>
+            <div ng-show="compilationResult == 1" class="alert alert-sm alert-danger alert-dismissible" role="alert">{{ compilationMessage }}</div>
+        </div>
+    </div>
+</div>

@@ -1,8 +1,18 @@
 <div class="container-fluid">
-  <img src="../images/logo_text.png" style="position: absolute;left: 50%;top: 50%;margin-left: -99px;margin-top: -78px;"/>
-  <div class="row">
-    <div class="col-md-12">
-
+    <img src="../images/logo_text.png" style="position: absolute;left: 50%;top: 50%;margin-left: -99px;margin-top: -78px;"/>
+    <div class="row">
+        <div class="col-xs-3">
+            <div class="well">
+                <h4>Stratejiler</h4>
+                <h5 style="color: green;">{{stat.strategyStat.activeCount}} <small>Aktif</small></h5>
+                <h4>{{stat.strategyStat.inactiveCount}} <small>Pasif</small></h4>
+            </div>
+        </div>
+        <div class="col-xs-3">
+            <div class="well">
+                <h4>Hesaplar</h4>
+                <h5 style="color: green;">{{stat.accountCount}}</h5>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

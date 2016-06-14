@@ -12,7 +12,10 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     color: #333;
 }
-
+#navigation{
+  margin-bottom: 15px;
+}
+.ace_editor { height: 600px; }
 .form-signin {
   max-width: 330px;
   padding: 15px;

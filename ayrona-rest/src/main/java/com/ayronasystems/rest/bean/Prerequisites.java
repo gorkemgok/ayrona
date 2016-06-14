@@ -21,4 +21,23 @@ public class Prerequisites {
         }
     };
 
+    public static final BeanPrerequisite<StrategyBean> SAVE_STRATEGY = new BeanPrerequisite<StrategyBean> () {
+        public PrerequisiteCheck check (StrategyBean strategyBean) {
+            PrerequisiteCheck prerequisiteCheck = new PrerequisiteCheck ();
+            if (strategyBean.getName () == null || strategyBean.getName ().isEmpty ()){
+                prerequisiteCheck.shouldBe ("name", PrerequisiteCheck.ShouldBe.NOT_EMPTY);
+            }
+            if (strategyBean.getCode () == null || strategyBean.getCode ().isEmpty ()){
+                prerequisiteCheck.shouldBe ("code", PrerequisiteCheck.ShouldBe.NOT_EMPTY);
+            }
+            if (strategyBean.getSymbol () == null){
+                prerequisiteCheck.shouldBe ("symbol", PrerequisiteCheck.ShouldBe.SELECTED);
+            }
+            if (strategyBean.getPeriod () == null){
+                prerequisiteCheck.shouldBe ("period", PrerequisiteCheck.ShouldBe.SELECTED);
+            }
+            return prerequisiteCheck;
+        }
+    };
+
 }

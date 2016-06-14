@@ -20,6 +20,8 @@ public interface Dao {
     UserModel createUser(UserModel userModel);
 
     //Strategy
+    StrategyStat getStrategyStat ();
+
     StrategyModel createStrategy(StrategyModel strategyModel);
 
     void updateStrategy(StrategyModel strategyModel);
@@ -31,7 +33,9 @@ public interface Dao {
     void bindAccountToStrategy(String strategyId, String accountId);
 
     List<AccountModel> findBoundAccounts (String id);
+
     //Account
+    long getAccountCount();
 
     List<AccountModel> findAllAccounts();
 

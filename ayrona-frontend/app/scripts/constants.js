@@ -38,3 +38,8 @@ constantsModule.constant('ACCOUNT_TYPE', {
     ata_custom : 'ATA_CUSTOM',
     mt4:"MT4"
 });
+
+constantsModule.constant('STRATEGY_STATE', {
+    active : 'ACTIVE',
+    inactive : 'INACTIVE'
+});

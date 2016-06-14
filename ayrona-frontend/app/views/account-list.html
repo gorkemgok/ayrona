@@ -25,9 +25,6 @@
                     </tr>
                 </tbody>
             </table>
-            <p>
-                {{ sessions.totalCount }}
-            </p>
             <nav>
                 <ul class="pagination">
                     <li ng-repeat="page in pages" ng-class="{'active' : page.active}" ><a ng-click="gotoPage(page.no)">{{ page.no }}</a></li>

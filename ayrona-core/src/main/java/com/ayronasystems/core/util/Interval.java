@@ -7,6 +7,8 @@ import java.util.Date;
  */
 public class Interval {
 
+    public static final Interval ZERO = new Interval (new Date (0), new Date (0));
+
     private Date beginDate;
 
     private Date endDate;

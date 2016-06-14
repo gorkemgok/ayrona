@@ -1,5 +1,6 @@
 package com.ayronasystems.core.util;
 
+import org.joda.time.DateTime;
 import org.joda.time.Interval;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,5 +37,9 @@ public class DateUtils {
             return interval.contains (dateToBeControlled.getTime ());
         }
         return false;
+    }
+
+    public static Date convertFromISO(String date){
+        return new DateTime (date).toDate ();
     }
 }

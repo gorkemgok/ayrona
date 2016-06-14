@@ -62,6 +62,9 @@ servicesModule.factory("Notify", function ($rootScope, $timeout) {
   var globalAlert = function(text){
     global(text,'alert');
   };
+    var globalError = function(text){
+        global(text,'alert');
+    };
   var global = function(text, type){
     if (type == 'alert') {
       $rootScope.showAlert = true;
@@ -72,16 +75,21 @@ servicesModule.factory("Notify", function ($rootScope, $timeout) {
     }else if (type == 'info') {
       $rootScope.showInfo = true;
       $rootScope.textInfo = text;
+    }else if (type == 'error') {
+        $rootScope.showError = true;
+        $rootScope.textError = text;
     }
-    $timeout(function(){
-      $rootScope.showAlert = false;
-      $rootScope.showWarning = false;
-      $rootScope.showInfo = false;
-    },8000);
+      $timeout(function(){
+        $rootScope.showAlert = false;
+        $rootScope.showWarning = false;
+        $rootScope.showInfo = false;
+        $rootScope.showError = false;
+      },4000);
   };
   return {
     global : global,
-    globalAlert : globalAlert
+      globalAlert : globalAlert,
+      globalError : globalError
   }
 })
 

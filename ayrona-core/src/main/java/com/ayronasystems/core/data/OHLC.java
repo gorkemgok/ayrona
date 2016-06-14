@@ -69,9 +69,11 @@ public class OHLC implements MarketData {
         this.symbol = symbol;
         this.period = period;
         this.dates = dates;
-        if (dates != null) {
+        if (dates != null && !dates.isEmpty ()) {
             this.interval = new Interval (dates.get (0), new Date (dates.get (dates.size () - 1)
                                                                         .getTime () + period.getAsMillis ()));
+        }else{
+            this.interval = Interval.ZERO;
         }
         this.openSeries = openSeries;
         this.highSeries = highSeries;

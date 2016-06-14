@@ -2,7 +2,8 @@ package com.ayronasystems.rest.bean;
 
 import com.ayronasystems.core.dao.model.AccountBinder;
 import com.ayronasystems.core.dao.model.StrategyModel;
-import org.bson.types.ObjectId;
+import com.ayronasystems.core.definition.Period;
+import com.ayronasystems.core.definition.Symbol;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -77,15 +78,19 @@ public class StrategyBean {
         strategyBean.setId (strategyModel.getId ());
         strategyBean.setName (strategyModel.getName ());
         strategyBean.setCode (strategyModel.getCode ());
+        strategyBean.setSymbol (strategyModel.getSymbol ().toString ());
+        strategyBean.setPeriod (strategyModel.getPeriod ().toString ());
         strategyBean.setState (strategyModel.getState ().toString ());
         return strategyBean;
     }
 
     public StrategyModel toStrategyModel(){
         StrategyModel strategyModel = new StrategyModel ();
-        strategyModel.setId (new ObjectId (id));
+        strategyModel.setId (id);
         strategyModel.setName (name);
         strategyModel.setCode (code);
+        strategyModel.setSymbol (Symbol.valueOf (symbol));
+        strategyModel.setPeriod (Period.valueOf (period));
         strategyModel.setState (AccountBinder.State.valueOf (state));
         return strategyModel;
     }

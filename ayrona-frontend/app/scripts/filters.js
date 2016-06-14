@@ -12,4 +12,17 @@ filtersModule.filter("accountType", function (ACCOUNT_TYPE) {
         }
     }
     
+});
+
+filtersModule.filter("period", function (PERIODS) {
+    return function (input) {
+        var result;
+        angular.forEach(PERIODS, function (period) {
+            if (period.value == input){
+                result = period.text;
+            }
+        });
+        return result;
+    }
+
 })

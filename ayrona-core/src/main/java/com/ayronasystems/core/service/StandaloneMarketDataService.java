@@ -10,8 +10,7 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.util.NumberUtils;
-import com.mongodb.DBCollection;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,8 +70,35 @@ public class StandaloneMarketDataService implements MarketDataService {
     }
 
     public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
-
-        return null;
+        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME).getCollection (symbol.getSymbolString ().toLowerCase ());
+        DBObject query = new BasicDBObject ("symbol", symbol.getSymbolString ())
+                .append ("period", period.toString ())
+                .append ("periodDate", BasicDBObjectBuilder.start("$gte", startDate).add("$lt", endDate).get());
+        DBObject sort = new BasicDBObject ("periodDate", 1);
+        DBCursor cursor = collection.find (query).sort (sort);
+        int count = cursor.size ();
+        List<Date> dates = new ArrayList<Date> (count);
+        double[] open = new double[count];
+        double[] high = new double[count];
+        double[] low = new double[count];
+        double[] close = new double[count];
+        int i = 0;
+        while ( cursor.hasNext () ){
+            DBObject row = cursor.next ();
+            dates.add ((Date)row.get ("periodDate"));
+            open[i] = (Double)row.get ("open");
+            high[i] = (Double)row.get ("open");
+            low[i] = (Double)row.get ("open");
+            close[i] = (Double)row.get ("open");
+            i++;
+        }
+        OHLC ohlc = null;
+        try {
+            ohlc = new OHLC (symbol, period, dates, open, high, low, close);
+        } catch ( CorruptedMarketDataException e ) {
+            assert(false);
+        }
+        return ohlc;
     }
 
     private void initializeHistorical(){
