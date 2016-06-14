@@ -40,7 +40,7 @@ public class BasicAccount implements Account {
         accountRemote = NoOpAccountRemote.INSTANCE;
     }
 
-    public boolean openPosition (Position position) {
+    public synchronized boolean openPosition (Position position) {
         positionList.add (position);
         openPositionList.add (position);
         position.setIdealOpenDate (position.getOpenDate ());
@@ -48,7 +48,7 @@ public class BasicAccount implements Account {
         return true;
     }
 
-    public boolean closePosition (Position position, Date closeDate, double closePrice) {
+    public synchronized boolean closePosition (Position position, Date closeDate, double closePrice) {
         position.close (closeDate, closePrice);
         position.setIdealCloseDate (closeDate);
         position.setIdealClosePrice (closePrice);
@@ -56,7 +56,7 @@ public class BasicAccount implements Account {
         return true;
     }
 
-    public List<Position> getOpenPositions (Symbol symbol, Initiator initiator) {
+    public synchronized List<Position> getOpenPositions (Symbol symbol, Initiator initiator) {
         List<Position> foundPositionList = new ArrayList<Position> ();
         for ( Position position : openPositionList ) {
             if (!position.isClosed () && position.getSymbol ().equals (symbol) && position.getInitiator ().isSameInitiator (initiator)){
@@ -66,8 +66,8 @@ public class BasicAccount implements Account {
         return foundPositionList;
     }
 
-    public List<Position> getPositions () {
-        return positionList;
+    public synchronized List<Position> getPositions () {
+        return new ArrayList<Position> (positionList);
     }
 
     public String getId () {
