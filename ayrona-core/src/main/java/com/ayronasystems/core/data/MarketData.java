@@ -36,9 +36,9 @@ public interface MarketData extends Iterable<Moment> {
 
     MarketData append(MarketData marketData);
 
-    int getDataCount();
+    int size ();
 
-    double[] getData (PriceColumn priceColumn);
+    double[] getPrice (PriceColumn priceColumn);
 
-    double getData (PriceColumn priceColumn, int index);
+    double getPrice (PriceColumn priceColumn, int index);
 }

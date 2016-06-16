@@ -1,5 +1,6 @@
 package com.ayronasystems.core.account;
 
+import com.ayronasystems.core.definition.TradeOperationResult;
 import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.Position;
 import com.ayronasystems.core.dao.model.AccountModel;
@@ -41,19 +42,27 @@ public class BasicAccount implements Account {
     }
 
     public synchronized boolean openPosition (Position position) {
-        positionList.add (position);
-        openPositionList.add (position);
-        position.setIdealOpenDate (position.getOpenDate ());
-        position.setIdealOpenPrice (position.getOpenPrice ());
-        return true;
+        AccountRemoteResponse response = accountRemote.openPosition (position);
+        if (response.getTradeOperationResult () == TradeOperationResult.SUCCESSFUL) {
+            positionList.add (position);
+            openPositionList.add (position);
+            position.setIdealOpenDate (position.getOpenDate ());
+            position.setIdealOpenPrice (position.getOpenPrice ());
+            return true;
+        }
+        return false;
     }
 
     public synchronized boolean closePosition (Position position, Date closeDate, double closePrice) {
-        position.close (closeDate, closePrice);
-        position.setIdealCloseDate (closeDate);
-        position.setIdealClosePrice (closePrice);
-        openPositionList.remove (position);
-        return true;
+        AccountRemoteResponse response = accountRemote.closePosition (position, closeDate, closePrice);
+        if (response.getTradeOperationResult () == TradeOperationResult.SUCCESSFUL) {
+            position.close (closeDate, closePrice);
+            position.setIdealCloseDate (closeDate);
+            position.setIdealClosePrice (closePrice);
+            openPositionList.remove (position);
+            return true;
+        }
+        return false;
     }
 
     public synchronized List<Position> getOpenPositions (Symbol symbol, Initiator initiator) {

@@ -42,7 +42,7 @@ public class InstantBackTestSimulationCompare {
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
         MarketData baseMarketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5);
         MarketData initialMarketData = baseMarketData.subData (0, neededInputCount - 1);
-        MarketData simulationMarketData = baseMarketData.subData (neededInputCount - 1, baseMarketData.getDataCount () - 1);
+        MarketData simulationMarketData = baseMarketData.subData (neededInputCount - 1, baseMarketData.size () - 1);
 
         try {
             List<Signal> btSignals = signalGenerator.getSignalList (baseMarketData);

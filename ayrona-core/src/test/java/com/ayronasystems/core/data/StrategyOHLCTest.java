@@ -35,10 +35,10 @@ public class StrategyOHLCTest {
         Bar bar = new Bar (new Date (), 10, 20, 30, 40, 0);
         slidingStrategyOHLC.addNewBar (bar);
 
-        double[] openSeries = slidingStrategyOHLC.getData (PriceColumn.OPEN);
-        double[] highSeries = slidingStrategyOHLC.getData (PriceColumn.HIGH);
-        double[] lowSeries = slidingStrategyOHLC.getData (PriceColumn.LOW);
-        double[] closeSeries = slidingStrategyOHLC.getData (PriceColumn.CLOSE);
+        double[] openSeries = slidingStrategyOHLC.getPrice (PriceColumn.OPEN);
+        double[] highSeries = slidingStrategyOHLC.getPrice (PriceColumn.HIGH);
+        double[] lowSeries = slidingStrategyOHLC.getPrice (PriceColumn.LOW);
+        double[] closeSeries = slidingStrategyOHLC.getPrice (PriceColumn.CLOSE);
         assertEquals (OPEN_SERIES.length, openSeries.length);
         assertEquals (HIGH_SERIES.length, highSeries.length);
         assertEquals (LOW_SERIES.length, lowSeries.length);
@@ -64,10 +64,10 @@ public class StrategyOHLCTest {
         growingStrategyOHLC.addNewBar (bar1);
         growingStrategyOHLC.addNewBar (bar2);
 
-        double[] openSeries = growingStrategyOHLC.getData (PriceColumn.OPEN);
-        double[] highSeries = growingStrategyOHLC.getData (PriceColumn.HIGH);
-        double[] lowSeries = growingStrategyOHLC.getData (PriceColumn.LOW);
-        double[] closeSeries = growingStrategyOHLC.getData (PriceColumn.CLOSE);
+        double[] openSeries = growingStrategyOHLC.getPrice (PriceColumn.OPEN);
+        double[] highSeries = growingStrategyOHLC.getPrice (PriceColumn.HIGH);
+        double[] lowSeries = growingStrategyOHLC.getPrice (PriceColumn.LOW);
+        double[] closeSeries = growingStrategyOHLC.getPrice (PriceColumn.CLOSE);
         assertEquals (OPEN_SERIES.length, openSeries.length - 2);
         assertEquals (HIGH_SERIES.length, highSeries.length - 2);
         assertEquals (LOW_SERIES.length, lowSeries.length - 2);
@@ -94,11 +94,11 @@ public class StrategyOHLCTest {
     public void createFrom () throws Exception {
         StrategyOHLC strategyOHLC = SlidingStrategyOHLC.valueOf (marketData.subData (3));
 
-        assertEquals (3, strategyOHLC.getDataCount ());
-        assertEquals (OPEN_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getData (PriceColumn.OPEN, strategyOHLC.getDataCount () - 1), 0);
-        assertEquals (HIGH_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getData (PriceColumn.HIGH, strategyOHLC.getDataCount () - 1), 0);
-        assertEquals (LOW_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getData (PriceColumn.LOW, strategyOHLC.getDataCount () - 1), 0);
-        assertEquals (CLOSE_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getData (PriceColumn.CLOSE, strategyOHLC.getDataCount () - 1), 0);
+        assertEquals (3, strategyOHLC.size ());
+        assertEquals (OPEN_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getPrice (PriceColumn.OPEN, strategyOHLC.size () - 1), 0);
+        assertEquals (HIGH_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getPrice (PriceColumn.HIGH, strategyOHLC.size () - 1), 0);
+        assertEquals (LOW_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getPrice (PriceColumn.LOW, strategyOHLC.size () - 1), 0);
+        assertEquals (CLOSE_SERIES[OPEN_SERIES.length - 1], strategyOHLC.getPrice (PriceColumn.CLOSE, strategyOHLC.size () - 1), 0);
     }
 
 }

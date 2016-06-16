@@ -104,7 +104,7 @@ public class OHLC implements MarketData {
         return interval.getEndingDate ();
     }
 
-    public double getData (PriceColumn priceColumn, int index) {
+    public double getPrice (PriceColumn priceColumn, int index) {
         switch ( priceColumn ){
             case OPEN:
                 return openSeries[index];
@@ -186,14 +186,14 @@ public class OHLC implements MarketData {
     public MarketData append (MarketData marketData) {
         OHLC ohlc;
         if (marketData.getBeginningDate ().equals (getEndingDate ())){
-            int count = marketData.getDataCount () + getDataCount ();
+            int count = marketData.size () + size ();
             List<Date> newDates = new ArrayList<Date> (count);
             double[] newOpenSeries = new double[count];
             double[] newHighSeries = new double[count];
             double[] newLowSeries = new double[count];
             double[] newCloseSeries = new double[count];
             int c = 0;
-            for ( int i = 0; i < getDataCount (); i++ ) {
+            for ( int i = 0; i < size (); i++ ) {
                 newDates.add (getDate (i));
                 newOpenSeries[c] = getOpen (i);
                 newHighSeries[c] = getHigh (i);
@@ -201,12 +201,12 @@ public class OHLC implements MarketData {
                 newCloseSeries[c] = getClose (i);
                 c++;
             }
-            for ( int i = 0; i < marketData.getDataCount (); i++ ) {
+            for ( int i = 0; i < marketData.size (); i++ ) {
                 newDates.add (marketData.getDate (i));
-                newOpenSeries[c] = marketData.getData (PriceColumn.OPEN,i);
-                newHighSeries[c] = marketData.getData (PriceColumn.HIGH,i);
-                newLowSeries[c] = marketData.getData (PriceColumn.LOW,i);
-                newCloseSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+                newOpenSeries[c] = marketData.getPrice (PriceColumn.OPEN, i);
+                newHighSeries[c] = marketData.getPrice (PriceColumn.HIGH, i);
+                newLowSeries[c] = marketData.getPrice (PriceColumn.LOW, i);
+                newCloseSeries[c] = marketData.getPrice (PriceColumn.CLOSE, i);
                 c++;
             }
 
@@ -216,22 +216,22 @@ public class OHLC implements MarketData {
                 return this;
             }
         }else if(marketData.getEndingDate ().equals (getBeginningDate ())){
-            int count = marketData.getDataCount () + getDataCount ();
+            int count = marketData.size () + size ();
             List<Date> newDates = new ArrayList<Date> (count);
             double[] newOpenSeries = new double[count];
             double[] newHighSeries = new double[count];
             double[] newLowSeries = new double[count];
             double[] newCloseSeries = new double[count];
             int c = 0;
-            for ( int i = 0; i < marketData.getDataCount (); i++ ) {
+            for ( int i = 0; i < marketData.size (); i++ ) {
                 newDates.add (marketData.getDate (i));
-                newOpenSeries[c] = marketData.getData (PriceColumn.OPEN,i);
-                newHighSeries[c] = marketData.getData (PriceColumn.HIGH,i);
-                newLowSeries[c] = marketData.getData (PriceColumn.LOW,i);
-                newCloseSeries[c] = marketData.getData (PriceColumn.CLOSE,i);
+                newOpenSeries[c] = marketData.getPrice (PriceColumn.OPEN, i);
+                newHighSeries[c] = marketData.getPrice (PriceColumn.HIGH, i);
+                newLowSeries[c] = marketData.getPrice (PriceColumn.LOW, i);
+                newCloseSeries[c] = marketData.getPrice (PriceColumn.CLOSE, i);
                 c++;
             }
-            for ( int i = 0; i < getDataCount (); i++ ) {
+            for ( int i = 0; i < size (); i++ ) {
                 newDates.add (getDate (i));
                 newOpenSeries[c] = getOpen (i);
                 newHighSeries[c] = getHigh (i);
@@ -284,18 +284,18 @@ public class OHLC implements MarketData {
     }
 
     public List<Date> getDates () {
-        return dates;
+        return new ArrayList<Date> (dates);
     }
 
     public Interval getInterval () {
         return interval;
     }
 
-    public int getDataCount () {
+    public int size () {
         return dates.size ();
     }
 
-    public double[] getData (PriceColumn priceColumn) {
+    public double[] getPrice (PriceColumn priceColumn) {
         switch ( priceColumn ){
             case OPEN:
                 return getOpenSeries ().clone ();

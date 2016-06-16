@@ -27,7 +27,7 @@ public class MarketDataNode implements Node{
     public FIOExchange calculate (MarketData marketData) {
         double[][] data = new double[priceColumns.length][];
         for ( int i = 0; i < data.length; i++ ) {
-            data[i] = marketData.getData (priceColumns[i]);
+            data[i] = marketData.getPrice (priceColumns[i]);
         }
         return new FIOExchange (data);
     }

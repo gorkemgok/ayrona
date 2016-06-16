@@ -14,11 +14,10 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by gorkemg on 10.06.2016.
@@ -53,7 +52,11 @@ public class RunnableOrderHandlerTest {
             new AccountBindInfo(account2, 2)
         });
         initiator = new Initiator() {
-            public String getIdentifier() {
+            public String getId () {
+                return "TEST";
+            }
+
+            public String getName () {
                 return "TEST";
             }
 

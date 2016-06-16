@@ -43,7 +43,7 @@ public class StandaloneBackTestService implements BackTestService{
     public BackTestResult doBackTest (SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
         MarketData ohlc = marketDataService.getOHLC (symbol, period);
 
-        PositionGenerator positionGenerator = new PositionGenerator (signalGenerator, ohlc);
+        PositionGenerator positionGenerator = new PositionGenerator (signalGenerator);
         BackTestCalculator calculator = new BackTestCalculator ();
         List<Position> positionList = positionGenerator.generate (ohlc);
         BackTestResult result = calculator.calculate (positionList, ohlc);

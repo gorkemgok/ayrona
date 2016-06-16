@@ -34,11 +34,15 @@ public class SelfInitiatedStrategy implements Strategy<Recommendation>{
         return null;
     }
 
-    public String getIdentifier () {
+    public String getId () {
         return "SIS";
     }
 
+    public String getName () {
+        return "Self Initiated Strategy";
+    }
+
     public boolean isSameInitiator (Initiator initiator) {
-        return initiator.getIdentifier ().equals ("SIS");
+        return initiator.getId ().equals ("SIS");
     }
 }

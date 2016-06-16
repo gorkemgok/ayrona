@@ -5,7 +5,9 @@ package com.ayronasystems.core.strategy;
  */
 public interface Initiator {
 
-    String getIdentifier();
+    String getId ();
+
+    String getName();
 
     boolean isSameInitiator(Initiator initiator);
 

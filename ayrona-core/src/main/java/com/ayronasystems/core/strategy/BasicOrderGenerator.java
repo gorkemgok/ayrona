@@ -29,7 +29,7 @@ public class BasicOrderGenerator implements OrderGenerator {
 
     public List<Order> process (MarketData marketData, List<Signal> signalList) {
         List<Order> orderList = new ArrayList<Order> ();
-        int j = marketData.getDataCount () - signalList.size ();
+        int j = marketData.size () - signalList.size ();
         for ( int i = 0; i < signalList.size (); i++ ) {
             Signal signal = signalList.get (i);
             Direction direction = signal == Signal.BUY ? Direction.LONG : Direction.SHORT;
@@ -38,7 +38,7 @@ public class BasicOrderGenerator implements OrderGenerator {
                                                .order (Order.Type.OPEN)
                                                .direction (direction)
                                                .date (marketData.getDate (j))
-                                               .price (marketData.getData (PriceColumn.CLOSE, j))
+                                               .price (marketData.getPrice (PriceColumn.CLOSE, j))
                                                .symbol (marketData.getSymbol ())
                                                .description ("Fatih Otomatik Algo")
                                                .build ();

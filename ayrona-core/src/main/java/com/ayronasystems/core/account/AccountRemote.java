@@ -9,8 +9,8 @@ import java.util.Date;
  */
 public interface AccountRemote {
 
-    public AccountRemoteResponse openPosition(Position position);
+    AccountRemoteResponse openPosition(Position position);
 
-    public AccountRemoteResponse closePosition (Position position, Date closeDate, double closePrice);
+    AccountRemoteResponse closePosition (Position position, Date closeDate, double closePrice);
 
 }

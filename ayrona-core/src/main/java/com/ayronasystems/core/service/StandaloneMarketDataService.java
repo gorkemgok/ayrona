@@ -101,6 +101,10 @@ public class StandaloneMarketDataService implements MarketDataService {
         return ohlc;
     }
 
+    public MarketData getOHLC (Symbol symbol, Period period, Date startDate) {
+        return getOHLC (symbol, period, startDate, new Date());
+    }
+
     private void initializeHistorical(){
         String folderName = conf.getString (ConfKey.CSV_DIR);
         File folder = new File(folderName);

@@ -15,4 +15,6 @@ public interface MarketDataService {
 
     MarketData getOHLC(Symbol symbol, Period period, Date startDate, Date endDate);
 
+    MarketData getOHLC(Symbol symbol, Period period, Date startDate);
+
 }

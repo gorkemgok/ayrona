@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Created by gorkemgok on 13/05/16.
  */
-public abstract class AlgoModule implements SignalGenerator, Initiator{
+public abstract class AlgoModule implements SignalGenerator{
 
     protected String NAME;
 
@@ -32,12 +32,17 @@ public abstract class AlgoModule implements SignalGenerator, Initiator{
     public abstract void define();
 
 
-    public String getIdentifier () {
+    public String getId () {
         return NAME;
     }
 
+    public Algo toAlgo(){
+        Algo algo = new Algo (NAME, BUY, SELL);
+        return algo;
+    }
+
     public boolean isSameInitiator (Initiator initiator) {
-        return initiator.getIdentifier ().equals (NAME);
+        return initiator.getId ().equals (NAME);
     }
 
     public List<Signal> getSignalList (MarketData marketData) throws PrerequisiteException {

@@ -14,11 +14,15 @@ public class BackTestInitiator implements Initiator {
     private BackTestInitiator () {
     }
 
-    public String getIdentifier () {
+    public String getId () {
         return ID;
     }
 
+    public String getName () {
+        return "Back Test Initiator";
+    }
+
     public boolean isSameInitiator (Initiator initiator) {
-        return initiator.getIdentifier ().equals (ID);
+        return initiator.getId ().equals (ID);
     }
 }

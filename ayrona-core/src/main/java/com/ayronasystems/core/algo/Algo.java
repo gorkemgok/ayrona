@@ -37,12 +37,12 @@ public class Algo implements SignalGenerator, Initiator {
         this.sell = sell;
     }
 
-    public String getIdentifier () {
+    public String getId () {
         return name;
     }
 
     public boolean isSameInitiator (Initiator initiator) {
-        return initiator.getIdentifier ().equals (name);
+        return initiator.getId ().equals (name);
     }
 
     public List<Signal> getSignalList (MarketData marketData) throws PrerequisiteException {

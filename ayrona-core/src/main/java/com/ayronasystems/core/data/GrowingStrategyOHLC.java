@@ -39,10 +39,10 @@ public class GrowingStrategyOHLC extends StrategyOHLC {
                 marketData.getSymbol (),
                 marketData.getPeriod (),
                 marketData.getDates (),
-                marketData.getData (PriceColumn.OPEN),
-                marketData.getData (PriceColumn.HIGH),
-                marketData.getData (PriceColumn.LOW),
-                marketData.getData (PriceColumn.CLOSE)
+                marketData.getPrice (PriceColumn.OPEN),
+                marketData.getPrice (PriceColumn.HIGH),
+                marketData.getPrice (PriceColumn.LOW),
+                marketData.getPrice (PriceColumn.CLOSE)
         );
         return strategyOHLC;
     }

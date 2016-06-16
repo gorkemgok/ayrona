@@ -33,7 +33,7 @@ public class Configuration {
                 log.info ("Loaded property from configuration file, {}={}",key, value);
             }
         } catch ( FileNotFoundException e ) {
-            log.warn ("Cant find configuration file",e);
+            log.warn ("Cant find configuration file : {}",e.getMessage ());
         } catch ( IOException e ) {
             log.warn ("Cant load configuration file",e);
         }

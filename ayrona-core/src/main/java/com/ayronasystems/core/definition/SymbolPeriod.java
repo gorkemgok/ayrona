@@ -1,9 +1,11 @@
 package com.ayronasystems.core.definition;
 
+import java.io.Serializable;
+
 /**
  * Created by gorkemgok on 08/06/16.
  */
-public class SymbolPeriod {
+public class SymbolPeriod implements Serializable{
     private Symbol symbol;
 
     private Period period;

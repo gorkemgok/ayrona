@@ -1,7 +1,9 @@
 package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.*;
+import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.SlidingStrategyOHLC;
@@ -24,9 +26,13 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private String id;
 
-    private SignalGenerator signalGenerator;
+    private Algo algo;
 
     private OrderGenerator orderGenerator;
+
+    private OrderHandler orderHandler;
+
+    private Account dummyAccount;
 
     private double takeProfitRatio;
 
@@ -40,28 +46,37 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private SymbolPeriod symbolPeriod;
 
-    //TODO : strategy definition: name in addition to id
-    public AlgoStrategy (String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
-        this(true, id, signalGenerator, marketData, accountBindInfoList, takeProfitRatio, stopLossRatio);
+    public AlgoStrategy (String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
+        this(true, id, algo, initialMarketData, accountBindInfoList, takeProfitRatio, stopLossRatio);
     }
-    public AlgoStrategy (boolean slidingData, String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
+
+    public AlgoStrategy (boolean slidingData, String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
-        this.signalGenerator = signalGenerator;
+        this.algo = algo;
         this.accountBindInfoList = accountBindInfoList;
         this.takeProfitRatio = takeProfitRatio;
         this.stopLossRatio = stopLossRatio;
-        this.symbolPeriod = new SymbolPeriod (marketData.getSymbol (), marketData.getPeriod ());
+        this.symbolPeriod = new SymbolPeriod (initialMarketData.getSymbol (), initialMarketData.getPeriod ());
 
         orderGenerator = new BasicOrderGenerator ();
         executor = Executors.newFixedThreadPool(50);
 
+        orderHandler = new BasicOrderHandler ();
+        dummyAccount = new BasicAccount ();
+
         try {
             if (slidingData){
-                ohlc = SlidingStrategyOHLC.valueOf (marketData);
+                ohlc = SlidingStrategyOHLC.valueOf (initialMarketData);
             }else {
-                ohlc = GrowingStrategyOHLC.valueOf (marketData);
+                ohlc = GrowingStrategyOHLC.valueOf (initialMarketData);
             }
             ohlc.prepareForNextData ();
+
+            int nic = algo.getNeededInputCount ();
+            if (nic <= ohlc.size ()) {
+                List<Signal> signalList = algo.getSignalList (ohlc);
+                orderGenerator.process (ohlc, signalList);
+            }
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
@@ -69,17 +84,19 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     public void process (Bar bar) throws PrerequisiteException {
         ohlc.overwriteLastBar (bar);
-        double[] mdClose = ohlc.getData (PriceColumn.CLOSE);
-        double currentPrice = mdClose[mdClose.length - 1];
-        double takeProfit = currentPrice + (currentPrice * takeProfitRatio);
-        double stopLoss = currentPrice - (currentPrice * stopLossRatio);
-        int nic = signalGenerator.getNeededInputCount ();
-        if (nic <= ohlc.getDataCount ()) {
-            List<Signal> signalList = signalGenerator.getSignalList (ohlc);
+
+        double[] tpsl = calcuateTPandSL ();
+        double takeProfit = tpsl[0];
+        double stopLoss =  tpsl[1];
+
+        int neededInputCount = algo.getNeededInputCount ();
+        if (neededInputCount <= ohlc.size ()) {
+            List<Signal> signalList = algo.getSignalList (ohlc);
             if ( signalList.size () > 0 ) {
                 signalList = signalList.subList (signalList.size () - 1, signalList.size ());
             }
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
+            orderHandler.process (orderList, this, dummyAccount, 1, takeProfit, stopLoss);
             for ( AccountBindInfo accountBindInfo : accountBindInfoList ) {
                 RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,
                                                                                       this,
@@ -101,11 +118,23 @@ public class AlgoStrategy implements SPStrategy<Bar> {
         return accountBindInfoList;
     }
 
-    public String getIdentifier () {
+    public String getId () {
         return id;
     }
 
+    public String getName () {
+        return algo.getName ();
+    }
+
     public boolean isSameInitiator (Initiator initiator) {
-        return initiator.getIdentifier ().equals (id);
+        return initiator.getId ().equals (id);
+    }
+
+    private double[] calcuateTPandSL(){
+        double[] mdClose = ohlc.getPrice (PriceColumn.CLOSE);
+        double currentPrice = mdClose[mdClose.length - 1];
+        double takeProfit = currentPrice + (currentPrice * takeProfitRatio);
+        double stopLoss = currentPrice - (currentPrice * stopLossRatio);
+        return new double[]{takeProfit, stopLoss};
     }
 }

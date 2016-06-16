@@ -72,30 +72,30 @@ public class OHLCTest {
         MarketData md = new OHLC (Symbol.VOB30, Period.M5, dates, os, hs, ls, cs);
         MarketData subMd = md.subData (0, 3);
 
-        assertEquals (4, subMd.getDataCount ());
-        assertEquals (0, subMd.getData (PriceColumn.OPEN, 0), 0);
-        assertEquals (1, subMd.getData (PriceColumn.OPEN, 1), 0);
-        assertEquals (2, subMd.getData (PriceColumn.OPEN, 2), 0);
-        assertEquals (3, subMd.getData (PriceColumn.OPEN, 3), 0);
+        assertEquals (4, subMd.size ());
+        assertEquals (0, subMd.getPrice (PriceColumn.OPEN, 0), 0);
+        assertEquals (1, subMd.getPrice (PriceColumn.OPEN, 1), 0);
+        assertEquals (2, subMd.getPrice (PriceColumn.OPEN, 2), 0);
+        assertEquals (3, subMd.getPrice (PriceColumn.OPEN, 3), 0);
 
     }
 
     @Test
     public void append () throws Exception {
         MarketData md1 = ohlc2.append (ohlc1);
-        assertEquals (6, md1.getDataCount ());
+        assertEquals (6, md1.size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:00:00"), md1.getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"), md1.getEndingDate ());
-        assertEquals (0.1, md1.getData (PriceColumn.OPEN, 0), 0);
-        assertEquals (3, md1.getData (PriceColumn.OPEN, md1.getDataCount () - 1), 0);
+        assertEquals (0.1, md1.getPrice (PriceColumn.OPEN, 0), 0);
+        assertEquals (3, md1.getPrice (PriceColumn.OPEN, md1.size () - 1), 0);
 
         MarketData md2 = ohlc2.append (ohlc3);
-        assertEquals (8, md2.getDataCount ());
+        assertEquals (8, md2.size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:10:00"), md2.getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:50:00"), md2.getEndingDate ());
 
-        assertEquals (0, md2.getData (PriceColumn.OPEN, 0), 0);
-        assertEquals (3, md2.getData (PriceColumn.OPEN, md2.getDataCount () - 1), 0);
+        assertEquals (0, md2.getPrice (PriceColumn.OPEN, 0), 0);
+        assertEquals (3, md2.getPrice (PriceColumn.OPEN, md2.size () - 1), 0);
 
     }
 }

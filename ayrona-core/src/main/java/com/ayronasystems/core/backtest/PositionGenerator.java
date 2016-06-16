@@ -23,7 +23,7 @@ public class PositionGenerator {
 
     private Account account = new BasicAccount ();
 
-    public PositionGenerator (SignalGenerator signalGenerator, MarketData marketData) {
+    public PositionGenerator (SignalGenerator signalGenerator) {
         this.signalGenerator = signalGenerator;
     }
 

@@ -58,7 +58,7 @@ public class MarketDataCacheTest {
 
         assertTrue (r0.isFoundData ());
         assertTrue (r0.getAbsentIntervals ().isEmpty ());
-        assertEquals (4, r0.getFoundData ().getDataCount ());
+        assertEquals (4, r0.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (1), r0.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (2), r0.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (3), r0.getFoundData ().getDates ().get (2));
@@ -72,7 +72,7 @@ public class MarketDataCacheTest {
 
         assertTrue (r1.isFoundData ());
         assertTrue (r1.getAbsentIntervals ().isEmpty ());
-        assertEquals (6, r1.getFoundData ().getDataCount ());
+        assertEquals (6, r1.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (0), r1.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (1), r1.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (2), r1.getFoundData ().getDates ().get (2));
@@ -88,7 +88,7 @@ public class MarketDataCacheTest {
 
         assertTrue (r2.isFoundData ());
         assertTrue (r2.getAbsentIntervals ().isEmpty ());
-        assertEquals (5, r2.getFoundData ().getDataCount ());
+        assertEquals (5, r2.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (1), r2.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (2), r2.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (3), r2.getFoundData ().getDates ().get (2));
@@ -103,7 +103,7 @@ public class MarketDataCacheTest {
 
         assertTrue (r3.isFoundData ());
         assertTrue (r3.getAbsentIntervals ().isEmpty ());
-        assertEquals (5, r3.getFoundData ().getDataCount ());
+        assertEquals (5, r3.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (0), r3.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (1), r3.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (2), r3.getFoundData ().getDates ().get (2));
@@ -122,7 +122,7 @@ public class MarketDataCacheTest {
                       r4.getAbsentIntervals ().get (0).getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:00:00"),
                       r4.getAbsentIntervals ().get (0).getEndingDate ());
-        assertEquals (3, r4.getFoundData ().getDataCount ());
+        assertEquals (3, r4.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (0), r4.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (1), r4.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (2), r4.getFoundData ().getDates ().get (2));
@@ -139,7 +139,7 @@ public class MarketDataCacheTest {
                       r5.getAbsentIntervals ().get (0).getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:50:00"),
                       r5.getAbsentIntervals ().get (0).getEndingDate ());
-        assertEquals (3, r5.getFoundData ().getDataCount ());
+        assertEquals (3, r5.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (3), r5.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (4), r5.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (5), r5.getFoundData ().getDates ().get (2));
@@ -156,12 +156,12 @@ public class MarketDataCacheTest {
                       r6.getAbsentIntervals ().get (0).getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:00:00"),
                       r6.getAbsentIntervals ().get (0).getEndingDate ());
-        assertEquals (6, r6.getFoundData ().getDataCount ());
+        assertEquals (6, r6.getFoundData ().size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"),
                       r6.getAbsentIntervals ().get (1).getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"),
                       r6.getAbsentIntervals ().get (1).getEndingDate ());
-        assertEquals (6, r6.getFoundData ().getDataCount ());
+        assertEquals (6, r6.getFoundData ().size ());
         assertEquals (ohlc.getDates ().get (0), r6.getFoundData ().getDates ().get (0));
         assertEquals (ohlc.getDates ().get (1), r6.getFoundData ().getDates ().get (1));
         assertEquals (ohlc.getDates ().get (2), r6.getFoundData ().getDates ().get (2));

@@ -33,7 +33,7 @@ public class InstantSARTest {
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
         MarketData marketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5);
         StrategyOHLC strategyMarketData = GrowingStrategyOHLC.valueOf (marketData.subData (0 , SAR_PER));
-        MarketData simMarketData = marketData.subData (SAR_PER, marketData.getDataCount () - 1);
+        MarketData simMarketData = marketData.subData (SAR_PER, marketData.size () - 1);
 
         FunctionNode fn = new FunctionNode("SAR",
                                            Arrays.asList (new MarketDataNode (PriceColumn.HIGH), new MarketDataNode(PriceColumn.LOW)),
