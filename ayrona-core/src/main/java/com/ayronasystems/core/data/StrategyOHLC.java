@@ -1,7 +1,6 @@
 package com.ayronasystems.core.data;
 
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.timeseries.moment.Bar;
@@ -30,13 +29,11 @@ public abstract class StrategyOHLC extends OHLC implements StrategyMarketData {
     }
 
     public void overwriteLastBar(Bar bar){
+        dates.add (bar.getDate ());
         openSeries[openSeries.length - 1] = bar.get (ColumnDefinition.OPEN);
         highSeries[highSeries.length - 1] = bar.get (ColumnDefinition.HIGH);
         lowSeries[lowSeries.length - 1] = bar.get (ColumnDefinition.LOW);
         closeSeries[closeSeries.length - 1] = bar.get (ColumnDefinition.CLOSE);
-        if (dates.remove (0) != null) {
-            dates.add (bar.getDate ());
-        }
     }
 
     public abstract void prepareForNextData();

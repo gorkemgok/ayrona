@@ -22,7 +22,7 @@ public class GrowingStrategyOHLC extends StrategyOHLC {
         double[] newHighSeries = new double[highSeries.length + 1];
         double[] newLowSeries = new double[lowSeries.length + 1];
         double[] newCloseSeries = new double[closeSeries.length + 1];
-        for ( int i = 0; i < openSeries.length - 1; i++ ) {
+        for ( int i = 0; i < openSeries.length; i++ ) {
             newOpenSeries[i] = openSeries[i];
             newHighSeries[i] = highSeries[i];
             newLowSeries[i] = lowSeries[i];

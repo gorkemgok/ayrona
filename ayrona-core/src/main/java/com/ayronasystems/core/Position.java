@@ -230,4 +230,21 @@ public class Position {
                 ", initiator=" + initiator +
                 '}';
     }
+
+    public boolean isSame(Position position){
+        if (openDate.equals (position.getOpenDate ()) &&
+                openPrice == position.getOpenPrice () &&
+                isClosed () == position.isClosed () ) {
+            if (isClosed ()){
+                if (closeDate.equals (position.getCloseDate ()) &&
+                        closePrice == position.closePrice){
+                    return true;
+                }else {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
 }

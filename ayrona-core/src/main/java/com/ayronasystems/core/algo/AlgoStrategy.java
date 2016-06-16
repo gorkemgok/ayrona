@@ -4,6 +4,7 @@ import com.ayronasystems.core.*;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
+import com.ayronasystems.core.data.SlidingStrategyOHLC;
 import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.*;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
@@ -41,6 +42,9 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     //TODO : strategy definition: name in addition to id
     public AlgoStrategy (String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
+        this(true, id, signalGenerator, marketData, accountBindInfoList, takeProfitRatio, stopLossRatio);
+    }
+    public AlgoStrategy (boolean slidingData, String id, SignalGenerator signalGenerator, MarketData marketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
         this.signalGenerator = signalGenerator;
         this.accountBindInfoList = accountBindInfoList;
@@ -52,7 +56,12 @@ public class AlgoStrategy implements SPStrategy<Bar> {
         executor = Executors.newFixedThreadPool(50);
 
         try {
-            ohlc = GrowingStrategyOHLC.valueOf (marketData);
+            if (slidingData){
+                ohlc = SlidingStrategyOHLC.valueOf (marketData);
+            }else {
+                ohlc = GrowingStrategyOHLC.valueOf (marketData);
+            }
+            ohlc.prepareForNextData ();
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
@@ -64,17 +73,22 @@ public class AlgoStrategy implements SPStrategy<Bar> {
         double currentPrice = mdClose[mdClose.length - 1];
         double takeProfit = currentPrice + (currentPrice * takeProfitRatio);
         double stopLoss = currentPrice - (currentPrice * stopLossRatio);
-
-        List<Signal> signalList = signalGenerator.getSignalList (ohlc);
-        List<Order> orderList = orderGenerator.process (ohlc, signalList);
-        for (AccountBindInfo accountBindInfo : accountBindInfoList) {
-            RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler(orderList,
-                                  this,
-                                  accountBindInfo,
-                                  takeProfit,
-                                  stopLoss
-            );
-            executor.submit(runnableOrderHandler);
+        int nic = signalGenerator.getNeededInputCount ();
+        if (nic <= ohlc.getDataCount ()) {
+            List<Signal> signalList = signalGenerator.getSignalList (ohlc);
+            if ( signalList.size () > 0 ) {
+                signalList = signalList.subList (signalList.size () - 1, signalList.size ());
+            }
+            List<Order> orderList = orderGenerator.process (ohlc, signalList);
+            for ( AccountBindInfo accountBindInfo : accountBindInfoList ) {
+                RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,
+                                                                                      this,
+                                                                                      accountBindInfo,
+                                                                                      takeProfit,
+                                                                                      stopLoss
+                );
+                executor.submit (runnableOrderHandler);
+            }
         }
         ohlc.prepareForNextData ();
     }

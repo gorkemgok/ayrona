@@ -318,7 +318,7 @@ public class OHLC implements MarketData {
         double[] emptyArr = new double[0];
         OHLC ohlc = null;
         try {
-            ohlc = new OHLC (symbol, period, Collections.EMPTY_LIST, emptyArr, emptyArr.clone(), emptyArr.clone(), emptyArr.clone());
+            ohlc = new OHLC (symbol, period, new ArrayList<Date> (), emptyArr, emptyArr.clone(), emptyArr.clone(), emptyArr.clone());
         } catch ( CorruptedMarketDataException e ) {
             e.printStackTrace ();
         }
