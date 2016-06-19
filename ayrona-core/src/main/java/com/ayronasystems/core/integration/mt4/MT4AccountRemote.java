@@ -6,7 +6,7 @@ import com.ayronasystems.core.account.AccountRemoteResponse;
 import com.ayronasystems.core.account.TORConverter;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.TradeOperationResult;
-import com.jfx.*;
+import com.jfx.TradeOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,4 +54,5 @@ public class MT4AccountRemote implements AccountRemote{
             return new AccountRemoteResponse(position, torc.convert(exception));
         }
     }
+
 }

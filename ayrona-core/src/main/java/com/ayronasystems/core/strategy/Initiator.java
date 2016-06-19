@@ -9,6 +9,6 @@ public interface Initiator {
 
     String getName();
 
-    boolean isSameInitiator(Initiator initiator);
+    boolean isSameInitiator (Initiator initiator);
 
 }

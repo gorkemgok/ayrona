@@ -30,7 +30,11 @@ public interface Dao {
 
     Optional<StrategyModel> findStrategy(String id);
 
-    void bindAccountToStrategy(String strategyId, String accountId);
+    void bindAccountToStrategy(String strategyId, AccountBinder accountBinder);
+
+    void updateBoundAccount(String strategyId, AccountBinder accountBinder);
+
+    void unboundAccount(String strategyId, String accountId);
 
     List<AccountModel> findBoundAccounts (String id);
 
@@ -72,4 +76,21 @@ public interface Dao {
     List<EdrModel> findEdrByAccountId(String accountId, Date startDate, Date endDate);
 
     List<EdrModel> findEdrByStrategyId(String strategyId, Date startDate, Date endDate);
+
+    //Position
+
+    PositionModel createPosition(PositionModel positionModel);
+
+    void closePosition(PositionModel positionModel);
+
+    List<PositionModel> findPositionsByAccountId(String accountId);
+
+    List<PositionModel> findOpenPositionsByAccountId(String accountId);
+
+    List<PositionModel> findPositionsByStrategyId(String strategyId);
+
+    List<PositionModel> findOpenPositionsByStrategyId(String strategyId);
+
+    List<PositionModel> findAllPositions();
+
 }

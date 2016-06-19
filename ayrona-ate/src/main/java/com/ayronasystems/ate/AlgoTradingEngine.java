@@ -1,4 +1,4 @@
-package com.ayronasystems.algo;
+package com.ayronasystems.ate;
 
 import com.ayronasystems.core.JMSDestination;
 import com.ayronasystems.core.JMSManager;
@@ -36,12 +36,15 @@ import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
  * Created by gorkemgok on 07/06/16.
  */
 public class AlgoTradingEngine {
+
+    public static final AlgoTradingEngine INSTANCE = new AlgoTradingEngine ();
 
     private static final long A_WEEK_IN_MILLIS = 1000 * 60 *60 *24 * 7;
 
@@ -56,6 +59,8 @@ public class AlgoTradingEngine {
     private MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
 
     private List<QueueRunner<Bar, SPStrategy<Bar>>> strategyRunners = new ArrayList<QueueRunner<Bar, SPStrategy<Bar>>> ();
+
+    private List<RunningStrategy> runningStrategyList = new ArrayList<RunningStrategy> ();
 
     public void init() throws JMSException {
         Date now;
@@ -82,10 +87,13 @@ public class AlgoTradingEngine {
     private void initializeStrategies(){
         StringBuilder strategyNames = new StringBuilder ();
         List<StrategyModel> strategyModelList = dao.findAllStrategies ();
-        log.info ("Initializing STRATEGIES. Count:{}", strategyModelList.size ());
+        log.info ("Initializing strategies... Count:{}", strategyModelList.size ());
         for (StrategyModel strategyModel : strategyModelList){
-            initializeStrategy (strategyModel);
-            strategyNames.append (strategyModel.getName ()).append (",");
+            if (strategyModel.getState ().equals (AccountBinder.State.ACTIVE)) {
+                initializeStrategy (strategyModel);
+                strategyNames.append (strategyModel.getName ())
+                             .append (",");
+            }
         }
         log.info ("Initialized Strategy Runners. Count {}, List : {}", strategyRunners.size (), strategyNames.toString ());
     }
@@ -99,15 +107,15 @@ public class AlgoTradingEngine {
                 strategyModel.getCode (),
                 strategyModel.getName ()
         );
-        log.info ("Initialized ALGO {}", name);
+        log.info ("Initialized ate {}", name);
 
         long start = System.currentTimeMillis ();
 
         MarketData initialMarketData = marketDataService.getOHLC (symbol, period, prevWeek);
         long end = System.currentTimeMillis ();
-        log.info ("Initialized MARKET DATA {} - {} with {} price in {} ms", symbol, period, initialMarketData.size() , (end-start));
+        log.info ("Loaded market data {} - {} with {} price in {} ms", symbol, period, initialMarketData.size() , (end-start));
 
-        List<AccountBindInfo> accountBindInfoList = getAccountBindInfoList (strategyModel.getBoundAccounts ());
+        List<AccountBindInfo> accountBindInfoList = getAccountBindInfoList (strategyModel);
 
         SPStrategy<Bar> strategy = new AlgoStrategy (
                 strategyModel.getId (),
@@ -118,20 +126,27 @@ public class AlgoTradingEngine {
         );
         QueueRunner<Bar, SPStrategy<Bar>> strategyRunner = new QueueRunner<Bar, SPStrategy<Bar>> (strategy);
         strategyRunner.start ();
-        strategyRunners.add (strategyRunner);
+        synchronized (this) {
+            strategyRunners.add (strategyRunner);
+        }
+        runningStrategyList.add (new RunningStrategy (strategyModel, accountBindInfoList));
         log.info ("Initialized strategy {} with {} accounts", name, accountBindInfoList.size ());
     }
 
-    private List<AccountBindInfo> getAccountBindInfoList(List<AccountBinder> accountBinderList){
+    private List<AccountBindInfo> getAccountBindInfoList(StrategyModel strategyModel){
+        List<AccountBinder> accountBinderList = strategyModel.getAccounts ();
         List<AccountBindInfo> accountBindInfoList = new ArrayList<AccountBindInfo> ();
         for (AccountBinder accountBinder : accountBinderList){
-            Optional<AccountModel> accountModelOptional = dao.findAccount (accountBinder.getId ());
-            if (accountModelOptional.isPresent ()) {
-                AccountModel accountModel = accountModelOptional.get ();
-                Account account = new BasicAccount(accountModel.getId(),
-                                                   BasicAccount.createUsing(accountModel));
-                accountBindInfoList.add (new AccountBindInfo (account, accountBinder.getLot ()));
-                log.info ("Initialized account {} with {} lot", accountBinder.getId (), accountBinder.getLot ());
+            if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)) {
+                Optional<AccountModel> accountModelOptional = dao.findAccount (accountBinder.getId ());
+                if ( accountModelOptional.isPresent () ) {
+                    AccountModel accountModel = accountModelOptional.get ();
+                    Account account = new BasicAccount (accountModel.getId (), accountModel.getAccountantName (),
+                                                        BasicAccount.createAccountRemoteUsing (accountModel));
+                    accountBindInfoList.add (new AccountBindInfo (account, accountBinder.getLot ()));
+                    log.info ("Bound account {} with {} lot to {}", accountModel.getAccountantName (),
+                              accountBinder.getLot (), strategyModel.getName ());
+                }
             }
         }
         return accountBindInfoList;
@@ -154,7 +169,7 @@ public class AlgoTradingEngine {
         });
     }
 
-    public void newBar(LiveBar liveBar){
+    public synchronized void newBar(LiveBar liveBar){
         for (QueueRunner<Bar, SPStrategy<Bar>> strategyRunner : strategyRunners){
             SPStrategy<Bar> strategy = strategyRunner.unwrapRunnable ();
             if ( strategy.getSymbolPeriod ().equals (liveBar.getSymbolPeriod ())){
@@ -166,6 +181,56 @@ public class AlgoTradingEngine {
                 }
             }
         }
+    }
+
+    public void registerStrategy(StrategyModel strategyModel){
+        initializeStrategy (strategyModel);
+    }
+
+    public synchronized void deregisterStrategy(String strategyId){
+        Iterator<QueueRunner<Bar, SPStrategy<Bar>>> iterator = strategyRunners.iterator ();
+        while (iterator.hasNext ()){
+            QueueRunner<Bar, SPStrategy<Bar>> strategyRunner = iterator.next ();
+            if (strategyRunner.unwrapRunnable ().getId ().equals (strategyId)){
+                iterator.remove ();
+                break;
+            }
+        }
+    }
+
+    public List<RunningStrategy> getRunningStrategyList () {
+        return new ArrayList<RunningStrategy> (runningStrategyList);
+    }
+
+    public synchronized boolean bindAccount(String strategyId, Account account, double lot){
+        Iterator<QueueRunner<Bar, SPStrategy<Bar>>> iterator = strategyRunners.iterator ();
+        while (iterator.hasNext ()){
+            QueueRunner<Bar, SPStrategy<Bar>> strategyRunner = iterator.next ();
+            SPStrategy<Bar> spStrategy = strategyRunner.unwrapRunnable ();
+            if (spStrategy.getId ().equals (strategyId)){
+                AccountBindInfo accountBindInfo = new AccountBindInfo (account, lot);
+                spStrategy.registerAccount (accountBindInfo);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public synchronized boolean unbindAccount(String strategyId, String accountId){
+        Iterator<QueueRunner<Bar, SPStrategy<Bar>>> iterator = strategyRunners.iterator ();
+        while (iterator.hasNext ()){
+            QueueRunner<Bar, SPStrategy<Bar>> strategyRunner = iterator.next ();
+            SPStrategy<Bar> spStrategy = strategyRunner.unwrapRunnable ();
+            if (spStrategy.getId ().equals (strategyId)){
+                spStrategy.deregisterAccount (accountId);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void destroy(){
+        //TODO: Destroy ATE
     }
 
 }

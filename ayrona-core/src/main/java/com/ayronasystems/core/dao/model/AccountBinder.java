@@ -19,9 +19,10 @@ public class AccountBinder {
 
     private double lot;
 
-    public AccountBinder (String id, State state) {
+    public AccountBinder (String id, State state, double lot) {
         this.id = id;
         this.state = state;
+        this.lot = lot;
     }
 
     public AccountBinder () {

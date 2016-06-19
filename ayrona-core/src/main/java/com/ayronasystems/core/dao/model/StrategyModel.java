@@ -4,7 +4,6 @@ import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PostPersist;
 import org.mongodb.morphia.annotations.PrePersist;
 
 import java.util.Collections;
@@ -26,7 +25,7 @@ public class StrategyModel extends BaseModel {
 
     private AccountBinder.State state;
 
-    private List<AccountBinder> boundAccounts;
+    private List<AccountBinder> accounts;
 
     public Symbol getSymbol () {
         return symbol;
@@ -44,12 +43,12 @@ public class StrategyModel extends BaseModel {
         this.period = period;
     }
 
-    public List<AccountBinder> getBoundAccounts () {
-        return boundAccounts;
+    public List<AccountBinder> getAccounts () {
+        return accounts;
     }
 
-    public void setBoundAccounts (List<AccountBinder> boundAccounts) {
-        this.boundAccounts = boundAccounts;
+    public void setAccounts (List<AccountBinder> accounts) {
+        this.accounts = accounts;
     }
 
     public String getName () {
@@ -78,15 +77,15 @@ public class StrategyModel extends BaseModel {
 
     @PrePersist
     public void prePersist(){
-        if (boundAccounts == null){
-            boundAccounts = Collections.EMPTY_LIST;
+        if ( accounts == null){
+            accounts = Collections.EMPTY_LIST;
         }
     }
 
     @PostLoad
     public void postPersist(){
-        if (boundAccounts == null){
-            boundAccounts = Collections.EMPTY_LIST;
+        if ( accounts == null){
+            accounts = Collections.EMPTY_LIST;
         }
     }
 }

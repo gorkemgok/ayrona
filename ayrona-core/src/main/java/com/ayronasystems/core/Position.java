@@ -38,12 +38,12 @@ public class Position {
         }
 
         public Builder openDate(Date date){
-            position.openDate = date;
+            position.idealOpenDate = date;
             return this;
         }
 
         public Builder openPrice(double price){
-            position.openPrice = price;
+            position.idealOpenPrice = price;
             return this;
         }
 
@@ -62,6 +62,11 @@ public class Position {
             return this;
         }
 
+        public Builder accountName(String accountName){
+            position.accountName = accountName;
+            return this;
+        }
+
         public Position build(){
             return position;
         }
@@ -69,6 +74,8 @@ public class Position {
     }
 
     private String id;
+
+    private String remoteId;
 
     private Direction direction;
 
@@ -100,7 +107,21 @@ public class Position {
 
     private Initiator initiator;
 
+    private String accountName;
+
     private Position () {
+    }
+
+    public String getAccountName () {
+        return accountName;
+    }
+
+    public String getRemoteId () {
+        return remoteId;
+    }
+
+    public void setRemoteId (String remoteId) {
+        this.remoteId = remoteId;
     }
 
     public String getId () {
@@ -119,32 +140,32 @@ public class Position {
         return idealOpenPrice;
     }
 
-    public void setIdealOpenPrice (double idealOpenPrice) {
-        this.idealOpenPrice = idealOpenPrice;
-    }
-
     public double getIdealClosePrice () {
         return idealClosePrice;
-    }
-
-    public void setIdealClosePrice (double idealClosePrice) {
-        this.idealClosePrice = idealClosePrice;
     }
 
     public Date getIdealOpenDate () {
         return idealOpenDate;
     }
 
-    public void setIdealOpenDate (Date idealOpenDate) {
-        this.idealOpenDate = idealOpenDate;
-    }
-
     public Date getIdealCloseDate () {
         return idealCloseDate;
     }
 
-    public void setIdealCloseDate (Date idealCloseDate) {
-        this.idealCloseDate = idealCloseDate;
+    public void setOpenPrice (double openPrice) {
+        this.openPrice = openPrice;
+    }
+
+    public void setClosePrice (double closePrice) {
+        this.closePrice = closePrice;
+    }
+
+    public void setOpenDate (Date openDate) {
+        this.openDate = openDate;
+    }
+
+    public void setCloseDate (Date closeDate) {
+        this.closeDate = closeDate;
     }
 
     public static Builder builder(Initiator initiator){
@@ -196,8 +217,8 @@ public class Position {
     }
 
     public void close(Date closeDate, double closePrice){
-        this.closeDate = closeDate;
-        this.closePrice = closePrice;
+        this.idealCloseDate = closeDate;
+        this.idealClosePrice = closePrice;
     }
 
     public boolean isClosed(){
@@ -224,27 +245,62 @@ public class Position {
                 ", stopLoss=" + stopLoss +
                 ", openPrice=" + openPrice +
                 ", closePrice=" + (isClosed () ? closePrice : "OPEN") +
-                ", openDate=" + DateUtils.formatDate (openDate) +
+                ", openDate=" + DateUtils.formatDate (idealOpenDate) +
                 ", closeDate=" + (isClosed () ? DateUtils.formatDate (closeDate): "OPEN") +
                 ", description='" + description + '\'' +
                 ", initiator=" + initiator +
                 '}';
     }
 
-    public boolean isSame(Position position){
-        if (openDate.equals (position.getOpenDate ()) &&
-                openPrice == position.getOpenPrice () &&
-                isClosed () == position.isClosed () ) {
-            if (isClosed ()){
-                if (closeDate.equals (position.getCloseDate ()) &&
-                        closePrice == position.closePrice){
-                    return true;
-                }else {
-                    return false;
-                }
-            }
-            return true;
+    public boolean isSame (Position position) {
+
+        if ( Double.compare (position.lot, lot) != 0 ) {
+            return false;
         }
-        return false;
+        if ( Double.compare (position.takeProfit, takeProfit) != 0 ) {
+            return false;
+        }
+        if ( Double.compare (position.stopLoss, stopLoss) != 0 ) {
+            return false;
+        }
+        if ( Double.compare (position.openPrice, openPrice) != 0 ) {
+            return false;
+        }
+        if ( Double.compare (position.closePrice, closePrice) != 0 ) {
+            return false;
+        }
+        if ( Double.compare (position.idealOpenPrice, idealOpenPrice) != 0 ) {
+            return false;
+        }
+        if ( Double.compare (position.idealClosePrice, idealClosePrice) != 0 ) {
+            return false;
+        }
+        if ( remoteId != null ? !remoteId.equals (position.remoteId) : position.remoteId != null ) {
+            return false;
+        }
+        if ( direction != position.direction ) {
+            return false;
+        }
+        if ( symbol != position.symbol ) {
+            return false;
+        }
+        if ( openDate != null ? !openDate.equals (position.openDate) : position.openDate != null ) {
+            return false;
+        }
+        if ( closeDate != null ? !closeDate.equals (position.closeDate) : position.closeDate != null ) {
+            return false;
+        }
+        if ( idealOpenDate != null ? !idealOpenDate.equals (position.idealOpenDate) : position.idealOpenDate != null ) {
+            return false;
+        }
+        if ( idealCloseDate != null ? !idealCloseDate.equals (
+                position.idealCloseDate) : position.idealCloseDate != null ) {
+            return false;
+        }
+        if ( description != null ? !description.equals (position.description) : position.description != null ) {
+            return false;
+        }
+        return true;
+
     }
 }

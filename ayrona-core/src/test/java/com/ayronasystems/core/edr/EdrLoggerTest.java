@@ -1,18 +1,21 @@
 package com.ayronasystems.core.edr;
 
 import com.ayronasystems.core.Singletons;
+import com.ayronasystems.core.configuration.ConfigurationConstants;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.EdrModel;
+import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
+import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by gorkemg on 10.06.2016.
- * THIS TEST USES ayrona.edr COLLECTION!!!!
  */
 public class EdrLoggerTest {
 
@@ -28,13 +31,13 @@ public class EdrLoggerTest {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                Edr.boundAccount().strategy("Fatih algo").strategyId("1s").account("Görkem Gök").accountId("1a").lot(1).putQueue();
+                Edr.boundAccount().strategy("Fatih ate").strategyId("1s").account("Görkem Gök").accountId("1a").lot(1).putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.unboundAccount().strategy("Fatih algo").strategyId("1s").account("Görkem Gök").accountId("1a").putQueue();
+                Edr.unboundAccount().strategy("Fatih ate").strategyId("1s").account("Görkem Gök").accountId("1a").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.startStrategy().strategy("Fatih algo 2").strategyId("2s").putQueue();
+                Edr.startStrategy().strategy("Fatih ate 2").strategyId("2s").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.stopStrategy().strategy("Fatih algo 2").strategyId("2s").putQueue();
+                Edr.stopStrategy().strategy("Fatih ate 2").strategyId("2s").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
                 Edr.startAccount().account("Fatih").accountId("2a").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
@@ -62,6 +65,11 @@ public class EdrLoggerTest {
     private Dao dao;
     @Before
     public void setUp() throws Exception {
+        System.setProperty (ConfigurationConstants.PROP_MONGODB_DS, MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+
+        MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
+        mongoClient.dropDatabase (MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+
         beginDate = new Date();
         thread1 = new EdrTestThread(1);
         thread2 = new EdrTestThread(2);

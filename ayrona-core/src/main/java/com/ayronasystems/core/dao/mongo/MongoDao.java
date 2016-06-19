@@ -14,6 +14,7 @@ import com.mongodb.MongoClient;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
@@ -24,6 +25,8 @@ import java.util.List;
  * Created by gorkemgok on 26/05/16.
  */
 public class MongoDao implements Dao{
+
+    private static final String MAP_PACKAGE = "com.ayronasystems.core.dao.model";
 
     public static final String AYRONA_DB_NAME = "ayrona";
 
@@ -39,19 +42,16 @@ public class MongoDao implements Dao{
 
     private String ayronaDbName;
 
-    private String ayronaMarketdataDbName;
-
     public MongoDao (MongoClient mongoClient) {
         this(mongoClient, AYRONA_DB_NAME, AYRONA_MARKETDATA_DB_NAME);
     }
 
     public MongoDao (MongoClient mongoClient, String ayronaDbName, String ayronaMarketdataDbName) {
         this.ayronaDbName = ayronaDbName;
-        this.ayronaMarketdataDbName = ayronaMarketdataDbName;
 
         this.mongoClient = mongoClient;
         this.morphia = new Morphia ();
-        morphia.mapPackage ("com.ayronasystems.core.dao.model");
+        morphia.mapPackage (MAP_PACKAGE);
         appDatastore = morphia.createDatastore (mongoClient, ayronaDbName);
         appMarketDatastore = morphia.createDatastore (mongoClient, ayronaMarketdataDbName);
         appDatastore.ensureIndexes ();
@@ -84,7 +84,7 @@ public class MongoDao implements Dao{
     }
 
     public void updateStrategy (StrategyModel strategyModel) {
-        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter ("_id", strategyModel.getObjectId ());
+        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter (Mapper.ID_KEY, strategyModel.getObjectId ());
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
                 .set ("code", strategyModel.getCode ())
                 .set ("name", strategyModel.getName ())
@@ -106,18 +106,35 @@ public class MongoDao implements Dao{
         }
     }
 
-    public void bindAccountToStrategy (String strategyId, String accountId) {
+    public void bindAccountToStrategy (String strategyId, AccountBinder accountBinder) {
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
-                                                                 .add ("boundAccounts",
-                                                                       new AccountBinder (accountId, AccountBinder.State.ACTIVE)
-                                                                 );
-        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter ("_id", new ObjectId (strategyId));
+                                                                 .add ("accounts", accountBinder);
+        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter (
+                Mapper.ID_KEY, new ObjectId (strategyId));
+        appDatastore.update (query, operations);
+    }
+
+    public void updateBoundAccount (String strategyId, AccountBinder accountBinder) {
+        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
+                                                                 .set ("accounts.$", accountBinder);
+        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class)
+                                                 .field (Mapper.ID_KEY).equal (new ObjectId (strategyId))
+                                                 .field ("accounts.id").equal (accountBinder.getId ());
+        appDatastore.update (query, operations);
+    }
+
+    public void unboundAccount (String strategyId, String accountId) {
+        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
+                                                                 .removeFirst ("accounts.$");
+        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class)
+                                                 .field (Mapper.ID_KEY).equal (new ObjectId (strategyId))
+                                                 .field ("accounts.id").equal (accountId);
         appDatastore.update (query, operations);
     }
 
     public List<AccountModel> findBoundAccounts (String id) {
         StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
-        List<ObjectId> objectIdList = MongoUtils.convertToObjectIdsAB (strategyModel.getBoundAccounts ());
+        List<ObjectId> objectIdList = MongoUtils.convertToObjectIdsAB (strategyModel.getAccounts ());
         return appDatastore.get (AccountModel.class, objectIdList).asList ();
     }
 
@@ -233,4 +250,64 @@ public class MongoDao implements Dao{
                 .field("createDate").lessThanOrEq(endDate);
         return query.asList();
     }
+
+    public PositionModel createPosition (PositionModel positionModel) {
+        appDatastore.save (positionModel);
+        return positionModel;
+    }
+
+    public void closePosition (PositionModel positionModel) {
+        Query<PositionModel> query = appDatastore
+                .createQuery (PositionModel.class)
+                .field ("_id")
+                .equal (positionModel.getObjectId ());
+        UpdateOperations<PositionModel> update = appDatastore.createUpdateOperations (PositionModel.class)
+                .set ("closeDate", positionModel.getCloseDate ())
+                .set ("closePrice", positionModel.getClosePrice ())
+                .set ("idealCloseDate", positionModel.getIdealCloseDate ())
+                .set ("idealClosePrice", positionModel.getIdealClosePrice ())
+                .set ("isClosed", true);
+        appDatastore.update (query, update);
+    }
+
+    public List<PositionModel> findPositionsByAccountId (String accountId) {
+        Query<PositionModel> query = appDatastore
+                .createQuery (PositionModel.class)
+                .field ("accountId")
+                .equal (accountId);
+        return query.asList ();
+    }
+
+    public List<PositionModel> findOpenPositionsByAccountId (String accountId) {
+        Query<PositionModel> query = appDatastore
+                .createQuery (PositionModel.class)
+                .field ("accountId")
+                .equal (accountId)
+                .field ("isClosed")
+                .equal (false);
+        return query.asList ();
+    }
+
+    public List<PositionModel> findPositionsByStrategyId (String strategyId) {
+        Query<PositionModel> query = appDatastore
+                .createQuery (PositionModel.class)
+                .field ("strategyId")
+                .equal (strategyId);
+        return query.asList ();
+    }
+
+    public List<PositionModel> findOpenPositionsByStrategyId (String strategyId) {
+        Query<PositionModel> query = appDatastore
+                .createQuery (PositionModel.class)
+                .field ("strategyId")
+                .equal (strategyId)
+                .field ("isClosed")
+                .equal (false);
+        return query.asList ();
+    }
+
+    public List<PositionModel> findAllPositions () {
+        return appDatastore.createQuery (PositionModel.class).asList ();
+    }
+
 }

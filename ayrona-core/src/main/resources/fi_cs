@@ -1,0 +1,286 @@
+using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using Aol.Enumerations;
+
+namespace Aol.TypeLibrary
+{
+	public class FinancialInstrumentPrice : BasicFinancialInstrumentPrice
+	{
+		public decimal ThreeMonthlyAverageVolume { get; set; }
+		public decimal FirstAverage { get; set; }
+		public decimal SecondAverage { get; set; }
+		public decimal DailyAverage { get; set; }
+		public decimal FirstClose { get; set; }
+		public decimal SecondClose { get; set; }
+		public decimal TwoDaysAgoClosingPrice { get; set; }
+		public decimal FirstLow { get; set; }
+		public decimal SecondLow { get; set; }
+		public decimal FirstHigh { get; set; }
+		public decimal SecondHigh { get; set; }
+		public decimal DailyHigh { get; set; }
+		public decimal DailyLow { get; set; }
+		public decimal ChangeInSession { get; set; }
+		public decimal BasePrice { get; set; }
+		public decimal WeeklyAverage { get; set; }
+		public decimal WeeklyHigh { get; set; }
+		public decimal WeeklyLow { get; set; }
+		public decimal WeeklyChangeNet { get; set; }
+		public decimal WeeklyChangeRatio { get; set; }
+		public decimal WeeklyClose { get; set; }
+		public decimal MonthlyAverage { get; set; }
+		public decimal MonthlyHigh { get; set; }
+		public decimal MonthlyLow { get; set; }
+		public decimal MonthlyChangeRatio { get; set; }
+		public decimal MonthlyChangeNet { get; set; }
+		public decimal MonthlyClose { get; set; }
+		public decimal ThreeMonthHigh { get; set; }
+		public decimal ThreeMonthLow { get; set; }
+		public decimal ThreeMonthChangeRatio { get; set; }
+		public decimal ThreeMonthChangeNet { get; set; }
+		public decimal SixMonthHigh { get; set; }
+		public decimal SixMonthLow { get; set; }
+		public decimal SixMonthChangeRatio { get; set; }
+		public decimal SixMonthChangeNet { get; set; }
+		public decimal TwelveMonthHigh { get; set; }
+		public decimal TwelveMonthLow { get; set; }
+		public decimal TwelveMonthChangeRatio { get; set; }
+		public decimal TwelveMonthChangeNet { get; set; }
+		public decimal YearlyAverage { get; set; }
+		public decimal YearlyHigh { get; set; }
+		public decimal YearlyLow { get; set; }
+		public decimal YearlyChangeRatio { get; set; }
+		public decimal YearlyChangeNet { get; set; }
+		public decimal YearlyClose { get; set; }
+		public decimal OddLotBuy { get; set; }
+		public decimal OddLotSell { get; set; }
+		public decimal SellVolumeQuantity { get; set; }
+		public decimal BuyVolumeQuantity { get; set; }
+		public decimal FirstVolume { get; set; }
+		public decimal SecondVolume { get; set; }
+		public decimal FirstVolumeQuantity { get; set; }
+		public decimal SecondVolumeQuantity { get; set; }
+		public decimal TheoricalPrice { get; set; }
+		public decimal TheoricalPriceChange { get; set; }
+		public decimal TheoricalCount { get; set; }
+		public decimal TotalNumberOfShare { get; set; } //Toplam Pay Sayisi
+		public decimal ActiveNumberOfShare { get; set; } //Tedavuldeki Pay Sayisi
+		public decimal Wallet { get; set; }  //Fon Tutari
+		public decimal FundOwnersRate { get; set; }
+		public decimal WalletAmount { get; set; } //Fon Portfoy Degeri
+		public decimal StockMarketAmount { get; set; } //Fon BPP Degeri
+		public decimal ActiveAmount { get; set; }  //Aktif Degeri
+		public decimal NumberOfInvesters { get; set; }  //Kisi Sayisi
+		public decimal Rate { get; set; } //Repo
+		public decimal NetRate { get; set; } //Repo
+		public decimal DayCount { get; set; } //Repo
+		public DateTime MaturityDate { get; set; } //Repo
+		public decimal BuyRate { get; set; }
+		public decimal SellRate { get; set; }
+		public decimal AverageRate { get; set; }
+		public decimal MutualFundCompoundPrice { get; set; }
+		public decimal CurrentPrice { get; set; } //TR Cari Fiyat
+		public decimal CbrtPrice { get; set; } //Central Bank of the Republic of Turkey
+		public decimal YieldAdvanced { get; set; }
+		public decimal CompoundYield { get; set; }
+		public decimal AverageSimpleYield { get; set; }
+		public decimal AverageCompoundYield { get; set; }
+        public Aol.Enumerations.FinancialInstrumentTypeEnum FinancialInstrumentType { get; set; }
+
+		public FinancialInstrumentPrice ()
+		{
+
+		}
+
+		public FinancialInstrumentPrice Clone()
+		{
+			return (FinancialInstrumentPrice)MemberwiseClone();
+		}
+
+		public FinancialInstrumentPrice(FinancialInstrumentPrice price)
+		{
+			Id = price.Id;
+			FinancialInstrumentId = price.FinancialInstrumentId;
+			FinancialInstrumentTypeId = price.FinancialInstrumentTypeId;
+			MarketPlaceId = price.MarketPlaceId;
+			Code = price.Code;
+			Name = price.Name;
+			Description = price.Description;
+			Ceiling = price.Ceiling;
+			Floor = price.Floor;
+			Low = price.Low;
+			High = price.High;
+			Step = price.Step;
+			Price = price.Price;
+			Date = price.Date;
+			Buy = price.Buy;
+			Sell = price.Sell;
+			Volume = price.Volume;
+			VolumeQuantity = price.VolumeQuantity;
+			PercentChange = price.PercentChange;
+			NetChange = price.NetChange;
+			Amount = price.Amount;
+			Session = price.Session;
+			Open = price.Open;
+			Close = price.Close;
+			PreviousDayClose = price.PreviousDayClose;
+			ThreeMonthlyAverageVolume = price.ThreeMonthlyAverageVolume;
+			FirstAverage = price.FirstAverage;
+			SecondAverage = price.SecondAverage;
+			DailyAverage = price.DailyAverage;
+			FirstClose = price.FirstClose;
+			SecondClose = price.SecondClose;
+			TwoDaysAgoClosingPrice = price.TwoDaysAgoClosingPrice;
+			FirstLow = price.FirstLow;
+			SecondLow = price.SecondLow;
+			FirstHigh = price.FirstHigh;
+			SecondHigh = price.SecondHigh;
+			DailyHigh = price.DailyHigh;
+			DailyLow = price.DailyLow;
+			ChangeInSession = price.ChangeInSession;
+			BasePrice = price.BasePrice;
+			WeeklyAverage = price.WeeklyAverage;
+			WeeklyHigh = price.WeeklyHigh;
+			WeeklyLow = price.WeeklyLow;
+			WeeklyChangeNet = price.WeeklyChangeNet;
+			WeeklyChangeRatio = price.WeeklyChangeRatio;
+			WeeklyClose = price.WeeklyClose;
+			MonthlyAverage = price.MonthlyAverage;
+			MonthlyHigh = price.MonthlyHigh;
+			MonthlyLow = price.MonthlyLow;
+			MonthlyChangeRatio = price.MonthlyChangeRatio;
+			MonthlyChangeNet = price.MonthlyChangeNet;
+			MonthlyClose = price.MonthlyClose;
+			ThreeMonthHigh = price.ThreeMonthHigh;
+			ThreeMonthLow = price.ThreeMonthLow;
+			ThreeMonthChangeRatio = price.ThreeMonthChangeRatio;
+			ThreeMonthChangeNet = price.ThreeMonthChangeNet;
+			SixMonthHigh = price.SixMonthHigh;
+			SixMonthLow = price.SixMonthLow;
+			SixMonthChangeRatio = price.SixMonthChangeRatio;
+			SixMonthChangeNet = price.SixMonthChangeNet;
+			TwelveMonthHigh = price.TwelveMonthHigh;
+			TwelveMonthLow = price.TwelveMonthLow;
+			TwelveMonthChangeRatio = price.TwelveMonthChangeRatio;
+			TwelveMonthChangeNet = price.TwelveMonthChangeNet;
+			YearlyAverage = price.YearlyAverage;
+			YearlyHigh = price.YearlyHigh;
+			YearlyLow = price.YearlyLow;
+			YearlyChangeRatio = price.YearlyChangeRatio;
+			YearlyChangeNet = price.YearlyChangeNet;
+			YearlyClose = price.YearlyClose;
+			OddLotBuy = price.OddLotBuy;
+			OddLotSell = price.OddLotSell;
+			SellVolumeQuantity = price.SellVolumeQuantity;
+			BuyVolumeQuantity = price.BuyVolumeQuantity;
+			FirstVolume = price.FirstVolume;
+			SecondVolume = price.SecondVolume;
+			FirstVolumeQuantity = price.FirstVolumeQuantity;
+			SecondVolumeQuantity = price.SecondVolumeQuantity;
+			SettlementPrice = price.SettlementPrice;
+			PreviousSettlementPrice = price.PreviousSettlementPrice;
+			OpenPositionQuantity = price.OpenPositionQuantity;
+			OpenPositionChange = price.OpenPositionChange;
+			TheoricalPrice = price.TheoricalPrice;
+			TheoricalPriceChange = price.TheoricalPriceChange;
+			TheoricalCount = price.TheoricalCount;
+			TotalNumberOfShare = price.TotalNumberOfShare;
+			ActiveNumberOfShare = price.ActiveNumberOfShare;
+			Wallet = price.Wallet;
+			FundOwnersRate = price.FundOwnersRate;
+			WalletAmount = price.WalletAmount;
+			StockMarketAmount = price.StockMarketAmount;
+			ActiveAmount = price.ActiveAmount;
+			NumberOfInvesters = price.NumberOfInvesters;
+			BuyDepthPrices = price.BuyDepthPrices;
+			SellDepthPrices = price.SellDepthPrices;
+		}
+	}
+
+	public class BasicFinancialInstrumentPrice : IDisposable
+	{
+		public string Id { get; set; }
+		public string FinancialInstrumentId { get; set; }
+		public string FinancialInstrumentTypeId { get; set; }
+		public string MarketPlaceId { get; set; }
+		public string Code { get; set; }
+		public string Name { get; set; }
+		public string Description { get; set; }
+		public decimal Ceiling { get; set; }
+		public decimal Floor { get; set; }
+		public decimal Low { get; set; }
+		public decimal High { get; set; }
+		public decimal Step { get; set; }
+		public decimal Price { get; set; }
+		public DateTime Date { get; set; }
+		public decimal Buy { get; set; }
+		public decimal Sell { get; set; }
+		public decimal Volume { get; set; }
+		public decimal VolumeQuantity { get; set; }
+		public decimal PercentChange { get; set; }
+		public decimal NetChange { get; set; }
+		public decimal Amount { get; set; }
+		public int Session { get; set; }
+		public decimal Open { get; set; }
+		public decimal Close { get; set; }
+		public decimal PreviousDayClose { get; set; }
+		public decimal SettlementPrice { get; set; }
+		public decimal PreviousSettlementPrice { get; set; }
+		public decimal OpenPositionQuantity { get; set; }
+		public decimal OpenPositionChange { get; set; }
+
+		public List<FinancialInstrumentDepthPrice> BuyDepthPrices { get; set; }
+		public List<FinancialInstrumentDepthPrice> SellDepthPrices { get; set; }
+
+		public BasicFinancialInstrumentPrice Clone()
+		{
+			return (BasicFinancialInstrumentPrice)MemberwiseClone();
+		}
+
+		public BasicFinancialInstrumentPrice()
+		{
+			BuyDepthPrices = new List<FinancialInstrumentDepthPrice>();
+			SellDepthPrices = new List<FinancialInstrumentDepthPrice>();
+		}
+
+		public void Dispose()
+		{
+
+		}
+	}
+
+	public class FinancialInstrumentDepthPrice
+	{
+		public string FinancialInstrumentId { get; set; }
+		public string Name { get; set; }
+		public decimal Price { get; set; }
+		public decimal Amount { get; set; }
+		public int Count { get; set; }
+		public TimeSpan Time { get; set; }
+		public int Step { get; set; }
+
+		public FinancialInstrumentDepthPrice Clone()
+		{
+			return (FinancialInstrumentDepthPrice)MemberwiseClone();
+		}
+
+		public FinancialInstrumentDepthPrice()
+		{
+			Time = new TimeSpan();
+		}
+
+		public FinancialInstrumentDepthPrice(FinancialInstrumentDepthPrice financialInstrumentDepthPrice)
+		{
+			Amount = financialInstrumentDepthPrice.Amount;
+			Count = financialInstrumentDepthPrice.Count;
+			FinancialInstrumentId = financialInstrumentDepthPrice.FinancialInstrumentId;
+			Name = financialInstrumentDepthPrice.Name;
+			Price = financialInstrumentDepthPrice.Price;
+			Step = financialInstrumentDepthPrice.Step;
+			Time = financialInstrumentDepthPrice.Time;
+		}
+	}
+
+
+}

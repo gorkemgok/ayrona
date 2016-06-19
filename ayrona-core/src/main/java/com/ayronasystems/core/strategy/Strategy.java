@@ -13,4 +13,8 @@ public interface Strategy<E> extends Initiator, QueueRunnable<E> {
     void process(E exchange);
 
     List<AccountBindInfo> getAccountBindInfoList();
+
+    void registerAccount(AccountBindInfo accountBindInfo);
+
+    void deregisterAccount(String accountId);
 }

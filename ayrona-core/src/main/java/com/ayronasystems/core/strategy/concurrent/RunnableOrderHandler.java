@@ -4,7 +4,8 @@ import com.ayronasystems.core.Order;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.strategy.BasicOrderHandler;
 import com.ayronasystems.core.strategy.Initiator;
-import com.ayronasystems.core.strategy.OrderHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -12,6 +13,8 @@ import java.util.List;
  * Created by gorkemg on 10.06.2016.
  */
 public class RunnableOrderHandler extends BasicOrderHandler implements Runnable{
+
+    private static Logger log = LoggerFactory.getLogger (RunnableOrderHandler.class);
 
     private AccountBindInfo accountBindInfo;
 
@@ -32,6 +35,10 @@ public class RunnableOrderHandler extends BasicOrderHandler implements Runnable{
     }
 
     public void run() {
-        super.process(orderList, initiator, accountBindInfo.getAccount(), accountBindInfo.getLot(), takeProfit, stopLoss);
+        try {
+            super.process(orderList, initiator, accountBindInfo.getAccount(), accountBindInfo.getLot(), takeProfit, stopLoss);
+        }catch ( Exception e){
+            log.error ("Order handler error:",e);
+        }
     }
 }

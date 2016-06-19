@@ -39,7 +39,7 @@ public class BackTestCalculator {
             boolean fw = true;
             while ( fw && i < positionCount){
                 Position position = positionList.get (i);
-                if (momentDate.after (position.getOpenDate ())){
+                if (momentDate.after (position.getIdealOpenDate ())){
                     openPositionList.add (position);
                     i++;
                 }
@@ -52,8 +52,8 @@ public class BackTestCalculator {
             Iterator<Position> iterator = openPositionList.iterator ();
             while ( iterator.hasNext ()){
                 Position position = iterator.next ();
-                if (position.isClosed () && (position.getCloseDate ().equals (momentDate) || position.getCloseDate ().before (momentDate))){
-                    mdd = Math.min (mdd, position.getDirection () == Direction.LONG ? position.getOpenPrice () - low : low -position.getOpenPrice ());
+                if (position.isClosed () && (position.getIdealCloseDate ().equals (momentDate) || position.getIdealCloseDate ().before (momentDate))){
+                    mdd = Math.min (mdd, position.getDirection () == Direction.LONG ? position.getIdealOpenPrice () - low : low -position.getIdealOpenPrice ());
                     double profit = position.calculateProfit ();
                     if (profit > 0){
                         grossProfit += profit;

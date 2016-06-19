@@ -14,6 +14,8 @@ public interface Account {
 
     String getId();
 
+    String getName();
+
     boolean openPosition (Position position);
 
     boolean closePosition (Position position, Date closeDate, double closePrice);

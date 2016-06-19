@@ -11,7 +11,7 @@
     <name>Ayrona Algo-Trading Platform</name>
     <modules>
         <module>ayrona-core</module>
-        <module>ayrona-algo</module>
+        <module>ayrona-ate</module>
         <module>ayrona-rest</module>
         <module>ayrona-data</module>
         <module>ayrona-frontend</module>

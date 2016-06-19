@@ -9,7 +9,6 @@
     <artifactId>ayrona-data</artifactId>
     <packaging>war</packaging>
     <name>Ayrona Data Micro Service</name>
-    <url>http://maven.apache.org</url>
     <dependencies>
         <!-- To Run JFX TS WS -->
         <dependency>

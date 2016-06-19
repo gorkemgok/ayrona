@@ -41,6 +41,7 @@ public class Algo implements SignalGenerator, Initiator {
         return name;
     }
 
+    //TODO : resolve name adn id conflict
     public boolean isSameInitiator (Initiator initiator) {
         return initiator.getId ().equals (name);
     }

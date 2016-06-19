@@ -1,6 +1,6 @@
 package com.ayronasystems.core.instant;
 
-import com.ayronasystems.algo.AlgoTradingEngine;
+import com.ayronasystems.ate.AlgoTradingEngine;
 import com.ayronasystems.core.algo.FunctionFactory;
 import org.mozilla.javascript.EcmaError;
 

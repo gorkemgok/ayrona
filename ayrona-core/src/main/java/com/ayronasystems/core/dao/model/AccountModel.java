@@ -9,6 +9,7 @@ import org.mongodb.morphia.annotations.Entity;
 public class AccountModel extends BaseModel{
 
     public enum Type{
+        DUMMY,
         MT4,
         ATA_CUSTOM
     }

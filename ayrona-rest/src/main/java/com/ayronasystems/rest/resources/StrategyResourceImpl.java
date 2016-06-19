@@ -4,6 +4,7 @@ import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.dao.Dao;
+import com.ayronasystems.core.dao.model.AccountBinder;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.definition.Period;
@@ -11,6 +12,7 @@ import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.util.DateUtils;
 import com.ayronasystems.rest.bean.*;
+import com.ayronasystems.rest.client.ServiceRest;
 import com.ayronasystems.rest.resources.definition.StrategyResource;
 import com.google.common.base.Optional;
 import org.mozilla.javascript.EcmaError;
@@ -119,15 +121,27 @@ public class StrategyResourceImpl implements StrategyResource {
         return Response.ok (btr).build ();
     }
 
-    public Response addAccount (AccountBinderBean accountBinderBean) {
-        return null;
+    public Response addAccount (String strategyId, AccountBinderBean accountBinderBean) {
+        dao.bindAccountToStrategy (strategyId, accountBinderBean.toAccountBinder ());
+        Response response = ServiceRest.INSTANCE.getAteEndpoint ().startAccount (strategyId, accountBinderBean.getId (), accountBinderBean.getLot ());
+        return response;
     }
 
-    public Response updateAccountState (AccountBinderBean accountBinderBean) {
-        return null;
+    public Response updateAccountState (String strategyId, AccountBinderBean accountBinderBean) {
+        AccountBinder accountBinder = accountBinderBean.toAccountBinder ();
+        dao.updateBoundAccount (strategyId, accountBinder);
+        if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)) {
+            return ServiceRest.INSTANCE.getAteEndpoint ()
+                                .startAccount (strategyId, accountBinder.getId (), accountBinder.getLot ());
+        }else{
+            return ServiceRest.INSTANCE.getAteEndpoint ()
+                                .stopAccount (strategyId, accountBinder.getId ());
+        }
     }
 
-    public Response addAccount (String id, String accountId) {
-        return null;
+    public Response deleteAccount (String id, String accountId) {
+        dao.unboundAccount (id, accountId);
+        return ServiceRest.INSTANCE.getAteEndpoint ()
+                                   .stopAccount (id, accountId);
     }
 }

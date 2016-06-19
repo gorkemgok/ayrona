@@ -1,13 +1,16 @@
 package com.ayronasystems.core.account;
 
-import com.ayronasystems.core.definition.TradeOperationResult;
-import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.Position;
+import com.ayronasystems.core.Singletons;
+import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.AccountModel;
+import com.ayronasystems.core.dao.model.PositionModel;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.TradeOperationResult;
 import com.ayronasystems.core.integration.mt4.MT4AccountRemote;
 import com.ayronasystems.core.integration.mt4.MT4Connection;
 import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
+import com.ayronasystems.core.strategy.Initiator;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -20,46 +23,61 @@ public class BasicAccount implements Account {
 
     private String id;
 
+    private String name;
+
     private List<Position> positionList = new ArrayList<Position> ();
 
     private List<Position> openPositionList = new ArrayList<Position> ();
 
     private AccountRemote accountRemote;
 
-    public BasicAccount (String id, AccountRemote accountRemote) {
+    private Dao dao = Singletons.INSTANCE.getDao ();
+
+    public BasicAccount (String id, String name,  AccountRemote accountRemote) {
         this.id = id;
+        this.name = name;
         this.accountRemote = accountRemote;
+        List<PositionModel> positionModelList = dao.findOpenPositionsByAccountId (id);
+        for (PositionModel positionModel : positionModelList){
+            Position position = positionModel.toPosition ();
+            positionList.add (position);
+            openPositionList.add (position);
+        }
     }
 
     public BasicAccount (String id) {
         this.id = id;
+        this.name = id;
         this.accountRemote = NoOpAccountRemote.INSTANCE;
     }
 
     public BasicAccount () {
-        id = "SIMULATION";
+        id = "DUMMY";
+        name = "DUMMY";
         accountRemote = NoOpAccountRemote.INSTANCE;
     }
 
-    public synchronized boolean openPosition (Position position) {
+    public boolean openPosition (Position position) {
         AccountRemoteResponse response = accountRemote.openPosition (position);
         if (response.getTradeOperationResult () == TradeOperationResult.SUCCESSFUL) {
-            positionList.add (position);
-            openPositionList.add (position);
-            position.setIdealOpenDate (position.getOpenDate ());
-            position.setIdealOpenPrice (position.getOpenPrice ());
+            PositionModel positionModel = dao.createPosition (PositionModel.valueOf (position, this));
+            synchronized (this) {
+                position.setId (positionModel.getId ());
+                positionList.add (position);
+                openPositionList.add (position);
+            }
             return true;
         }
         return false;
     }
 
-    public synchronized boolean closePosition (Position position, Date closeDate, double closePrice) {
+    public boolean closePosition (Position position, Date closeDate, double closePrice) {
         AccountRemoteResponse response = accountRemote.closePosition (position, closeDate, closePrice);
         if (response.getTradeOperationResult () == TradeOperationResult.SUCCESSFUL) {
-            position.close (closeDate, closePrice);
-            position.setIdealCloseDate (closeDate);
-            position.setIdealClosePrice (closePrice);
-            openPositionList.remove (position);
+            synchronized (this) {
+                openPositionList.remove (position);
+            }
+            dao.closePosition (PositionModel.valueOf (position, this));
             return true;
         }
         return false;
@@ -83,8 +101,12 @@ public class BasicAccount implements Account {
         return id;
     }
 
+    public String getName () {
+        return name;
+    }
+
     //TODO : take this from here
-    public static AccountRemote createUsing(AccountModel accountModel){
+    public static AccountRemote createAccountRemoteUsing (AccountModel accountModel){
         MT4ConnectionPool mt4ConnectionPool = MT4ConnectionPool.getInstance();
         if (accountModel.getType() == AccountModel.Type.MT4){
             MT4Connection mt4Connection = mt4ConnectionPool.getConnection(

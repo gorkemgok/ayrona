@@ -15,6 +15,8 @@ import com.ayronasystems.core.strategy.*;
 import com.ayronasystems.core.strategy.concurrent.RunnableOrderHandler;
 import com.ayronasystems.core.timeseries.moment.Bar;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -97,14 +99,16 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             }
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
             orderHandler.process (orderList, this, dummyAccount, 1, takeProfit, stopLoss);
-            for ( AccountBindInfo accountBindInfo : accountBindInfoList ) {
-                RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,
-                                                                                      this,
-                                                                                      accountBindInfo,
-                                                                                      takeProfit,
-                                                                                      stopLoss
-                );
-                executor.submit (runnableOrderHandler);
+            synchronized (this) {
+                for ( AccountBindInfo accountBindInfo : accountBindInfoList ) {
+                    RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,
+                                                                                          this,
+                                                                                          accountBindInfo,
+                                                                                          takeProfit,
+                                                                                          stopLoss
+                    );
+                    executor.submit (runnableOrderHandler);
+                }
             }
         }
         ohlc.prepareForNextData ();
@@ -114,8 +118,23 @@ public class AlgoStrategy implements SPStrategy<Bar> {
         return symbolPeriod;
     }
 
-    public List<AccountBindInfo> getAccountBindInfoList () {
-        return accountBindInfoList;
+    public synchronized List<AccountBindInfo> getAccountBindInfoList () {
+        return new ArrayList<AccountBindInfo> (accountBindInfoList);
+    }
+
+    public synchronized void registerAccount (AccountBindInfo accountBindInfo) {
+        accountBindInfoList.add (accountBindInfo);
+    }
+
+    public synchronized void deregisterAccount (String accountId) {
+        Iterator<AccountBindInfo> iterator = accountBindInfoList.iterator ();
+        while ( iterator.hasNext () ){
+            AccountBindInfo accountBindInfo = iterator.next ();
+            if (accountBindInfo.getAccount ().getId ().equals (accountId)){
+                iterator.remove ();
+                break;
+            }
+        }
     }
 
     public String getId () {
@@ -133,8 +152,14 @@ public class AlgoStrategy implements SPStrategy<Bar> {
     private double[] calcuateTPandSL(){
         double[] mdClose = ohlc.getPrice (PriceColumn.CLOSE);
         double currentPrice = mdClose[mdClose.length - 1];
-        double takeProfit = currentPrice + (currentPrice * takeProfitRatio);
-        double stopLoss = currentPrice - (currentPrice * stopLossRatio);
+        double takeProfit = 0;
+        if (takeProfitRatio != 0) {
+            takeProfit = currentPrice + (currentPrice * takeProfitRatio);
+        }
+        double stopLoss = 0;
+        if (stopLossRatio != 0) {
+            stopLoss = currentPrice - (currentPrice * stopLossRatio);
+        }
         return new double[]{takeProfit, stopLoss};
     }
 }

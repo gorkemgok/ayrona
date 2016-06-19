@@ -15,6 +15,7 @@ public class BasicOrderHandler implements OrderHandler{
         for ( Order order : orders ) {
             if (order.getOrder () == Order.Type.OPEN){
                 Position position = Position.builder (initiator)
+                                    .accountName (account.getName ())
                                     .symbol (order.getSymbol ())
                                     .lot (lot)
                                     .direction (order.getDirection ())

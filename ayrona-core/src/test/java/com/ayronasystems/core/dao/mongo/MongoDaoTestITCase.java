@@ -1,9 +1,14 @@
 package com.ayronasystems.core.dao.mongo;
 
+import com.ayronasystems.core.BasicInitiator;
+import com.ayronasystems.core.Position;
 import com.ayronasystems.core.Singletons;
+import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.*;
+import com.ayronasystems.core.definition.Direction;
+import com.ayronasystems.core.definition.Symbol;
 import com.google.common.base.Optional;
 import com.mongodb.MongoClient;
 import org.junit.Before;
@@ -13,14 +18,12 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Created by gorkemgok on 26/05/16.
  */
-public class MongoDaoTestIT {
+public class MongoDaoTestITCase {
 
     public static final String AYRONA_TEST_DB_NAME = "ayrona_test";
 
@@ -170,7 +173,7 @@ public class MongoDaoTestIT {
     @Test
     public void createAndFindAllStrategiesAndFindBoundAccounts(){
         StrategyModel expectedStrategyModel = new StrategyModel ();
-        expectedStrategyModel.setName ("Fatih algo");
+        expectedStrategyModel.setName ("Fatih ate");
         expectedStrategyModel.setCode ("<code></code>");
 
         AccountModel expectedAccountModel = new AccountModel ();
@@ -183,8 +186,8 @@ public class MongoDaoTestIT {
         expectedAccountModel.setLoginDetail (loginDetail);
         dao.createAccount (expectedAccountModel);
 
-        expectedStrategyModel.setBoundAccounts (Arrays.asList (new AccountBinder (expectedAccountModel.getId (),
-                                                                                  AccountBinder.State.ACTIVE)));
+        expectedStrategyModel.setAccounts (Arrays.asList (new AccountBinder (expectedAccountModel.getId (),
+                                                                             AccountBinder.State.ACTIVE, 1)));
         dao.createStrategy (expectedStrategyModel);
 
         List<StrategyModel> actualStrategyModelList = dao.findAllStrategies ();
@@ -197,8 +200,8 @@ public class MongoDaoTestIT {
         assertEquals (expectedStrategyModel.getName (), actualStrategyModel.getName ());
         assertEquals (expectedStrategyModel.getCode (), actualStrategyModel.getCode ());
 
-        assertEquals (1, actualStrategyModel.getBoundAccounts ().size ());
-        assertEquals (expectedAccountModel.getId (), actualStrategyModel.getBoundAccounts ().get (0).getId ());
+        assertEquals (1, actualStrategyModel.getAccounts ().size ());
+        assertEquals (expectedAccountModel.getId (), actualStrategyModel.getAccounts ().get (0).getId ());
 
         List<AccountModel> accountModelList = dao.findBoundAccounts (actualStrategyModel.getId ());
         assertEquals (1, accountModelList.size ());
@@ -209,9 +212,9 @@ public class MongoDaoTestIT {
     }
 
     @Test
-    public void bindAndFindBoundAccount(){
+    public void bindFindUpdateUnbindBoundAccount(){
         StrategyModel expectedStrategyModel = new StrategyModel ();
-        expectedStrategyModel.setName ("Fatih algo 2");
+        expectedStrategyModel.setName ("Fatih ate 2");
         expectedStrategyModel.setCode ("<code2></code2>");
         dao.createStrategy (expectedStrategyModel);
 
@@ -225,7 +228,11 @@ public class MongoDaoTestIT {
         expectedAccountModel.setLoginDetail (loginDetail);
         dao.createAccount (expectedAccountModel);
 
-        dao.bindAccountToStrategy (expectedStrategyModel.getId (), expectedAccountModel.getId ());
+        AccountBinder accountBinder = new AccountBinder ();
+        accountBinder.setId (expectedAccountModel.getId ());
+        accountBinder.setLot (1);
+        accountBinder.setState (AccountBinder.State.ACTIVE);
+        dao.bindAccountToStrategy (expectedStrategyModel.getId (), accountBinder);
 
         List<AccountModel> actualAccountList = dao.findBoundAccounts (expectedStrategyModel.getId ());
         assertEquals (1, actualAccountList.size ());
@@ -233,6 +240,83 @@ public class MongoDaoTestIT {
         AccountModel actualAccountModel = actualAccountList.get (0);
         assertEquals (expectedAccountModel.getAccountantName (), actualAccountModel.getAccountantName ());
 
+        Optional<StrategyModel> strategyModelOptional = dao.findStrategy (expectedStrategyModel.getId ());
+        assertTrue (strategyModelOptional.isPresent ());
+        StrategyModel actualStrategyModel = strategyModelOptional.get ();
+        assertEquals (1, actualStrategyModel.getAccounts ().size ());
+        AccountBinder actualAccountBinder = actualStrategyModel.getAccounts ().get (0);
+        assertEquals (AccountBinder.State.ACTIVE, actualAccountBinder.getState ());
+        assertEquals (accountBinder.getId (), actualAccountBinder.getId ());
+        assertEquals (accountBinder.getLot (), actualAccountBinder.getLot (), 0);
+
+        accountBinder.setState (AccountBinder.State.INACTIVE);
+        accountBinder.setLot (2);
+        dao.updateBoundAccount (expectedStrategyModel.getId (), accountBinder);
+        strategyModelOptional = dao.findStrategy (expectedStrategyModel.getId ());
+        assertTrue (strategyModelOptional.isPresent ());
+        actualStrategyModel = strategyModelOptional.get ();
+        assertEquals (1, actualStrategyModel.getAccounts ().size ());
+        actualAccountBinder = actualStrategyModel.getAccounts ().get (0);
+        assertEquals (AccountBinder.State.INACTIVE, actualAccountBinder.getState ());
+        assertEquals (accountBinder.getId (), actualAccountBinder.getId ());
+        assertEquals (accountBinder.getLot (), actualAccountBinder.getLot (), 0);
+
+    }
+
+    @Test
+    public void createAndClosePosition(){
+        Date openDate = new Date(1000);
+        Date idealOpenDate = new Date(1010);
+        Date closeDate = new Date(2000);
+        Date idealCloseDate = new Date(2010);
+        Position expectedPosition = Position
+                .builder (new BasicInitiator ("strategyId1", "strategyName1"))
+                .symbol (Symbol.VOB30)
+                .lot (1)
+                .direction (Direction.LONG)
+                .openDate (idealOpenDate)
+                .openPrice (10)
+                .takeProfit (14)
+                .stopLoss (8)
+                .description ("Test test")
+                .build ();
+        expectedPosition.setOpenDate (openDate);
+        expectedPosition.setOpenPrice (12);
+        PositionModel expectedPositionModel = PositionModel.valueOf (expectedPosition, new BasicAccount ("accountId1"));
+
+        dao.createPosition (expectedPositionModel);
+
+        List<PositionModel> positionList = dao.findAllPositions ();
+
+        assertEquals (1, positionList.size ());
+
+        PositionModel actualPositionModel = positionList.get (0);
+
+        Position actualPosition = actualPositionModel.toPosition ();
+
+        assertTrue (expectedPosition.isSame (actualPosition));
+
+        actualPosition.close (idealCloseDate, 14);
+        actualPosition.setClosePrice (15);
+        actualPosition.setCloseDate (idealCloseDate);
+
+        expectedPositionModel = PositionModel.valueOf (actualPosition, new BasicAccount ("accountId1"));
+
+        dao.closePosition (expectedPositionModel);
+
+        positionList = dao.findAllPositions ();
+
+        assertEquals (1, positionList.size ());
+
+        actualPositionModel = positionList.get (0);
+
+        assertTrue (actualPosition.isClosed ());
+
+        actualPosition = actualPositionModel.toPosition ();
+
+        expectedPosition = expectedPositionModel.toPosition ();
+
+        assertTrue (expectedPosition.isSame (actualPosition));
     }
 
 }

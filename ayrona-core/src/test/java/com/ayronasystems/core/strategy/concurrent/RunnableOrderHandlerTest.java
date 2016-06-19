@@ -1,13 +1,18 @@
 package com.ayronasystems.core.strategy.concurrent;
 
+import com.ayronasystems.core.BasicInitiator;
 import com.ayronasystems.core.Order;
 import com.ayronasystems.core.Position;
+import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.account.BasicAccount;
+import com.ayronasystems.core.configuration.ConfigurationConstants;
+import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.strategy.Initiator;
+import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -44,6 +49,11 @@ public class RunnableOrderHandlerTest {
 
     @Before
     public void setUp() throws Exception {
+        System.setProperty (ConfigurationConstants.PROP_MONGODB_DS, MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+
+        MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
+        mongoClient.dropDatabase (MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+
         orderList = Arrays.asList(orderArray);
         Account account = new BasicAccount("test");
         Account account2 = new BasicAccount("test2");
@@ -51,19 +61,7 @@ public class RunnableOrderHandlerTest {
             new AccountBindInfo(account, 1),
             new AccountBindInfo(account2, 2)
         });
-        initiator = new Initiator() {
-            public String getId () {
-                return "TEST";
-            }
-
-            public String getName () {
-                return "TEST";
-            }
-
-            public boolean isSameInitiator(Initiator initiator) {
-                return true;
-            }
-        };
+        initiator = new BasicInitiator ("TEST1", "TEST1");
 
         executor = Executors.newFixedThreadPool(10);
     }

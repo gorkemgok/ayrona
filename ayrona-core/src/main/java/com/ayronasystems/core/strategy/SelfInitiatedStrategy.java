@@ -34,6 +34,14 @@ public class SelfInitiatedStrategy implements Strategy<Recommendation>{
         return null;
     }
 
+    public void registerAccount (AccountBindInfo accountBindInfo) {
+
+    }
+
+    public void deregisterAccount (String accountId) {
+
+    }
+
     public String getId () {
         return "SIS";
     }

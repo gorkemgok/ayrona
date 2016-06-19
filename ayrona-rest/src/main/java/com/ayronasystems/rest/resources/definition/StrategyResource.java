@@ -58,20 +58,20 @@ public interface StrategyResource {
     Response doBackTest(BackTestBean backTestBean);
 
     @POST
-    @Path ("{id}/boundAccount")
+    @Path ("{id}/account")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response addAccount(AccountBinderBean accountBinderBean);
+    Response addAccount(@PathParam ("id") String strategyId, AccountBinderBean accountBinderBean);
 
     @PUT
-    @Path ("{id}/boundAccount")
+    @Path ("{id}/account/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response updateAccountState(AccountBinderBean accountBinderBean);
+    Response updateAccountState(@PathParam ("id") String strategyId, AccountBinderBean accountBinderBean);
 
     @DELETE
-    @Path ("{id}/boundAccount/{aid}")
+    @Path ("{id}/account/{aid}")
     @Produces(MediaType.APPLICATION_JSON)
-    Response addAccount(@PathParam ("id") String id, @PathParam ("aid") String accountId);
+    Response deleteAccount(@PathParam ("id") String id, @PathParam ("aid") String accountId);
 
 }

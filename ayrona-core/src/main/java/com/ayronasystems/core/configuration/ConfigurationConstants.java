@@ -5,6 +5,8 @@ package com.ayronasystems.core.configuration;
  */
 public class ConfigurationConstants {
 
+    public static final String LORDOFTHETOKEN = "LORDOFTHETOKEN";
+
     public static final String TICK4J_PROP_PREFIX = "tick4j.";
 
     public static final String PROP_SERVICES = TICK4J_PROP_PREFIX + "service.list";
@@ -77,10 +79,30 @@ public class ConfigurationConstants {
 
     public static final String ENV_MONGODB_PORT = "MONGODB_PORT";
 
+    public static final String PROP_MONGODB_DS = TICK4J_PROP_PREFIX + "mongodb.ds";
+
+    public static final String ENV_MONGODB_DS = TICK4J_PROP_PREFIX + "MONGODB_DS";
+
+    public static final String PROP_MONGODB_MDS = TICK4J_PROP_PREFIX + "mongodb.mds";
+
+    public static final String ENV_MONGODB_MDS = TICK4J_PROP_PREFIX + "MONGODB_MDS";
+
     public static final String JBOSS_SERVER_CONFIG_DIR = "jboss.server.config.dir";
 
     public static final String TICK4J_HIBERNATE_DB_PROPERTIES_FILE_NAME = "tick4j.hibernate.db.properties";
 
     public static final String TICK4J_HIBERNATE_RATEDB_PROPERTIES_FILE_NAME = "tick4j.hibernate.ratedb.properties";
+
+    public static final String PROP_ATE_REST_URL = "ate.rest.url";
+
+    public static final String ENV_ATE_REST_URL = "ATE_REST_URL";
+
+    public static final String PROP_ATE_REST_TOKEN = "ate.rest.token";
+
+    public static final String ENV_ATE_REST_TOKEN = "ATE_REST_TOKEN";
+
+    public static final String PROP_ATA_GTP_HOST = "ata.gtp.host";
+
+    public static final String ENV_ATA_GTP_HOST = "ATA_GTP_HOST";
 
 }
