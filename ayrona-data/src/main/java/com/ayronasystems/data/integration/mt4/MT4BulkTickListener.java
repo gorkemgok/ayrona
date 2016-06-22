@@ -1,13 +1,12 @@
-package com.ayronasystems.data.integration;
+package com.ayronasystems.data.integration.mt4;
 
 import com.ayronasystems.core.definition.Symbol;
-import com.ayronasystems.data.Barifier;
+import com.ayronasystems.data.listener.BasicTickListener;
 import com.jfx.MT4;
 import com.jfx.Tick;
 import com.jfx.strategy.Strategy;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +14,11 @@ import java.util.List;
  */
 public class MT4BulkTickListener implements Strategy.BulkTickListener{
 
-    private List<Barifier> barifierList = new ArrayList<Barifier> ();
+    private BasicTickListener tickListener;
+
+    public MT4BulkTickListener (BasicTickListener tickListener) {
+        this.tickListener = tickListener;
+    }
 
     public void onTicks (List<Tick> list, MT4 mt4) {
         for ( Tick tick : list ) {
@@ -30,18 +33,8 @@ public class MT4BulkTickListener implements Strategy.BulkTickListener{
                                 tick.time, Symbol.valueOf (tick.symbol), ask.doubleValue (), mid.doubleValue (),
                                 bid.doubleValue ()
                         );
-                for ( Barifier barifier : barifierList ) {
-                    barifier.newTick (ayTick);
-                }
+                tickListener.newTick (ayTick);
             }
         }
-    }
-
-    public void addBarifier(Barifier barifier){
-        barifierList.add (barifier);
-    }
-
-    public List<Barifier> getBarifierList (){
-        return barifierList;
     }
 }

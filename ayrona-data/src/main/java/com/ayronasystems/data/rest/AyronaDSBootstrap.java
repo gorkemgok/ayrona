@@ -1,6 +1,7 @@
 package com.ayronasystems.data.rest;
 
-import com.ayronasystems.data.integration.MT4DataServiceEngine;
+import com.ayronasystems.data.DataServiceEngine;
+import com.ayronasystems.data.integration.ataonline.ATADataServiceEngine;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
@@ -10,17 +11,18 @@ import javax.servlet.ServletContextListener;
  */
 public class AyronaDSBootstrap implements ServletContextListener {
 
-    private com.ayronasystems.data.DataServiceEngine DataServiceEngine;
+    private DataServiceEngine dataServiceEngine;
 
     public AyronaDSBootstrap () {
-        DataServiceEngine = new MT4DataServiceEngine ();
+        //DataServiceEngine = new MT4DataServiceEngine ();
+        dataServiceEngine = new ATADataServiceEngine ();
     }
 
     public void contextInitialized (ServletContextEvent servletContextEvent) {
-        DataServiceEngine.init ();
+        dataServiceEngine.init ();
     }
 
     public void contextDestroyed (ServletContextEvent servletContextEvent) {
-        DataServiceEngine.destroy ();
+        dataServiceEngine.destroy ();
     }
 }

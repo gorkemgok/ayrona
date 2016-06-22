@@ -13,11 +13,11 @@ import static org.junit.Assert.assertTrue;
 /**
  * Created by gorkemgok on 20/06/16.
  */
-public class OrderPayloadTest {
+public class ATAOrderPayloadTest {
 
     @Test
     public void toJson () throws Exception {
-        Optional<String> payloadStringOptional = OrderPayload.createInstance (Order.Type.OPEN, Direction.LONG, new Date(), 96.7, "testAccountNo", 2).toJson ();
+        Optional<String> payloadStringOptional = ATAOrderPayload.createInstance (Order.Type.OPEN, Direction.LONG, new Date(), 96.7, "testAccountNo", 2).toJson ();
         assertTrue (payloadStringOptional.isPresent ());
         String payloadString = payloadStringOptional.get();
         assertFalse (payloadString.isEmpty ());

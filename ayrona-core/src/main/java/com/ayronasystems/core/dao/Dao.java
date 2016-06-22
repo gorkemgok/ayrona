@@ -51,6 +51,8 @@ public interface Dao {
 
     AccountModel updateAccount(AccountModel accountModel);
 
+    List<StrategyModel> findBoundStrategies(String accountId);
+
     //Batchjob
     Optional<BatchJobModel> findBatchJob(String id);
 

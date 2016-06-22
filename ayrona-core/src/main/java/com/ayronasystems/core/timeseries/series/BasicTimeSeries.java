@@ -141,7 +141,7 @@ public class BasicTimeSeries<M extends Moment> implements TimeSeries<M>, Iterabl
         return new SeriesIterator<BasicTimeSeries<M>, M>(this, index);
     }
 
-    public int getMomentCount() {
+    public int size () {
         return moments.size();
     }
 

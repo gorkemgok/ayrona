@@ -13,7 +13,7 @@ public interface IterableSeries<M extends Moment> {
 
     M getMoment (int index);
 
-    int getMomentCount ();
+    int size ();
 
     TimeSeries unwrapSeries ();
 

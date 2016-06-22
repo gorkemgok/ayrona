@@ -54,6 +54,14 @@ public class Configuration {
             }
             System.setProperty ("jfx_server_port", jfxPort);
         }
+        if ( System.getProperty ("jfx_activation_key") == null ) {
+            String jfxAk = System.getProperty (ConfKey.MT4_JFX_AK.getName ());
+            if (jfxAk == null && ConfKey.MT4_JFX_AK.hasEnvName ()){
+                jfxAk = System.getenv (ConfKey.MT4_JFX_AK.getEnvName ());
+                jfxAk = jfxAk != null ? jfxAk : ConfKey.MT4_JFX_AK.getDefaultValue ();
+            }
+            System.setProperty ("jfx_activation_key", jfxAk);
+        }
     }
 
     public static Configuration getInstance () {

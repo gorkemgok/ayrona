@@ -55,10 +55,10 @@ public class InstantBackTest {
         TimeSeries<EquityBar> equitySeries3 = (TimeSeries) result3.getResult (MetricType.EQUITY_SERIES).getValue ();
         TimeSeries<EquityBar> equitySeries4 = (TimeSeries) result4.getResult (MetricType.EQUITY_SERIES).getValue ();
 
-        double[] yData1 = new double[equitySeries1.getMomentCount ()];
-        double[] yData2 = new double[equitySeries2.getMomentCount ()];
-        double[] yData3 = new double[equitySeries3.getMomentCount ()];
-        double[] yData4 = new double[equitySeries4.getMomentCount ()];
+        double[] yData1 = new double[equitySeries1.size ()];
+        double[] yData2 = new double[equitySeries2.size ()];
+        double[] yData3 = new double[equitySeries3.size ()];
+        double[] yData4 = new double[equitySeries4.size ()];
         int i = 0;
         for (EquityBar equityBar : equitySeries1){
             yData1[i] = equityBar.get (ColumnDefinition.EQUITY);

@@ -16,9 +16,9 @@ import java.util.Date;
 /**
  * Created by gorkemgok on 20/06/16.
  */
-public class OrderPayload {
+public class ATAOrderPayload {
 
-    private static Logger log = LoggerFactory.getLogger (OrderPayload.class);
+    private static Logger log = LoggerFactory.getLogger (ATAOrderPayload.class);
 
     @JsonProperty(value = "CustomerExtId")
     private String customerExtId;
@@ -67,19 +67,19 @@ public class OrderPayload {
         return Optional.absent ();
     }
 
-    public static OrderPayload createInstance (Order.Type order, Direction direction, Date date, double price, String accountNo, double lot){
-        OrderPayload orderPayload = new OrderPayload ();
-        orderPayload.customerExtId = accountNo;
-        orderPayload.lot = lot;
-        orderPayload.price = price;
+    public static ATAOrderPayload createInstance (Order.Type order, Direction direction, Date date, double price, String accountNo, double lot){
+        ATAOrderPayload ATAOrderPayload = new ATAOrderPayload ();
+        ATAOrderPayload.customerExtId = accountNo;
+        ATAOrderPayload.lot = lot;
+        ATAOrderPayload.price = price;
         Calendar cal = Calendar.getInstance ();
         cal.setTime (date);
-        orderPayload.orderDateDay = cal.get (Calendar.DAY_OF_MONTH);
-        orderPayload.orderDateMonth = cal.get (Calendar.MONTH);
-        orderPayload.orderDateYear = cal.get (Calendar.YEAR);
-        orderPayload.isLong = order.equals (Order.Type.OPEN) ?
+        ATAOrderPayload.orderDateDay = cal.get (Calendar.DAY_OF_MONTH);
+        ATAOrderPayload.orderDateMonth = cal.get (Calendar.MONTH);
+        ATAOrderPayload.orderDateYear = cal.get (Calendar.YEAR);
+        ATAOrderPayload.isLong = order.equals (Order.Type.OPEN) ?
                 direction.equals (Direction.LONG) : !direction.equals (Direction.LONG);
-        return orderPayload;
+        return ATAOrderPayload;
     }
 
     public String getCustomerExtId () {

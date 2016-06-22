@@ -118,13 +118,13 @@ public class StrategyResourceImpl implements StrategyResource {
                                              Period.valueOf (backTestBean.getPeriod ()),
                                              DateUtils.convertFromISO (backTestBean.getBeginDate ()),
                                              DateUtils.convertFromISO (backTestBean.getEndDate ()));
-        return Response.ok (btr).build ();
+        return Response.ok (BackTestResultBean.valueOf (btr)).build ();
     }
 
     public Response addAccount (String strategyId, AccountBinderBean accountBinderBean) {
         dao.bindAccountToStrategy (strategyId, accountBinderBean.toAccountBinder ());
-        Response response = ServiceRest.INSTANCE.getAteEndpoint ().startAccount (strategyId, accountBinderBean.getId (), accountBinderBean.getLot ());
-        return response;
+        //Response response = ServiceRest.INSTANCE.getAteEndpoint ().startAccount (strategyId, accountBinderBean.getId (), accountBinderBean.getLot ());
+        return Response.ok ().build ();
     }
 
     public Response updateAccountState (String strategyId, AccountBinderBean accountBinderBean) {

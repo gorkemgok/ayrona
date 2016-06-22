@@ -21,11 +21,11 @@ import java.util.Date;
 /**
  * Created by gorkemgok on 20/06/16.
  */
-public class AtaOnlineAccountRemote implements AccountRemote {
+public class ATAAccountRemote implements AccountRemote {
 
     private static Configuration conf = Configuration.getInstance ();
 
-    private static Logger log = LoggerFactory.getLogger (AtaOnlineAccountRemote.class);
+    private static Logger log = LoggerFactory.getLogger (ATAAccountRemote.class);
 
     private String accountNo;
 
@@ -33,19 +33,19 @@ public class AtaOnlineAccountRemote implements AccountRemote {
 
     private String url;
 
-    public AtaOnlineAccountRemote (String accountNo) {
+    public ATAAccountRemote (String accountNo) {
         this.accountNo = accountNo;
         httpClient = HttpClientBuilder.create ().build ();
         url = "http://"+conf.getString (ConfKey.ATA_GTP_HOST)+"/algo/SendDerivativeTransaction?derivativeOrderJson=";
     }
 
     public AccountRemoteResponse openPosition (Position position) {
-        Optional<String> jsonPayloadOptional = OrderPayload.createInstance (Order.Type.OPEN,
-                                                                            position.getDirection (),
-                                                                            position.getIdealOpenDate (),
-                                                                            position.getIdealOpenPrice (),
-                                                                            accountNo,
-                                                                            position.getLot ()).toJson ();
+        Optional<String> jsonPayloadOptional = ATAOrderPayload.createInstance (Order.Type.OPEN,
+                                                                               position.getDirection (),
+                                                                               position.getIdealOpenDate (),
+                                                                               position.getIdealOpenPrice (),
+                                                                               accountNo,
+                                                                               position.getLot ()).toJson ();
         if (jsonPayloadOptional.isPresent ()){
             HttpGet request = new HttpGet (url);
             try {
@@ -59,12 +59,12 @@ public class AtaOnlineAccountRemote implements AccountRemote {
     }
 
     public AccountRemoteResponse closePosition (Position position, Date closeDate, double closePrice) {
-        OrderPayload.createInstance (Order.Type.CLOSE,
-                                     position.getDirection (),
-                                     position.getIdealOpenDate (),
-                                     position.getIdealOpenPrice (),
-                                     accountNo,
-                                     position.getLot ());
+        ATAOrderPayload.createInstance (Order.Type.CLOSE,
+                                        position.getDirection (),
+                                        position.getIdealOpenDate (),
+                                        position.getIdealOpenPrice (),
+                                        accountNo,
+                                        position.getLot ());
         return null;
     }
 }

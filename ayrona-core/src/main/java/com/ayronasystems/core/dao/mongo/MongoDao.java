@@ -170,6 +170,13 @@ public class MongoDao implements Dao{
         return accountModel;
     }
 
+    public List<StrategyModel> findBoundStrategies (String accountId) {
+        List<StrategyModel> strategyModelList = appDatastore.createQuery (StrategyModel.class).disableValidation ()
+                                                            .field ("accounts.id")
+                                                            .equal (accountId).asList ();
+        return strategyModelList;
+    }
+
     public Optional<BatchJobModel> findBatchJob (String id) {
         BatchJobModel batchJobModel = appDatastore.get (BatchJobModel.class, new ObjectId (id));
         if (batchJobModel != null){

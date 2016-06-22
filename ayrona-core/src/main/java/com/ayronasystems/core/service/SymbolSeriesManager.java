@@ -73,7 +73,7 @@ public class SymbolSeriesManager<M extends Moment> {
             SymbolTimeSeries series = seriesMap.get (seriesInterval);
             if ( series.getPeriod () == period &&
                     series.getSymbol () == symbol &&
-                    series.getMomentCount () > 0 ) {
+                    series.size () > 0 ) {
                 if ( seriesInterval.equals (interval) ) {
                     return series;
                 } else if ( seriesInterval.contains (interval) ) {

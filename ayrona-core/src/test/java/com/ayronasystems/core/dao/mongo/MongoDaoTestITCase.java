@@ -228,11 +228,21 @@ public class MongoDaoTestITCase {
         expectedAccountModel.setLoginDetail (loginDetail);
         dao.createAccount (expectedAccountModel);
 
+        List<StrategyModel> actualStrategyModelList = dao.findBoundStrategies (expectedAccountModel.getId ());
+        assertEquals (0, actualStrategyModelList.size ());
+
         AccountBinder accountBinder = new AccountBinder ();
         accountBinder.setId (expectedAccountModel.getId ());
         accountBinder.setLot (1);
         accountBinder.setState (AccountBinder.State.ACTIVE);
         dao.bindAccountToStrategy (expectedStrategyModel.getId (), accountBinder);
+
+        actualStrategyModelList = dao.findBoundStrategies (expectedAccountModel.getId ());
+        assertEquals (1, actualStrategyModelList.size ());
+        StrategyModel actualStrategyModel = actualStrategyModelList.get (0);
+        assertEquals (expectedStrategyModel.getId (), actualStrategyModel.getId ());
+        assertEquals (expectedStrategyModel.getName (), actualStrategyModel.getName ());
+        assertEquals (expectedStrategyModel.getCode (), actualStrategyModel.getCode ());
 
         List<AccountModel> actualAccountList = dao.findBoundAccounts (expectedStrategyModel.getId ());
         assertEquals (1, actualAccountList.size ());
@@ -242,7 +252,7 @@ public class MongoDaoTestITCase {
 
         Optional<StrategyModel> strategyModelOptional = dao.findStrategy (expectedStrategyModel.getId ());
         assertTrue (strategyModelOptional.isPresent ());
-        StrategyModel actualStrategyModel = strategyModelOptional.get ();
+        actualStrategyModel = strategyModelOptional.get ();
         assertEquals (1, actualStrategyModel.getAccounts ().size ());
         AccountBinder actualAccountBinder = actualStrategyModel.getAccounts ().get (0);
         assertEquals (AccountBinder.State.ACTIVE, actualAccountBinder.getState ());

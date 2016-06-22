@@ -1,0 +1,27 @@
+<form class="form-horizontal">
+    <div class="form-group" ng-class="{'has-error':prerequisite.type}">
+        <label for="strategyToBind" class="col-sm-3 control-label">Hesap Türü</label>
+        <div class="col-sm-6">
+            <select id="strategyToBind" ng-model="strategyToBind" class="form-control input-sm">
+                <option value="">Strateji seçiniz</option>
+                <option ng-repeat="strategy in strategies"
+                        value="{{strategy.id}}">{{ strategy.name }}</option>
+            </select>
+            <span ng-if="prerequisite.type" class="help-block">{{prerequisite.type}}</span>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{'has-error':prerequisite.type}">
+        <label for="lot" class="col-sm-3 control-label">lot</label>
+        <div class="col-sm-2">
+            <input id="lot" type="number" ng-model="accountBinder.lot" class="form-control input-sm">
+            <span ng-if="prerequisite.type" class="help-block">{{prerequisite.type}}</span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2">
+            <button ng-hide="account.id" class="btn btn-sm btn-primary" ng-click="bind(strategyToBind, accountBinder)">
+                Ekle
+            </button>
+        </div>
+    </div>
+</form>

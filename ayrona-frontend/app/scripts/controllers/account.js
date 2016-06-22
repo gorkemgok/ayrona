@@ -28,6 +28,9 @@ angular.module('ayronaApp')
                 resolve : {
                     account : function($stateParams, Rest){
                         return Rest.one("account/"+$stateParams.accountId).get();
+                    },
+                    strategies: function ($stateParams, Rest){
+                        return Rest.one("account/"+$stateParams.accountId+"/strategies").get();
                     }
                 }
             })
@@ -68,8 +71,9 @@ angular.module('ayronaApp')
         }
 
     })
-    .controller('AccountEditCtrl', function ($scope, $timeout, $location, account, Rest, Notify, Helper) {
+    .controller('AccountEditCtrl', function ($scope, $timeout, $uibModal, $location, account, strategies, Rest, Notify, Helper) {
         $scope.account = account;
+        $scope.strategies = strategies;
         $scope.update = function (account) {
             console.log(account);
             Rest.all("account",account.id).customPUT(account).then(
@@ -78,6 +82,50 @@ angular.module('ayronaApp')
                 },
                 function (error) {
                     $scope.prerequisite = Helper.preparePrerequisite(error.data);
+                }
+            );
+        };
+
+        $scope.openBindModal = function () {
+
+            var modalInstance = $uibModal.open({
+                animation: $scope.animationsEnabled,
+                templateUrl: 'views/modals/bind-account-modal.html',
+                controller: 'AccountBindCtrl',
+                size: 'lg',
+                resolve: {
+                    strategies: function () {
+                        return Rest.one("strategy/list").get()
+                    },
+                    accountId: function () {
+                        return account.id;
+                    }
+                }
+            });
+
+            modalInstance.result.then(
+                function (selectedItem) {
+                    $scope.selected = selectedItem;
+                }, function () {
+                    console.log('Modal dismissed at: ' + new Date());
+                }
+            );
+        };
+    })
+    .controller('AccountBindCtrl', function ($scope, strategies, accountId, Rest) {
+        $scope.strategies = strategies;
+        $scope.accountBinder = {};
+        $scope.accountBinder.state = 'INACTIVE';
+        $scope.accountBinder.id = accountId;
+        $scope.accountBinder.lot = 1;
+
+        $scope.bind = function (strategyToBind, accountBinder) {
+            Rest.all("strategy/"+strategyToBind+"/account").post(accountBinder).then(
+                function (response) {
+                    $scope.$close(response);
+                },
+                function (error) {
+                    $scope.$close(error);
                 }
             );
         }

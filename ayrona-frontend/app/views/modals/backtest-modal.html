@@ -1,0 +1,34 @@
+<div style="margin: 10px">
+<form class="form-horizontal">
+    <div class="form-group" ng-class="{'has-error':prerequisite.backtest.beginDate}">
+        <label for="beginDate" class="col-sm-2 control-label">Başlangıç</label>
+        <div class="input-group col-sm-4">
+            <input id="beginDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                   ng-model="beginDate" is-open="beginDatePopupOpen"
+                   datepicker-options="dateOptions" close-text="Close" />
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="openBegin()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+    </div>
+    <div class="form-group" ng-class="{'has-error':prerequisite.backtest.end}">
+        <label for="endDate" class="col-sm-2 control-label">Bitiş</label>
+        <div class="input-group col-sm-4">
+            <input id="endDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                   ng-model="endDate" is-open="endDatePopupOpen"
+                   datepicker-options="dateOptions" close-text="Close" />
+            <span class="input-group-btn">
+            <button type="button" class="btn btn-default" ng-click="openEnd()"><i class="glyphicon glyphicon-calendar"></i></button>
+          </span>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-3 col-sm-2">
+            <button class="btn btn-sm btn-primary"
+                    ng-click="doBackTest(beginDate, endDate)">
+                Back Test Eyle
+            </button>
+        </div>
+    </div>
+</form>
+</div>

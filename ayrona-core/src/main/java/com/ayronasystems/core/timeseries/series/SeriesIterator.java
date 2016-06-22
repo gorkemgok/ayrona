@@ -42,7 +42,7 @@ public class SeriesIterator<S extends IterableSeries<M>, M extends Moment> imple
     }
 
     public M getMoment() {
-        if (currentIndex < iterableSeries.getMomentCount()) {
+        if (currentIndex < iterableSeries.size ()) {
             try {
                 return iterableSeries.getMoment(currentIndex);
             }catch(ArrayIndexOutOfBoundsException ex){
@@ -53,7 +53,7 @@ public class SeriesIterator<S extends IterableSeries<M>, M extends Moment> imple
     }
 
     public M getMomentOffset(int offset) {
-        if (currentIndex + offset > -1  &&  (currentIndex + offset) < iterableSeries.getMomentCount()) {
+        if (currentIndex + offset > -1  &&  (currentIndex + offset) < iterableSeries.size ()) {
             try {
                 return iterableSeries.getMoment(currentIndex + offset);
             }catch(ArrayIndexOutOfBoundsException ex){
@@ -64,7 +64,7 @@ public class SeriesIterator<S extends IterableSeries<M>, M extends Moment> imple
     }
 
     public boolean hasNext(){
-        if (currentIndex < iterableSeries.getMomentCount()-1) {
+        if (currentIndex < iterableSeries.size ()-1) {
             return true;
         }
         return false;

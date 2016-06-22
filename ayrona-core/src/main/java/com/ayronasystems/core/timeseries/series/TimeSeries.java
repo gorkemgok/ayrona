@@ -18,7 +18,7 @@ public interface TimeSeries<M extends Moment> extends Iterable<M>{
 
     M getMoment (Date timestamp);
 
-    int getMomentCount ();
+    int size ();
 
     int getColumnCount ();
 

@@ -3,10 +3,12 @@
         <div class="col-sm-6 well">
             <form class="form-horizontal">
                 <div class="form-group">
-                    <div class="col-sm-offset-8 col-sm-4">
+                    <div class="col-sm-offset-4 col-sm-8">
                         <button class="btn btn-sm btn-success" ng-click="compile(strategy.code)">Derle</button>
-                        <button ng-hide="strategy.id" class="btn btn-sm btn-primary" ng-click="create(strategy)">Kaydet</button>
-                        <button ng-show="strategy.id" class="btn btn-sm btn-primary" ng-click="update(strategy)">Kaydet</button>
+                        <button class="btn btn-sm btn-warning" ng-click="copy(strategy)">Kopyala</button>
+                        <button class="btn btn-sm btn-primary" ng-click="openBackTestModal()">Backtest</button>
+                        <button ng-hide="strategy.id" class="btn btn-primary" ng-click="create(strategy)">Kaydet</button>
+                        <button ng-show="strategy.id" class="btn btn-primary" ng-click="update(strategy)">Kaydet</button>
                     </div>
                 </div>
                 <div class="form-group" ng-class="{'has-error':prerequisite.strategy.name}">
@@ -48,6 +50,16 @@
         <div class="col-sm-6 well">
             <div ng-show="compilationResult == 0" class="alert alert-sm alert-success alert-dismissible" role="alert">{{ compilationMessage }}</div>
             <div ng-show="compilationResult == 1" class="alert alert-sm alert-danger alert-dismissible" role="alert">{{ compilationMessage }}</div>
+        </div>
+        <div ng-if="backTestResult" class="col-sm-6 well">
+            <p>Net Profit : {{backTestResult.netProfit}}</p>
+            <p>Maxdrawdown : {{backTestResult.mdd}}</p>
+            <p>Stability : {{backTestResult.stability}}</p>
+            <div>
+                <canvas id="base" class="chart chart-bar"
+                        chart-data="data" chart-dataset-override="datasetOverride" >
+                </canvas>
+            </div>
         </div>
     </div>
 </div>

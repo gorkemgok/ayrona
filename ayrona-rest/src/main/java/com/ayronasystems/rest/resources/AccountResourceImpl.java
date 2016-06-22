@@ -2,10 +2,10 @@ package com.ayronasystems.rest.resources;
 
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.Dao;
+import com.ayronasystems.core.dao.model.AccountBinder;
 import com.ayronasystems.core.dao.model.AccountModel;
-import com.ayronasystems.rest.bean.AccountBean;
-import com.ayronasystems.rest.bean.PrerequisiteCheck;
-import com.ayronasystems.rest.bean.Prerequisites;
+import com.ayronasystems.core.dao.model.StrategyModel;
+import com.ayronasystems.rest.bean.*;
 import com.ayronasystems.rest.resources.definition.AccountResource;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
@@ -49,7 +49,21 @@ public class AccountResourceImpl implements AccountResource {
     }
 
     public Response getBoundStrategyList (String id) {
-        return null;
+        List<StrategyModel> strategyModelList = dao.findBoundStrategies (id);
+        List<BoundStrategyBean> boundStrategyBeanList = new ArrayList<BoundStrategyBean> (strategyModelList.size ());
+        for (StrategyModel strategyModel : strategyModelList){
+            StrategyBean strategyBean = StrategyBean.valueOf (strategyModel);
+            AccountBinder.State state = AccountBinder.State.INACTIVE;
+            double lot = 0;
+            for ( AccountBinder accountBinder : strategyModel.getAccounts ()){
+                if (accountBinder.getId ().equals (id)){
+                    state = accountBinder.getState ();
+                    lot = accountBinder.getLot ();
+                }
+            }
+            boundStrategyBeanList.add (new BoundStrategyBean (state, lot, strategyBean));
+        }
+        return Response.ok (boundStrategyBeanList).build ();
     }
 
     public Response getHistory (Long id) {

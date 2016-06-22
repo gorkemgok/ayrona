@@ -27,6 +27,10 @@ public class ConfigurationConstants {
 
     public static final String PROP_RATEDB_PROPERTIESFILE = TICK4J_PROP_PREFIX + "ratedb.propertiesfile";
 
+    public static final String PROP_MT4_JFX_AK = TICK4J_PROP_PREFIX + "jfx.ac";
+
+    public static final String ENV_MT4_JFX_AK = "JFX_AC";
+
     public static final String PROP_MT4_JFX_HOST = TICK4J_PROP_PREFIX + "jfx.host";
 
     public static final String ENV_MT4_JFX_HOST = "JFX_HOST";
@@ -101,8 +105,16 @@ public class ConfigurationConstants {
 
     public static final String ENV_ATE_REST_TOKEN = "ATE_REST_TOKEN";
 
-    public static final String PROP_ATA_GTP_HOST = "ata.gtp.host";
+    public static final String PROP_ATA_GTP_HOST = "ataonline.gtp.host";
 
     public static final String ENV_ATA_GTP_HOST = "ATA_GTP_HOST";
+
+    public static final String PROP_ATA_DATA_IP = "ataonline.data.ip";
+
+    public static final String ENV_ATA_DATA_IP = "ATA_DATA_IP";
+
+    public static final String PROP_ATA_DATA_PORT = "ataonline.data.port";
+
+    public static final String ENV_ATA_DATA_PORT = "ATA_DATA_PORT";
 
 }

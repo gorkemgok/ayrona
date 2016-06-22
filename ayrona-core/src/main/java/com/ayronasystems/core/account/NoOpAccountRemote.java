@@ -22,7 +22,7 @@ public class NoOpAccountRemote implements AccountRemote {
     public AccountRemoteResponse openPosition(Position position) {
         position.setOpenDate (position.getIdealOpenDate ());
         position.setOpenPrice (position.getIdealOpenPrice ());
-        log.info ("Position opened for {}: {}, {}, {}, {}",position.getAccountName (), position.getDirection (), position.getSymbol (), position.getInitiator ().getName (), position.getOpenPrice ());
+        log.debug ("Position opened for {}: {}, {}, {}, {}",position.getAccountName (), position.getDirection (), position.getSymbol (), position.getInitiator ().getName (), position.getOpenPrice ());
         return new AccountRemoteResponse(position, TradeOperationResult.SUCCESSFUL);
     }
 
@@ -30,7 +30,7 @@ public class NoOpAccountRemote implements AccountRemote {
         position.close (closeDate, closePrice);
         position.setCloseDate (position.getIdealCloseDate ());
         position.setClosePrice (position.getIdealClosePrice ());
-        log.info ("Position closed for {}: {}, {}, {}, {}",position.getAccountName (), position.getDirection (), position.getSymbol (),  position.getInitiator ().getName (), position.getClosePrice ());
+        log.debug ("Position closed for {}: {}, {}, {}, {}",position.getAccountName (), position.getDirection (), position.getSymbol (),  position.getInitiator ().getName (), position.getClosePrice ());
         return new AccountRemoteResponse(position, TradeOperationResult.SUCCESSFUL);
     }
 }

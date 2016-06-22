@@ -1,14 +1,15 @@
-package com.ayronasystems.data.integration;
+package com.ayronasystems.data.integration.mt4;
 
 import com.ayronasystems.core.JMSManager;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.integration.mt4.MT4Connection;
-import com.ayronasystems.data.listener.BarAMQSenderListener;
-import com.ayronasystems.data.listener.BarDBSaverListener;
 import com.ayronasystems.data.Barifier;
 import com.ayronasystems.data.DataServiceEngine;
+import com.ayronasystems.data.listener.BarAMQSenderListener;
+import com.ayronasystems.data.listener.BarDBSaverListener;
+import com.ayronasystems.data.listener.BasicTickListener;
 import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,11 +41,12 @@ public class MT4DataServiceEngine implements DataServiceEngine{
         jmsManager = JMSManager.getManager (conf.getString (ConfKey.AMQ_URI));
         mongoClient = Singletons.INSTANCE.getMongoClient ();
 
-        MT4BulkTickListener mt4BulkTickListener = new MT4BulkTickListener ();
         Barifier barifier = new Barifier ();
         barifier.addBarListener (new BarDBSaverListener (mongoClient));
         barifier.addBarListener (new BarAMQSenderListener (jmsManager));
-        mt4BulkTickListener.addBarifier (barifier);
+        BasicTickListener tickListener = new BasicTickListener ();
+        tickListener.addBarifier (barifier);
+        MT4BulkTickListener mt4BulkTickListener = new MT4BulkTickListener (tickListener);
         mt4ListenerConnection = new MT4Connection (
                 conf.getString (ConfKey.MT4_DS_LISTENER_BROKER),
                 conf.getString (ConfKey.MT4_DS_LISTENER_LOGIN),
