@@ -19,9 +19,9 @@ public class MarketDataCache {
         this.marketDataMap = new HashMap<SymbolPeriod, MarketData> ();
     }
 
-    public MarketDataCacheResult get(SymbolPeriod symbolPeriod, Interval interval){
-        if ( marketDataMap.containsKey (symbolPeriod)){
-            MarketData marketData = marketDataMap.get (symbolPeriod);
+    public MarketDataCacheResult search(SymbolPeriod symbolPeriod, Interval interval){
+        MarketData marketData = search(symbolPeriod);
+        if (marketData != null){
             if (interval.equals (marketData.getInterval ())){
                 return new MarketDataCacheResult (marketData, Collections.EMPTY_LIST);
             }else if (marketData.getInterval ().contains (interval)){
@@ -54,8 +54,28 @@ public class MarketDataCache {
 
     public void cache(MarketData marketData){
         SymbolPeriod symbolPeriod = new SymbolPeriod (marketData.getSymbol (), marketData.getPeriod ());
-        MarketData thisMarketData = marketDataMap.get (symbolPeriod);
-        marketDataMap.put (symbolPeriod, marketData);
+        MarketData thisMarketData = search(symbolPeriod);
+        MarketData newMarketData = null;
+        if (thisMarketData != null && marketData != null) {
+            newMarketData = thisMarketData.safeMerge(marketData);
+        }else{
+            newMarketData = marketData;
+        }
+        if (newMarketData != null && !newMarketData.equals(thisMarketData)) {
+            synchronized (this) {
+                marketDataMap.put(symbolPeriod, newMarketData);
+            }
+        }
+    }
+
+    private synchronized MarketData search(SymbolPeriod symbolPeriod){
+        MarketData marketData = null;
+        synchronized (this) {
+            if (marketDataMap.containsKey(symbolPeriod)) {
+                marketData = marketDataMap.get(symbolPeriod);
+            }
+        }
+        return marketData;
     }
 
 }

@@ -3,12 +3,17 @@ package com.ayronasystems.core.service;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.data.MarketData;
+import com.ayronasystems.core.data.MarketDataCache;
+import com.ayronasystems.core.data.MarketDataCacheResult;
 import com.ayronasystems.core.data.OHLC;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
+import com.ayronasystems.core.util.DateUtils;
+import com.ayronasystems.core.util.Interval;
 import com.ayronasystems.core.util.NumberUtils;
 import com.mongodb.*;
 import org.slf4j.Logger;
@@ -41,6 +46,8 @@ public class StandaloneMarketDataService implements MarketDataService {
 
     private MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
 
+    private MarketDataCache cache;
+
     public static MarketDataService getInstance () {
         if (marketDataService == null){
             synchronized (lock){
@@ -53,6 +60,7 @@ public class StandaloneMarketDataService implements MarketDataService {
     }
 
     private StandaloneMarketDataService () {
+        cache = new MarketDataCache();
     }
 
     public MarketData getOHLC (Symbol symbol, Period period) {
@@ -64,13 +72,48 @@ public class StandaloneMarketDataService implements MarketDataService {
                 return ohlc;
             }
         }
-        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME)
+        DBCollection collection = mongoClient.getDB (conf.getString(ConfKey.MONGODB_MDS))
                 .getCollection (symbol.getSymbolString ().toLowerCase ());
         return OHLC.getEmptyData (symbol, period);
     }
 
     public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
-        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME).getCollection (symbol.getSymbolString ().toLowerCase ());
+        long start = System.currentTimeMillis();
+        MarketDataCacheResult cacheResult = cache.search(
+                new SymbolPeriod(symbol, period),
+                new Interval(startDate, endDate)
+        );
+        long end = System.currentTimeMillis();
+        if (cacheResult.hasData()) {
+            log.info("Loaded market data from cache {}, {} between {}, {} in {} ms",
+                    symbol, period,
+                    DateUtils.formatDate(cacheResult.getFoundData().getBeginningDate()),
+                    DateUtils.formatDate(cacheResult.getFoundData().getEndingDate()),
+                    (end-start));
+            if (cacheResult.hasAbsentData()){
+                MarketData mainMd = cacheResult.getFoundData();
+                for (Interval absentInterval : cacheResult.getAbsentIntervals()){
+                    MarketData md = fetchOHLC(
+                            symbol, period,
+                            absentInterval.getBeginningDate(), absentInterval.getEndingDate()
+                    );
+                    mainMd = mainMd.merge(md);
+                }
+                cache.cache(mainMd);
+                return mainMd;
+            }else{
+                return cacheResult.getFoundData();
+            }
+        } else{
+            MarketData marketData = fetchOHLC(symbol, period, startDate, endDate);
+            cache.cache(marketData);
+            return marketData;
+        }
+    }
+
+    public MarketData fetchOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
+        long start = System.currentTimeMillis();
+        DBCollection collection = mongoClient.getDB (conf.getString(ConfKey.MONGODB_MDS)).getCollection (symbol.getSymbolString ().toLowerCase ());
         DBObject query = new BasicDBObject ("symbol", symbol.getSymbolString ())
                 .append ("period", period.toString ())
                 .append ("periodDate", BasicDBObjectBuilder.start("$gte", startDate).add("$lt", endDate).get());
@@ -87,9 +130,9 @@ public class StandaloneMarketDataService implements MarketDataService {
             DBObject row = cursor.next ();
             dates.add ((Date)row.get ("periodDate"));
             open[i] = (Double)row.get ("open");
-            high[i] = (Double)row.get ("open");
-            low[i] = (Double)row.get ("open");
-            close[i] = (Double)row.get ("open");
+            high[i] = (Double)row.get ("high");
+            low[i] = (Double)row.get ("low");
+            close[i] = (Double)row.get ("close");
             i++;
         }
         OHLC ohlc = null;
@@ -98,6 +141,12 @@ public class StandaloneMarketDataService implements MarketDataService {
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
+        long end = System.currentTimeMillis();
+        log.info("Fetched market data {}, {} between {}, {} in {} ms",
+                symbol, period,
+                DateUtils.formatDate(startDate),
+                DateUtils.formatDate(endDate),
+                (end-start));
         return ohlc;
     }
 

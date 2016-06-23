@@ -23,8 +23,12 @@ public class MarketDataCacheResult {
         this.isFoundData = foundData != null;
     }
 
-    public boolean isFoundData () {
+    public boolean hasData() {
         return isFoundData;
+    }
+
+    public boolean hasAbsentData(){
+        return !absentIntervals.isEmpty();
     }
 
     public MarketData getFoundData () {

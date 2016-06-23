@@ -104,6 +104,10 @@ public class OHLC implements MarketData {
         return interval.getEndingDate ();
     }
 
+    public Date getLastDate() {
+        return dates.get( dates.size() - 1 );
+    }
+
     public double getPrice (PriceColumn priceColumn, int index) {
         switch ( priceColumn ){
             case OPEN:
@@ -183,72 +187,62 @@ public class OHLC implements MarketData {
         return subData (beginIdx, endIdx);
     }
 
-    public MarketData append (MarketData marketData) {
-        OHLC ohlc;
-        if (marketData.getBeginningDate ().equals (getEndingDate ())){
-            int count = marketData.size () + size ();
-            List<Date> newDates = new ArrayList<Date> (count);
-            double[] newOpenSeries = new double[count];
-            double[] newHighSeries = new double[count];
-            double[] newLowSeries = new double[count];
-            double[] newCloseSeries = new double[count];
-            int c = 0;
-            for ( int i = 0; i < size (); i++ ) {
-                newDates.add (getDate (i));
-                newOpenSeries[c] = getOpen (i);
-                newHighSeries[c] = getHigh (i);
-                newLowSeries[c] = getLow (i);
-                newCloseSeries[c] = getClose (i);
-                c++;
-            }
-            for ( int i = 0; i < marketData.size (); i++ ) {
-                newDates.add (marketData.getDate (i));
-                newOpenSeries[c] = marketData.getPrice (PriceColumn.OPEN, i);
-                newHighSeries[c] = marketData.getPrice (PriceColumn.HIGH, i);
-                newLowSeries[c] = marketData.getPrice (PriceColumn.LOW, i);
-                newCloseSeries[c] = marketData.getPrice (PriceColumn.CLOSE, i);
-                c++;
-            }
+    public MarketData append(MarketData marketData) {
+        int count = marketData.size () + size ();
+        List<Date> newDates = new ArrayList<Date> (count);
+        double[] newOpenSeries = new double[count];
+        double[] newHighSeries = new double[count];
+        double[] newLowSeries = new double[count];
+        double[] newCloseSeries = new double[count];
+        int c = 0;
+        for ( int i = 0; i < size (); i++ ) {
+            newDates.add (getDate (i));
+            newOpenSeries[c] = getOpen (i);
+            newHighSeries[c] = getHigh (i);
+            newLowSeries[c] = getLow (i);
+            newCloseSeries[c] = getClose (i);
+            c++;
+        }
+        for ( int i = 0; i < marketData.size (); i++ ) {
+            newDates.add (marketData.getDate (i));
+            newOpenSeries[c] = marketData.getPrice (PriceColumn.OPEN, i);
+            newHighSeries[c] = marketData.getPrice (PriceColumn.HIGH, i);
+            newLowSeries[c] = marketData.getPrice (PriceColumn.LOW, i);
+            newCloseSeries[c] = marketData.getPrice (PriceColumn.CLOSE, i);
+            c++;
+        }
 
-            try {
-                ohlc = new OHLC (symbol, period, newDates, newOpenSeries, newHighSeries, newLowSeries, newCloseSeries);
-            } catch ( CorruptedMarketDataException e ) {
-                return this;
-            }
-        }else if(marketData.getEndingDate ().equals (getBeginningDate ())){
-            int count = marketData.size () + size ();
-            List<Date> newDates = new ArrayList<Date> (count);
-            double[] newOpenSeries = new double[count];
-            double[] newHighSeries = new double[count];
-            double[] newLowSeries = new double[count];
-            double[] newCloseSeries = new double[count];
-            int c = 0;
-            for ( int i = 0; i < marketData.size (); i++ ) {
-                newDates.add (marketData.getDate (i));
-                newOpenSeries[c] = marketData.getPrice (PriceColumn.OPEN, i);
-                newHighSeries[c] = marketData.getPrice (PriceColumn.HIGH, i);
-                newLowSeries[c] = marketData.getPrice (PriceColumn.LOW, i);
-                newCloseSeries[c] = marketData.getPrice (PriceColumn.CLOSE, i);
-                c++;
-            }
-            for ( int i = 0; i < size (); i++ ) {
-                newDates.add (getDate (i));
-                newOpenSeries[c] = getOpen (i);
-                newHighSeries[c] = getHigh (i);
-                newLowSeries[c] = getLow (i);
-                newCloseSeries[c] = getClose (i);
-                c++;
-            }
+        try {
+            return new OHLC (symbol, period, newDates, newOpenSeries, newHighSeries, newLowSeries, newCloseSeries);
+        } catch ( CorruptedMarketDataException e ) {
+            return this;
+        }
+    }
 
-            try {
-                ohlc = new OHLC (symbol, period, newDates, newOpenSeries, newHighSeries, newLowSeries, newCloseSeries);
-            } catch ( CorruptedMarketDataException e ) {
-                return this;
-            }
+    public MarketData merge(MarketData marketData) {
+        if (marketData.getBeginningDate ().equals (getEndingDate ()) ||
+                marketData.getBeginningDate ().after (getEndingDate ())){
+            return this.append(marketData);
+        }else if(marketData.getLastDate ().equals (getBeginningDate ()) ||
+                marketData.getLastDate ().before (getBeginningDate ())){
+            return marketData.append(this);
+        }else if (marketData.getInterval().contains(getInterval())){
+            return marketData;
         }else{
             return this;
         }
-        return ohlc;
+    }
+
+    public MarketData safeMerge(MarketData marketData) {
+        if (marketData.getBeginningDate ().equals (getEndingDate ())){
+            return this.append(marketData);
+        }else if(marketData.getEndingDate ().equals (getBeginningDate ())){
+            return marketData.append(this);
+        }else if (marketData.getInterval().contains(getInterval())){
+            return marketData;
+        }else{
+            return this;
+        }
     }
 
     public double getOpen(int index){

@@ -67,7 +67,7 @@ public class InstantBackTestSimulationCompare {
             System.out.println (simOrders.size ());
             int c = Math.min (btOrders.size (), simOrders.size ());
             for ( int i = c - 1; i > -1; i-- ) {
-                //System.out.println (btOrders.get (i)+"\t"+simOrders.get (i));
+                //System.out.println (btOrders.search (i)+"\t"+simOrders.search (i));
             }
             System.out.println (btSignals.size ());
             System.out.println (simSignals.size ());

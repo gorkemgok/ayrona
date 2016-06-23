@@ -12,6 +12,20 @@ import java.util.concurrent.ForkJoinPool;
  */
 public class BatchJobManager {
 
+    public static final BatchJobCallback NO_OP_CALLBACK = new BatchJobCallback() {
+        public void complete(BatchJobResult batchJobResult) {
+
+        }
+
+        public void error(BatchJobResult batchJobResult) {
+
+        }
+
+        public void update(BatchJob batchJob, int progress) {
+
+        }
+    };
+
     public static class Callback implements BatchJobCallback{
 
         private Dao dao;

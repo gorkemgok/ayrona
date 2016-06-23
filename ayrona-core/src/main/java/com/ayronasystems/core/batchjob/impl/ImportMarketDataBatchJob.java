@@ -2,6 +2,7 @@ package com.ayronasystems.core.batchjob.impl;
 
 import com.ayronasystems.core.batchjob.AbstractBatchJob;
 import com.ayronasystems.core.batchjob.BatchJobResult;
+import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.definition.Period;
@@ -42,7 +43,7 @@ public class ImportMarketDataBatchJob extends AbstractBatchJob {
     }
 
     public void run () {
-        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME).getCollection (symbol);
+        DBCollection collection = mongoClient.getDB (conf.getString(ConfKey.MONGODB_MDS)).getCollection (symbol);
         BulkWriteOperation bwo = collection.initializeUnorderedBulkOperation ();
         long periodMillis = barList.get (1).getDate ().getTime () - barList.get (0).getDate ().getTime ();
         Period period = Period.parse (periodMillis);

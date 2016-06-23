@@ -26,6 +26,8 @@ public interface MarketData extends Iterable<Moment> {
 
     Date getEndingDate();
 
+    Date getLastDate();
+
     Date getDate(int index);
 
     MarketData subData(int period);
@@ -35,6 +37,10 @@ public interface MarketData extends Iterable<Moment> {
     MarketData subData(Date beginDate, Date endDate);
 
     MarketData append(MarketData marketData);
+
+    MarketData merge(MarketData marketData);
+
+    MarketData safeMerge(MarketData marketData);
 
     int size ();
 

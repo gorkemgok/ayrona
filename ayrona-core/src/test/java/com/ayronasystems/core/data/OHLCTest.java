@@ -81,15 +81,15 @@ public class OHLCTest {
     }
 
     @Test
-    public void append () throws Exception {
-        MarketData md1 = ohlc2.append (ohlc1);
+    public void merge () throws Exception {
+        MarketData md1 = ohlc2.merge(ohlc1);
         assertEquals (6, md1.size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:00:00"), md1.getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:30:00"), md1.getEndingDate ());
         assertEquals (0.1, md1.getPrice (PriceColumn.OPEN, 0), 0);
         assertEquals (3, md1.getPrice (PriceColumn.OPEN, md1.size () - 1), 0);
 
-        MarketData md2 = ohlc2.append (ohlc3);
+        MarketData md2 = ohlc2.merge(ohlc3);
         assertEquals (8, md2.size ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:10:00"), md2.getBeginningDate ());
         assertEquals (DateUtils.parseDate ("01.01.2016 01:50:00"), md2.getEndingDate ());
