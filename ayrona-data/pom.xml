@@ -116,9 +116,6 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <bundleDependencies>false</bundleDependencies>
-                </configuration>
             </plugin>
         </plugins>
     </build>

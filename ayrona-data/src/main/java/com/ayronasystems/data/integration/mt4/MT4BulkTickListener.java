@@ -27,7 +27,6 @@ public class MT4BulkTickListener implements Strategy.BulkTickListener{
             BigDecimal mid = ask.add (bid)
                                 .divide (new BigDecimal (2));
             if (Symbol.hasSymbol (tick.symbol)) {
-                System.out.println ("---"+tick.symbol+", "+tick.time);
                 com.ayronasystems.core.timeseries.moment.Tick ayTick =
                         new com.ayronasystems.core.timeseries.moment.Tick (
                                 tick.time, Symbol.valueOf (tick.symbol), ask.doubleValue (), mid.doubleValue (),

@@ -36,12 +36,12 @@ public class Barifier {
     private long currentMillis;
 
     public void newTick(Tick tick){
-        System.out.println (tick.getSymbol () +", "+ tick.getDate ()+", "+ tick.getMid ());
+        log.debug ("{}, {}, {}", tick.getSymbol (), tick.getDate (), tick.getBid ());
         long timeMillis = tick.getDate ().getTime ();
         long periodMillis = timeMillis - (timeMillis % PERIOD_MILLIS);
         TempBar tempBar = getOrCreate (tick.getSymbol ());
         if (tempBar.isClosed()){
-            tempBar.beginPeriod (periodMillis, tick.getMid ());
+            tempBar.beginPeriod (periodMillis, tick.getBid ());
         }else{
             if (tempBar.getCurrentMillis () != periodMillis){
                 Bar bar = tempBar.endPeriod ();
@@ -50,9 +50,9 @@ public class Barifier {
                 for (BarListener barListener : barListenerList){
                     barListener.newBar (tick.getSymbol (), PERIOD, bar);
                 }
-                tempBar.beginPeriod (periodMillis, tick.getMid ());
+                tempBar.beginPeriod (periodMillis, tick.getBid ());
             }else {
-                tempBar.setNewPrice (tick.getMid ());
+                tempBar.setNewPrice (tick.getBid ());
             }
         }
         tempBar.setCurrentMillis (periodMillis);
