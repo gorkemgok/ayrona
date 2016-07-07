@@ -1,5 +1,6 @@
 package com.ayronasystems.data;
 
+import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
@@ -41,7 +42,7 @@ public class BarifierTest {
     );
     @Test
     public void newTick () throws Exception {
-        Barifier barifier = new Barifier ();
+        Barifier barifier = new Barifier (Period.M1);
 
         for (Tick tick : tickList){
             barifier.newTick (tick);

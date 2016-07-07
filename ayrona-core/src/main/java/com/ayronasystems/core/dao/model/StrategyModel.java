@@ -23,6 +23,8 @@ public class StrategyModel extends BaseModel {
 
     private String code;
 
+    private int initialBarCount;
+
     private AccountBinder.State state;
 
     private List<AccountBinder> accounts;
@@ -73,6 +75,14 @@ public class StrategyModel extends BaseModel {
 
     public void setState (AccountBinder.State state) {
         this.state = state;
+    }
+
+    public int getInitialBarCount () {
+        return initialBarCount;
+    }
+
+    public void setInitialBarCount (int initialBarCount) {
+        this.initialBarCount = initialBarCount;
     }
 
     @PrePersist

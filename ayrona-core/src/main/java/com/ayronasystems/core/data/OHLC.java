@@ -6,11 +6,15 @@ import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.timeseries.moment.Bar;
+import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
 import com.ayronasystems.core.timeseries.moment.Moment;
 import com.ayronasystems.core.util.Interval;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by gorkemgok on 19/03/16.
@@ -66,7 +70,7 @@ public class OHLC implements MarketData {
         this.closeSeries = closeSeries;
     }
 
-    private OHLC(Symbol symbol, Period period, List<Bar> barList) throws CorruptedMarketDataException {
+    public OHLC(Symbol symbol, Period period, List<Bar> barList) throws CorruptedMarketDataException {
         int size = barList.size ();
         List<Date> dates = new ArrayList<Date> ();
         double[] openSeries = new double[size];
@@ -235,9 +239,37 @@ public class OHLC implements MarketData {
 
     public MarketData convert (Period period) throws MarketDataConversionException{
         if (this.period.canDivide (period)){
+            long periodTime = period.getAsMillis ();
             List<Bar> newBarList = new ArrayList<Bar> ();
+            long periodDate = 0;
+            long currentPeriodDate = 0;
+            double open = 0;
+            double high = 0;
+            double low = Double.MAX_VALUE;
+            double close = 0;
+            boolean justStarted = true;
             for (Moment moment : this){
-                
+                currentPeriodDate = moment.getDate ()
+                                   .getTime () - (moment.getDate ()
+                                                        .getTime () % periodTime);
+                if (!justStarted && currentPeriodDate != periodDate){
+                    Bar bar = new Bar (new Date(periodDate), open, high, low, close , 0);
+                    newBarList.add (bar);
+                    periodDate = moment.getDate ().getTime () - (moment.getDate ().getTime () % periodTime);
+                    open = moment.get (ColumnDefinition.OPEN);
+                    high = moment.get (ColumnDefinition.HIGH);
+                    low = moment.get (ColumnDefinition.LOW);
+                }
+                if (justStarted) {
+                    periodDate = moment.getDate ()
+                                       .getTime () - (moment.getDate ()
+                                                            .getTime () % periodTime);
+                    open = moment.get (ColumnDefinition.OPEN);
+                }
+                high = Math.max (moment.get (ColumnDefinition.HIGH), high);
+                low = Math.min (moment.get (ColumnDefinition.LOW), low);
+                close = moment.get (ColumnDefinition.CLOSE);
+                justStarted = false;
             }
             try {
                 return new OHLC (symbol, period, newBarList);

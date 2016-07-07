@@ -3,6 +3,8 @@ package com.ayronasystems.core.dao.mongo;
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.*;
+import com.ayronasystems.core.definition.Period;
+import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.edr.EdrModule;
 import com.ayronasystems.core.edr.EdrType;
 import com.ayronasystems.core.util.MongoUtils;
@@ -18,6 +20,7 @@ import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
 import org.mongodb.morphia.query.UpdateOperations;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -38,24 +41,20 @@ public class MongoDao implements Dao{
 
     private final Datastore appDatastore;
 
-    private final Datastore appMarketDatastore;
-
     private String ayronaDbName;
 
     public MongoDao (MongoClient mongoClient) {
-        this(mongoClient, AYRONA_DB_NAME, AYRONA_MARKETDATA_DB_NAME);
+        this(mongoClient, AYRONA_DB_NAME);
     }
 
-    public MongoDao (MongoClient mongoClient, String ayronaDbName, String ayronaMarketdataDbName) {
+    public MongoDao (MongoClient mongoClient, String ayronaDbName) {
         this.ayronaDbName = ayronaDbName;
 
         this.mongoClient = mongoClient;
         this.morphia = new Morphia ();
         morphia.mapPackage (MAP_PACKAGE);
         appDatastore = morphia.createDatastore (mongoClient, ayronaDbName);
-        appMarketDatastore = morphia.createDatastore (mongoClient, ayronaMarketdataDbName);
         appDatastore.ensureIndexes ();
-        appMarketDatastore.ensureIndexes ();
     }
 
     public Optional<UserModel> findUserByLogin (String login) {
@@ -315,6 +314,35 @@ public class MongoDao implements Dao{
 
     public List<PositionModel> findAllPositions () {
         return appDatastore.createQuery (PositionModel.class).asList ();
+    }
+
+    public MarketDataModel createMarketData (MarketDataModel marketDataModel) {
+        appDatastore.save (marketDataModel);
+        return marketDataModel;
+    }
+
+    public List<MarketDataModel> findMarketData (Symbol symbol, Period period, Date beginningDate, Date endDate) {
+        List<MarketDataModel> marketDataModelList = appDatastore.createQuery (MarketDataModel.class)
+                    .field ("symbol").equal (symbol)
+                    .field ("period").equal (period)
+                    .field ("periodDate").greaterThanOrEq (beginningDate)
+                    .field ("periodDate").lessThan (endDate)
+                    .order ("periodDate").asList ();
+        return marketDataModelList;
+    }
+
+    public List<MarketDataModel> findMarketData (Symbol symbol, Period period, Date endDate, int count) {
+        List<MarketDataModel> marketDataModelList = appDatastore.createQuery (MarketDataModel.class)
+                                                                .field ("symbol").equal (symbol)
+                                                                .field ("period").equal (period)
+                                                                .field ("periodDate").lessThan (endDate)
+                                                                .order ("-periodDate")
+                                                                .limit (count).asList ();
+        List<MarketDataModel> invertedMarketDataModelList = new ArrayList<MarketDataModel> (marketDataModelList.size ());
+        for ( int i = marketDataModelList.size () - 1; i >= 0; i-- ) {
+            invertedMarketDataModelList.add (marketDataModelList.get (i));
+        }
+        return invertedMarketDataModelList;
     }
 
 }

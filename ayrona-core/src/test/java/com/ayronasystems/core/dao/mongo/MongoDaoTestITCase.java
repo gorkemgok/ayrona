@@ -8,12 +8,14 @@ import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.*;
 import com.ayronasystems.core.definition.Direction;
+import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.google.common.base.Optional;
 import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,9 +27,7 @@ import static org.junit.Assert.*;
  */
 public class MongoDaoTestITCase {
 
-    public static final String AYRONA_TEST_DB_NAME = "ayrona_test";
-
-    public static final String AYRONA_MARKETDATA_TEST_DB_NAME = "ayrona_marketdata_test";
+    public static final String AYRONA_TEST_DB_NAME = "test_ayrona";
 
     private Dao dao;
 
@@ -35,9 +35,64 @@ public class MongoDaoTestITCase {
     public void setUp () throws Exception {
         MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
         mongoClient.dropDatabase (AYRONA_TEST_DB_NAME);
-        mongoClient.dropDatabase (AYRONA_MARKETDATA_TEST_DB_NAME);
 
-        dao = new MongoDao (mongoClient, AYRONA_TEST_DB_NAME, AYRONA_MARKETDATA_TEST_DB_NAME);
+        dao = new MongoDao (mongoClient, AYRONA_TEST_DB_NAME);
+
+    }
+
+    @Test
+    public void createMarketData(){
+        Symbol symbol = Symbol.USDTRY;
+        Period period = Period.M15;
+        List<MarketDataModel> expectedMarketDataModelList = new ArrayList<MarketDataModel> ();
+        for ( int i = 0; i < 100; i++ ) {
+            MarketDataModel marketDataModel = new MarketDataModel ();
+            marketDataModel.setSymbol (symbol);
+            marketDataModel.setPeriod (period);
+            marketDataModel.setPeriodDate (new Date (i*period.getAsMillis ()));
+            marketDataModel.setOpen (1*i);
+            marketDataModel.setHigh (2*i);
+            marketDataModel.setLow (3*i);
+            marketDataModel.setClose (4*i);
+            marketDataModel.setVolume (5*i);
+            expectedMarketDataModelList.add (marketDataModel);
+        }
+        for(MarketDataModel actualMarketDataModel : expectedMarketDataModelList) {
+            dao.createMarketData (actualMarketDataModel);
+        }
+
+        long start = System.currentTimeMillis ();
+        List<MarketDataModel> actualMarketDataModelList = dao.findMarketData (symbol, period, new Date(0), new Date (100 * period.getAsMillis ()));
+        long end = System.currentTimeMillis ();
+        System.out.println (actualMarketDataModelList.size () + " in " + (end-start) + " ms");
+
+        assertEquals (100, actualMarketDataModelList.size ());
+        for ( int i = 0; i < 100; i++ ) {
+            assertEquals (expectedMarketDataModelList.get (i).getSymbol (), actualMarketDataModelList.get (i).getSymbol ());
+            assertEquals (expectedMarketDataModelList.get (i).getPeriod (), actualMarketDataModelList.get (i).getPeriod ());
+            assertEquals (expectedMarketDataModelList.get (i).getPeriodDate (), actualMarketDataModelList.get (i).getPeriodDate ());
+            assertEquals (expectedMarketDataModelList.get (i).getOpen (), actualMarketDataModelList.get (i).getOpen (), 0);
+            assertEquals (expectedMarketDataModelList.get (i).getHigh (), actualMarketDataModelList.get (i).getHigh (), 0);
+            assertEquals (expectedMarketDataModelList.get (i).getLow (), actualMarketDataModelList.get (i).getLow (), 0);
+            assertEquals (expectedMarketDataModelList.get (i).getClose (), actualMarketDataModelList.get (i).getClose (), 0);
+            assertEquals (expectedMarketDataModelList.get (i).getVolume (), actualMarketDataModelList.get (i).getVolume (), 0);
+
+            if (i>0){
+                assertTrue (actualMarketDataModelList.get (i).getPeriodDate ().after (
+                        actualMarketDataModelList.get (i-1).getPeriodDate ()
+                ));
+            }
+        }
+
+        actualMarketDataModelList = dao.findMarketData (symbol, period, new Date(99*period.getAsMillis ()),10);
+        assertEquals (10, actualMarketDataModelList.size ());
+        assertEquals (new Date(89*period.getAsMillis ()), actualMarketDataModelList.get (0).getPeriodDate ());
+        assertEquals (new Date(98*period.getAsMillis ()), actualMarketDataModelList.get (actualMarketDataModelList.size ()-1).getPeriodDate ());
+
+        actualMarketDataModelList = dao.findMarketData (symbol, period, new Date(89*period.getAsMillis ()),90);
+        assertEquals (89, actualMarketDataModelList.size ());
+        assertEquals (new Date(0), actualMarketDataModelList.get (0).getPeriodDate ());
+        assertEquals (new Date(88*period.getAsMillis ()), actualMarketDataModelList.get (actualMarketDataModelList.size ()-1).getPeriodDate ());
 
     }
 

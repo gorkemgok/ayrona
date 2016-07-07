@@ -81,10 +81,10 @@ public class AlgoStrategyTestITCase {
 
         AccountBindInfo accountBindInfo3 = new AccountBindInfo (slidingStrategyAccount, 1);
 
-        slidingAlgoStrategy = new AlgoStrategy (true, "TEST1", algo, SlidingStrategyOHLC.valueOf (
+        slidingAlgoStrategy = new AlgoStrategy (true, initialMarketData.size (), "TEST1", algo, SlidingStrategyOHLC.valueOf (
                 initialMarketData), Arrays.asList (accountBindInfo3), 0, 0);
 
-        growingAlgoStrategy = new AlgoStrategy (false, "TEST3", algo, GrowingStrategyOHLC.valueOf (
+        growingAlgoStrategy = new AlgoStrategy (false, 0, "TEST3", algo, GrowingStrategyOHLC.valueOf (
                 initialMarketData), Arrays.asList (accountBindInfo2), 0, 0);
 
         long start = System.currentTimeMillis ();

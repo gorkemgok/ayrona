@@ -35,7 +35,7 @@ public class ImportMarketDataBatchJobTest {
         mongoClient.dropDatabase (AYRONA_TEST_DB_NAME);
         mongoClient.dropDatabase (AYRONA_MARKETDATA_TEST_DB_NAME);
 
-        dao = new MongoDao (Singletons.INSTANCE.getMongoClient (), AYRONA_TEST_DB_NAME, AYRONA_MARKETDATA_TEST_DB_NAME);
+        dao = new MongoDao (Singletons.INSTANCE.getMongoClient (), AYRONA_TEST_DB_NAME);
     }
 
     @Test

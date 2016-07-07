@@ -7,6 +7,7 @@ import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.PositionModel;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.definition.TradeOperationResult;
+import com.ayronasystems.core.integration.ataonline.ATAAccountRemote;
 import com.ayronasystems.core.integration.mt4.MT4AccountRemote;
 import com.ayronasystems.core.integration.mt4.MT4Connection;
 import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
@@ -115,6 +116,8 @@ public class BasicAccount implements Account {
                     accountModel.getLoginDetail().getPassword()
             );
             return new MT4AccountRemote(mt4Connection);
+        }else if (accountModel.getType() == AccountModel.Type.ATA_CUSTOM){
+            return new ATAAccountRemote (accountModel.getLoginDetail ().getId ());
         }
         return NoOpAccountRemote.INSTANCE;
     }

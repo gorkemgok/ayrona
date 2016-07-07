@@ -16,6 +16,11 @@ public class SlidingStrategyOHLC extends StrategyOHLC{
 
     private final int size;
 
+    public SlidingStrategyOHLC(int size, Symbol symbol, Period period, List<Date> dates, double[] openSeries, double[] highSeries, double[] lowSeries, double[] closeSeries) throws CorruptedMarketDataException {
+        super(symbol, period, dates, openSeries, highSeries, lowSeries, closeSeries);
+        this.size = size;
+    }
+
     public SlidingStrategyOHLC(Symbol symbol, Period period, List<Date> dates, double[] openSeries, double[] highSeries, double[] lowSeries, double[] closeSeries) throws CorruptedMarketDataException {
         super(symbol, period, dates, openSeries, highSeries, lowSeries, closeSeries);
         size = dates.size ();
@@ -65,6 +70,20 @@ public class SlidingStrategyOHLC extends StrategyOHLC{
 
     public static StrategyOHLC valueOf(MarketData marketData) throws CorruptedMarketDataException {
         StrategyOHLC strategyOHLC = new SlidingStrategyOHLC (
+                marketData.getSymbol (),
+                marketData.getPeriod (),
+                marketData.getDates (),
+                marketData.getPrice (PriceColumn.OPEN),
+                marketData.getPrice (PriceColumn.HIGH),
+                marketData.getPrice (PriceColumn.LOW),
+                marketData.getPrice (PriceColumn.CLOSE)
+        );
+        return strategyOHLC;
+    }
+
+    public static StrategyOHLC valueOf(MarketData marketData, int initialBarCount) throws CorruptedMarketDataException {
+        StrategyOHLC strategyOHLC = new SlidingStrategyOHLC (
+                initialBarCount,
                 marketData.getSymbol (),
                 marketData.getPeriod (),
                 marketData.getDates (),

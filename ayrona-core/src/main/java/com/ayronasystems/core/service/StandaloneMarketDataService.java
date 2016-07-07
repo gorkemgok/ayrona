@@ -3,6 +3,8 @@ package com.ayronasystems.core.service;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
+import com.ayronasystems.core.dao.Dao;
+import com.ayronasystems.core.dao.model.MarketDataModel;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.MarketDataCache;
 import com.ayronasystems.core.data.MarketDataCacheResult;
@@ -15,7 +17,6 @@ import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.util.DateUtils;
 import com.ayronasystems.core.util.Interval;
 import com.ayronasystems.core.util.NumberUtils;
-import com.mongodb.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +45,7 @@ public class StandaloneMarketDataService implements MarketDataService {
 
     private static Object lock = new Object ();
 
-    private MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
+    private Dao dao = Singletons.INSTANCE.getDao ();
 
     private MarketDataCache cache;
 
@@ -63,15 +64,19 @@ public class StandaloneMarketDataService implements MarketDataService {
         cache = new MarketDataCache();
     }
 
+    public MarketData getOHLC (Symbol symbol, Period period, Date endDate, int count) {
+        return fetchOHLC (symbol, period, endDate, count);
+    }
+
     public MarketData getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
-        MarketData marketData = _getOHLC (symbol, period, startDate, endDate);
+        MarketData marketData = getOHLCBetweenDates (symbol, period, startDate, endDate);
         List<Interval> absentIntervalList = marketData.getInterval ().extractNot (new Interval (startDate, endDate));
         if (period.getAsMillis () > Period.M1.getAsMillis () ) {
             for ( Interval absentInterval : absentIntervalList ) {
-                MarketData m1MarketData = _getOHLC (symbol, Period.M1, absentInterval.getBeginningDate (), absentInterval.getEndingDate ());
+                MarketData m1MarketData = getOHLCBetweenDates (symbol, Period.M1, absentInterval.getBeginningDate (), absentInterval.getEndingDate ());
                 try {
-                    MarketData m5MarketData = m1MarketData.convert (Period.M1);
-                    marketData = marketData.safeMerge (m5MarketData);
+                    MarketData convertedMarketData = m1MarketData.convert (period);
+                    marketData = marketData.safeMerge (convertedMarketData);
                 } catch ( MarketDataConversionException e ) {
                     log.error (e.getMessage (), e);
                 }
@@ -80,7 +85,7 @@ public class StandaloneMarketDataService implements MarketDataService {
         return marketData;
     }
 
-    private MarketData _getOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
+    private MarketData getOHLCBetweenDates (Symbol symbol, Period period, Date startDate, Date endDate) {
         long start = System.currentTimeMillis();
         MarketDataCacheResult cacheResult = cache.search(
                 new SymbolPeriod(symbol, period),
@@ -116,26 +121,46 @@ public class StandaloneMarketDataService implements MarketDataService {
 
     public MarketData fetchOHLC (Symbol symbol, Period period, Date startDate, Date endDate) {
         long start = System.currentTimeMillis();
-        DBCollection collection = mongoClient.getDB (conf.getString(ConfKey.MONGODB_MDS)).getCollection (symbol.getSymbolString ().toLowerCase ());
-        DBObject query = new BasicDBObject ("symbol", symbol.getSymbolString ())
-                .append ("period", period.toString ())
-                .append ("periodDate", BasicDBObjectBuilder.start("$gte", startDate).add("$lt", endDate).get());
-        DBObject sort = new BasicDBObject ("periodDate", 1);
-        DBCursor cursor = collection.find (query).sort (sort);
-        int count = cursor.size ();
-        List<Date> dates = new ArrayList<Date> (count);
-        double[] open = new double[count];
-        double[] high = new double[count];
-        double[] low = new double[count];
-        double[] close = new double[count];
+        List<MarketDataModel> marketDataModelList = dao.findMarketData (symbol, period, startDate, endDate);
+        OHLC ohlc = createOHLC (symbol, period, marketDataModelList);
+        long end = System.currentTimeMillis();
+        log.info("Fetched market {} data {}, {} between {}, {} in {} ms",
+                ohlc.size (),
+                symbol, period,
+                DateUtils.formatDate(startDate),
+                DateUtils.formatDate(endDate),
+                (end-start));
+        return ohlc;
+    }
+
+    public MarketData fetchOHLC (Symbol symbol, Period period, Date endDate, int count) {
+        long start = System.currentTimeMillis();
+        List<MarketDataModel> marketDataModelList = dao.findMarketData (symbol, period, endDate, count);
+        OHLC ohlc = createOHLC (symbol, period, marketDataModelList);
+        long end = System.currentTimeMillis();
+        log.info("Fetched market {} data {}, ending date: {}, count: {} in {} ms",
+                 ohlc.size (),
+                 symbol, period,
+                 DateUtils.formatDate(endDate),
+                 count,
+                 (end-start));
+        return ohlc;
+    }
+
+    private static OHLC createOHLC (Symbol symbol, Period period, List<MarketDataModel> marketDataModelList) {
+        int size = marketDataModelList.size ();
+        List<Date> dates = new ArrayList<Date> (size);
+        double[] open = new double[size];
+        double[] high = new double[size];
+        double[] low = new double[size];
+        double[] close = new double[size];
         int i = 0;
-        while ( cursor.hasNext () ){
-            DBObject row = cursor.next ();
-            dates.add ((Date)row.get ("periodDate"));
-            open[i] = (Double)row.get ("open");
-            high[i] = (Double)row.get ("high");
-            low[i] = (Double)row.get ("low");
-            close[i] = (Double)row.get ("close");
+        for (MarketDataModel marketDataModel : marketDataModelList) {
+            dates.add (marketDataModel.getPeriodDate ());
+            open[i] = marketDataModel.getOpen ();
+            high[i] = marketDataModel.getHigh ();
+            low[i] = marketDataModel.getLow ();
+            close[i] = marketDataModel.getClose ();
             i++;
         }
         OHLC ohlc = null;
@@ -144,13 +169,6 @@ public class StandaloneMarketDataService implements MarketDataService {
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
-        long end = System.currentTimeMillis();
-        log.info("Fetched market {} data {}, {} between {}, {} in {} ms",
-                ohlc.size (),
-                symbol, period,
-                DateUtils.formatDate(startDate),
-                DateUtils.formatDate(endDate),
-                (end-start));
         return ohlc;
     }
 

@@ -30,6 +30,7 @@ public class BasicOrderHandler implements OrderHandler{
                 List<Position> openPositions = account.getOpenPositions (order.getSymbol (), initiator);
                 for (Position position : openPositions){
                     if (position.getDirection ().equals (order.getDirection ())){
+                        position.close (order.getDate (), order.getPrice ());
                         account.closePosition (position, order.getDate (), order.getPrice ());
                     }
                 }

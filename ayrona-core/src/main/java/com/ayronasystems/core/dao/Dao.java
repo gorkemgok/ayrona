@@ -2,6 +2,8 @@ package com.ayronasystems.core.dao;
 
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.model.*;
+import com.ayronasystems.core.definition.Period;
+import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.edr.EdrModule;
 import com.ayronasystems.core.edr.EdrType;
 import com.google.common.base.Optional;
@@ -94,5 +96,13 @@ public interface Dao {
     List<PositionModel> findOpenPositionsByStrategyId(String strategyId);
 
     List<PositionModel> findAllPositions();
+
+    //MarketData
+
+    MarketDataModel createMarketData(MarketDataModel marketDataModel);
+
+    List<MarketDataModel> findMarketData(Symbol symbol, Period period, Date beginningDate, Date endDate);
+
+    List<MarketDataModel> findMarketData(Symbol symbol, Period period, Date endDate, int count);
 
 }

@@ -4,6 +4,7 @@ import com.ayronasystems.core.JMSManager;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
+import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.integration.mt4.MT4Connection;
 import com.ayronasystems.data.Barifier;
 import com.ayronasystems.data.DataServiceEngine;
@@ -41,11 +42,14 @@ public class MT4DataServiceEngine implements DataServiceEngine{
         jmsManager = JMSManager.getManager (conf.getString (ConfKey.AMQ_URI));
         mongoClient = Singletons.INSTANCE.getMongoClient ();
 
-        Barifier barifier = new Barifier ();
-        barifier.addBarListener (new BarDBSaverListener (mongoClient));
-        barifier.addBarListener (new BarAMQSenderListener (jmsManager));
         BasicTickListener tickListener = new BasicTickListener ();
-        tickListener.addBarifier (barifier);
+        for ( Period period : Period.values ()) {
+            Barifier barifier = new Barifier (period);
+            barifier.addBarListener (new BarDBSaverListener (mongoClient));
+            barifier.addBarListener (new BarAMQSenderListener (jmsManager));
+            tickListener.addBarifier (barifier);
+
+        }
         MT4BulkTickListener mt4BulkTickListener = new MT4BulkTickListener (tickListener);
         mt4ListenerConnection = new MT4Connection (
                 conf.getString (ConfKey.MT4_DS_LISTENER_BROKER),

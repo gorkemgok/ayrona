@@ -67,9 +67,11 @@ public class ATAOrderPayload {
         return Optional.absent ();
     }
 
-    public static ATAOrderPayload createInstance (Order.Type order, Direction direction, Date date, double price, String accountNo, double lot){
+    public static ATAOrderPayload createInstance (
+            Order.Type order, Direction direction, Date date, double price, String customerNo, String accountNo, double lot){
         ATAOrderPayload ATAOrderPayload = new ATAOrderPayload ();
-        ATAOrderPayload.customerExtId = accountNo;
+        ATAOrderPayload.customerExtId = customerNo;
+        ATAOrderPayload.accountExtId = Integer.valueOf (accountNo);
         ATAOrderPayload.lot = lot;
         ATAOrderPayload.price = price;
         Calendar cal = Calendar.getInstance ();

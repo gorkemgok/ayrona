@@ -4,7 +4,7 @@ import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.batchjob.BatchJobManager;
 import com.ayronasystems.core.batchjob.impl.ImportMarketDataBatchJob;
 import com.ayronasystems.core.configuration.ConfigurationConstants;
-import com.ayronasystems.core.dao.Dao;
+import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
@@ -27,30 +27,6 @@ import static org.junit.Assert.assertTrue;
  * Created by gorkemgok on 15/06/16.
  */
 public class StandaloneMarketDataServiceTestITCase {
-    public static final Bar[] BARS_M1 = {
-            new Bar(DateUtils.parseDate("01.01.2016 01:00:00"), 113676, 113683, 113667, 113682, 0),//0
-            new Bar(DateUtils.parseDate("01.01.2016 01:01:00"), 113681, 113771, 113670, 113764, 0),//1
-            new Bar(DateUtils.parseDate("01.01.2016 01:02:00"), 113742, 113781, 113731, 113773, 0),//2
-            new Bar(DateUtils.parseDate("01.01.2016 01:03:00"), 113775, 113776, 113738, 113749, 0),//3
-            new Bar(DateUtils.parseDate("01.01.2016 01:04:00"), 113749, 113753, 113740, 113750, 0),//4
-            new Bar(DateUtils.parseDate("01.01.2016 01:05:00"), 113749, 113768, 113749, 113763, 0),//5
-            new Bar(DateUtils.parseDate("01.01.2016 01:06:00"), 113760, 113763, 113758, 113762, 0),//6
-            new Bar(DateUtils.parseDate("01.01.2016 01:07:00"), 113763, 113792, 113761, 113791, 0),//7
-            new Bar(DateUtils.parseDate("01.01.2016 01:08:00"), 113791, 113791, 113770, 113780, 0),//8
-            new Bar(DateUtils.parseDate("01.01.2016 01:09:00"), 113779, 113782, 113777, 113779, 0),//9
-            new Bar(DateUtils.parseDate("01.01.2016 01:10:00"), 113783, 113786, 113766, 113767, 0),//10
-            new Bar(DateUtils.parseDate("01.01.2016 01:11:00"), 113767, 113772, 113764, 113772, 0),//11
-            new Bar(DateUtils.parseDate("01.01.2016 02:12:00"), 113769, 113769, 113757, 113759, 0),//12
-            new Bar(DateUtils.parseDate("01.01.2016 02:13:00"), 113757, 113771, 113757, 113771, 0),//13
-            new Bar(DateUtils.parseDate("01.01.2016 02:14:00"), 113769, 113773, 113768, 113770, 0),//14
-            new Bar(DateUtils.parseDate("01.01.2016 02:15:00"), 113771, 113791, 113770, 113779, 0),//15
-            new Bar(DateUtils.parseDate("01.01.2016 02:16:00"), 113780, 113811, 113778, 113811, 0),//16
-            new Bar(DateUtils.parseDate("01.01.2016 02:17:00"), 113810, 113868, 113810, 113848, 0),//17
-            new Bar(DateUtils.parseDate("01.01.2016 02:18:00"), 113847, 113880, 113845, 113870, 0),//18
-            new Bar(DateUtils.parseDate("01.01.2016 02:19:00"), 113871, 113882, 113862, 113867, 0),//19
-            new Bar(DateUtils.parseDate("01.01.2016 02:20:00"), 113867, 113897, 113863, 113880, 0),//20
-            new Bar(DateUtils.parseDate("01.01.2016 02:21:00"), 113879, 113897, 113876, 113895, 0) //21
-    };
 
     public static final Bar[] BARS_M5 = {
             new Bar(DateUtils.parseDate("01.01.2016 01:00:00"), 113676, 113683, 113667, 113682, 0),//0
@@ -77,17 +53,14 @@ public class StandaloneMarketDataServiceTestITCase {
             new Bar(DateUtils.parseDate("01.01.2016 02:45:00"), 113879, 113897, 113876, 113895, 0) //21
     };
 
-    private Dao dao;
-
     private MarketDataService mds;
 
     @Before
     public void setup(){
-        String mdsString = "ayrona_marketdatacache_test";
-        System.setProperty (ConfigurationConstants.PROP_MONGODB_MDS, mdsString);
+        System.setProperty (ConfigurationConstants.PROP_MONGODB_DS, MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
 
         MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
-        mongoClient.dropDatabase (mdsString);
+        mongoClient.dropDatabase (MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
 
         mds = StandaloneMarketDataService.getInstance ();
 

@@ -1,6 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.*;
+import com.ayronasystems.core.Order;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.account.BasicAccount;
@@ -8,12 +8,16 @@ import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.SlidingStrategyOHLC;
 import com.ayronasystems.core.data.StrategyOHLC;
-import com.ayronasystems.core.definition.*;
+import com.ayronasystems.core.definition.PriceColumn;
+import com.ayronasystems.core.definition.Signal;
+import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.strategy.*;
 import com.ayronasystems.core.strategy.concurrent.RunnableOrderHandler;
 import com.ayronasystems.core.timeseries.moment.Bar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,6 +29,8 @@ import java.util.concurrent.Executors;
  * Created by gorkemgok on 12/05/16.
  */
 public class AlgoStrategy implements SPStrategy<Bar> {
+
+    private static Logger log = LoggerFactory.getLogger (AlgoStrategy.class);
 
     private String id;
 
@@ -48,11 +54,7 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private SymbolPeriod symbolPeriod;
 
-    public AlgoStrategy (String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
-        this(true, id, algo, initialMarketData, accountBindInfoList, takeProfitRatio, stopLossRatio);
-    }
-
-    public AlgoStrategy (boolean slidingData, String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
+    public AlgoStrategy (boolean slidingData, int initialBarCount, String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
         this.algo = algo;
         this.accountBindInfoList = accountBindInfoList;
@@ -68,7 +70,11 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
         try {
             if (slidingData){
-                ohlc = SlidingStrategyOHLC.valueOf (initialMarketData);
+                if (initialBarCount > 0){
+                    ohlc = SlidingStrategyOHLC.valueOf (initialMarketData, initialBarCount);
+                }else {
+                    ohlc = SlidingStrategyOHLC.valueOf (initialMarketData);
+                }
             }else {
                 ohlc = GrowingStrategyOHLC.valueOf (initialMarketData);
             }
@@ -97,6 +103,7 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             if ( signalList.size () > 0 ) {
                 signalList = signalList.subList (signalList.size () - 1, signalList.size ());
             }
+            log.info ("NEW SIGNAL {}, Strategy: {}", signalList.get (0), getName ());
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
             orderHandler.process (orderList, this, dummyAccount, 1, takeProfit, stopLoss);
             synchronized (this) {

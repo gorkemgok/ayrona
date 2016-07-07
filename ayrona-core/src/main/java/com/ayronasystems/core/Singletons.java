@@ -71,7 +71,7 @@ public class Singletons {
         if ( dao == null){
             synchronized (lock4){
                 if ( dao == null){
-                    dao = new MongoDao (getMongoClient (), conf.getString (ConfKey.MONGODB_DS), conf.getString (ConfKey.MONGODB_MDS));
+                    dao = new MongoDao (getMongoClient (), conf.getString (ConfKey.MONGODB_DS));
                 }
             }
         }

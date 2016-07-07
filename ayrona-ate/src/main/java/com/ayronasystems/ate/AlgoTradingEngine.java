@@ -118,6 +118,8 @@ public class AlgoTradingEngine {
         List<AccountBindInfo> accountBindInfoList = getAccountBindInfoList (strategyModel);
 
         SPStrategy<Bar> strategy = new AlgoStrategy (
+                true,
+                strategyModel.getInitialBarCount (),
                 strategyModel.getId (),
                 algo,
                 initialMarketData,

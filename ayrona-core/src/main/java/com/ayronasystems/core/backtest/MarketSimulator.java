@@ -29,7 +29,7 @@ public class MarketSimulator {
         Algo algo = Algo.createInstance (code);
         neededInputCount = algo.getNeededInputCount ();
         MarketData initialData = marketData.subData (0, neededInputCount - 1);
-        strategy = new AlgoStrategy ("0", algo , initialData, Arrays.asList (accountBindInfo), 0, 0);
+        strategy = new AlgoStrategy (false, 0, "0", algo , initialData, Arrays.asList (accountBindInfo), 0, 0);
         this.marketData = marketData;
     }
 

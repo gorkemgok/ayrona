@@ -23,22 +23,22 @@ public class Barifier {
 
     private static Logger log = LoggerFactory.getLogger (Barifier.class);
 
-    private static final Period PERIOD = Period.M1;
-
-    private static final long PERIOD_MILLIS = PERIOD.getAsMillis ();
-
     private Map<Symbol, TempBar> tempStack = new HashMap<Symbol, TempBar> ();
 
     private Map<Symbol, TimeSeries<Bar>> seriesStack = new HashMap<Symbol, TimeSeries<Bar>> ();
 
     private List<BarListener> barListenerList = new ArrayList<BarListener> ();
 
-    private long currentMillis;
+    private final Period period;
+
+    public Barifier (Period period) {
+        this.period = period;
+    }
 
     public void newTick(Tick tick){
         log.debug ("{}, {}, {}", tick.getSymbol (), tick.getDate (), tick.getBid ());
         long timeMillis = tick.getDate ().getTime ();
-        long periodMillis = timeMillis - (timeMillis % PERIOD_MILLIS);
+        long periodMillis = timeMillis - (timeMillis % period.getAsMillis ());
         TempBar tempBar = getOrCreate (tick.getSymbol ());
         if (tempBar.isClosed()){
             tempBar.beginPeriod (periodMillis, tick.getBid ());
@@ -48,7 +48,7 @@ public class Barifier {
                 getOrCreateSeries (tick.getSymbol ()).addMoment (bar);
                 log.info ("Added {} bar to timeseries: {}", tick.getSymbol (), bar);
                 for (BarListener barListener : barListenerList){
-                    barListener.newBar (tick.getSymbol (), PERIOD, bar);
+                    barListener.newBar (tick.getSymbol (), period, bar);
                 }
                 tempBar.beginPeriod (periodMillis, tick.getBid ());
             }else {
@@ -70,7 +70,7 @@ public class Barifier {
     private TimeSeries<Bar> getOrCreateSeries(Symbol symbol){
         TimeSeries<Bar> timeSeries = seriesStack.get (symbol);
         if (timeSeries == null){
-            timeSeries = new SymbolTimeSeries<Bar> (symbol, Period.M1, Bar.class);
+            timeSeries = new SymbolTimeSeries<Bar> (symbol, period, Bar.class);
             seriesStack.put (symbol, timeSeries);
         }
         return timeSeries;

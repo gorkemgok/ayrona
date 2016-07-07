@@ -17,7 +17,12 @@ public class ATAOrderPayloadTest {
 
     @Test
     public void toJson () throws Exception {
-        Optional<String> payloadStringOptional = ATAOrderPayload.createInstance (Order.Type.OPEN, Direction.LONG, new Date(), 96.7, "testAccountNo", 2).toJson ();
+        Optional<String> payloadStringOptional = ATAOrderPayload.createInstance (
+                Order.Type.OPEN,
+                Direction.LONG,
+                new Date(),
+                96.7,
+                "testAccountNo", "100", 2).toJson ();
         assertTrue (payloadStringOptional.isPresent ());
         String payloadString = payloadStringOptional.get();
         assertFalse (payloadString.isEmpty ());

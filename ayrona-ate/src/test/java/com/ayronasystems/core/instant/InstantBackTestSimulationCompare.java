@@ -18,6 +18,7 @@ import com.ayronasystems.core.strategy.OrderGenerator;
 import com.ayronasystems.core.strategy.SignalGenerator;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Moment;
+import com.ayronasystems.core.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,11 @@ public class InstantBackTestSimulationCompare {
         OrderGenerator simOrderGenerator = new BasicOrderGenerator ();
         int neededInputCount = signalGenerator.getNeededInputCount ();
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
-        MarketData baseMarketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5);
+        MarketData baseMarketData = marketDataService.getOHLC (
+                Symbol.VOB30, Period.M5,
+                DateUtils.parseDate ("01.01.2015 00:00:00"),
+                DateUtils.parseDate ("01.01.2016 00:00:00")
+        );
         MarketData initialMarketData = baseMarketData.subData (0, neededInputCount - 1);
         MarketData simulationMarketData = baseMarketData.subData (neededInputCount - 1, baseMarketData.size () - 1);
 

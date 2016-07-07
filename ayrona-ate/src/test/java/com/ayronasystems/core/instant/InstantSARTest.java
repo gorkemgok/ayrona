@@ -16,6 +16,7 @@ import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Moment;
+import com.ayronasystems.core.util.DateUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,7 +32,11 @@ public class InstantSARTest {
     public static void main(String[] args) throws CorruptedMarketDataException {
         FunctionFactory.scanFunctions ();
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
-        MarketData marketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5);
+        MarketData marketData = marketDataService.getOHLC (
+                Symbol.VOB30, Period.M5,
+                DateUtils.parseDate ("01.01.2015 00:00:00"),
+                DateUtils.parseDate ("01.01.2016 00:00:00")
+        );
         StrategyOHLC strategyMarketData = GrowingStrategyOHLC.valueOf (marketData.subData (0 , SAR_PER));
         MarketData simMarketData = marketData.subData (SAR_PER, marketData.size () - 1);
 
