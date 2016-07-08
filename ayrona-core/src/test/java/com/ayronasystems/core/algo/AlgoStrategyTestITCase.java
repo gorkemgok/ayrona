@@ -28,7 +28,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Created by gorkemgok on 15/06/16.
- * THIS TEST NEEDS HUGE AMOUNT OF VOB30 M5 DATA
+ * THIS TEST NEEDS VOB30 M5 DATA BETWEEN 2015-2016
  */
 public class AlgoStrategyTestITCase {
 

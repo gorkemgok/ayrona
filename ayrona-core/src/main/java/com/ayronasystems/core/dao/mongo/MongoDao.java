@@ -88,7 +88,8 @@ public class MongoDao implements Dao{
                 .set ("code", strategyModel.getCode ())
                 .set ("name", strategyModel.getName ())
                 .set ("symbol", strategyModel.getSymbol ())
-                .set ("period", strategyModel.getPeriod ());
+                .set ("period", strategyModel.getPeriod ())
+                .set ("initialBarCount", strategyModel.getInitialBarCount());
         appDatastore.update (query, operations);
     }
 

@@ -21,7 +21,8 @@
     "angular-base64": "~2.0.5",
     "restangular": "~1.5.2",
     "underscore": "~1.8.3",
-    "Chart.js": "~2.1.6"
+    "Chart.js": "~2.1.6",
+    "angular-ui-ace": "bower"
   },
   "devDependencies": {
     "angular-mocks": "~1.0.7",

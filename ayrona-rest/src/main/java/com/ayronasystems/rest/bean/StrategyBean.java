@@ -25,6 +25,16 @@ public class StrategyBean {
 
     private String period;
 
+    private int initialBarCount;
+
+    public int getInitialBarCount() {
+        return initialBarCount;
+    }
+
+    public void setInitialBarCount(int initialBarCount) {
+        this.initialBarCount = initialBarCount;
+    }
+
     public String getSymbol () {
         return symbol;
     }
@@ -81,6 +91,7 @@ public class StrategyBean {
         strategyBean.setSymbol (strategyModel.getSymbol ().toString ());
         strategyBean.setPeriod (strategyModel.getPeriod ().toString ());
         strategyBean.setState (strategyModel.getState ().toString ());
+        strategyBean.setInitialBarCount(strategyModel.getInitialBarCount());
         return strategyBean;
     }
 
@@ -92,6 +103,7 @@ public class StrategyBean {
         strategyModel.setSymbol (Symbol.valueOf (symbol));
         strategyModel.setPeriod (Period.valueOf (period));
         strategyModel.setState (AccountBinder.State.valueOf (state));
+        strategyModel.setInitialBarCount(initialBarCount);
         return strategyModel;
     }
 }

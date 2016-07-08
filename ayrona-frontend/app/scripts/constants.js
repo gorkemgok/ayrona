@@ -4,7 +4,7 @@
 var constantsModule = angular.module("ayronaConstants",[]);
 
 constantsModule.constant('REST', {
-    base : 'http://localhost:8050/ayrona/rest/v1'
+    base : 'http://localhost:18050/ayrona/rest/v1'
 });
 
 constantsModule.constant('METRICS', [

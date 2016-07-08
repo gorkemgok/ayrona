@@ -99,7 +99,7 @@
                 <configuration>
                     <properties>
                         <swarm.bind.address>0.0.0.0</swarm.bind.address>
-                        <swarm.http.port>8050</swarm.http.port>
+                        <swarm.http.port>18050</swarm.http.port>
                     </properties>
                 </configuration>
             </plugin>

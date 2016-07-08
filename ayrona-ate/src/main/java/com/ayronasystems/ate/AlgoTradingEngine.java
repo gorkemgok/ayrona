@@ -111,9 +111,10 @@ public class AlgoTradingEngine {
 
         long start = System.currentTimeMillis ();
 
-        MarketData initialMarketData = marketDataService.getOHLC (symbol, period, prevWeek);
+        int initialBarCount = strategyModel.getInitialBarCount () > 0 ? strategyModel.getInitialBarCount () : algo.getNeededInputCount();
+        MarketData initialMarketData = marketDataService.getOHLC (symbol, period, new Date(), initialBarCount);
         long end = System.currentTimeMillis ();
-        log.info ("Loaded market data {} - {} with {} price in {} ms", symbol, period, initialMarketData.size() , (end-start));
+        log.info ("Loaded OHLC data {} - {} with {} price in {} ms", symbol, period, initialMarketData.size() , (end-start));
 
         List<AccountBindInfo> accountBindInfoList = getAccountBindInfoList (strategyModel);
 

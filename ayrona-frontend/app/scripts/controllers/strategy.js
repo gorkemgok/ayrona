@@ -100,23 +100,12 @@ angular.module('ayronaApp')
                         result.profitSeries,
                         result.mddSeries
                     ];
-                    $scope.datasetOverride = [
-                        {
-                            label: "Bar chart",
-                            borderWidth: 1,
-                            type: 'bar'
-                        },
-                        {
-                            label: "Bar chart",
-                            borderWidth: 1,
-                            type: 'bar'
-                        },
-                        {
-                            label: "Line chart",
-                            borderWidth: 2,
-                            type: 'line'
-                        }
-                    ];
+                    var i = 0;
+                    var labels = [];
+                    angular.forEach(result.equitySeries, function (value) {
+                        labels.push(i++);
+                    });
+                    $scope.labels = labels;
                     $scope.backTestResult = result;
                 }, function () {
                     console.log('Modal dismissed at: ' + new Date());
@@ -163,6 +152,37 @@ angular.module('ayronaApp')
                 }
             );
         }
+
+        $scope.labels = [];
+        $scope.series = ['Equity', 'Profit', 'MDD'];
+        $scope.data = [];
+        $scope.onClick = function (points, evt) {
+            console.log(points, evt);
+        };
+        $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+        $scope.options = {
+            scales: {
+                xAxes: [{
+                    display: false
+                }],
+                yAxes: [
+                    {
+                        id: 'y-axis-1',
+                        type: 'linear',
+                        display: true,
+                        position: 'left'
+                    },
+                    {
+                        id: 'y-axis-2',
+                        type: 'linear',
+                        display: true,
+                        position: 'right'
+                    }
+                ]
+            }
+        };
+
+        
     })
     .controller("BackTestCtrl", function ($scope, symbol, period, code, Rest) {
         $scope.beginDate = new Date(2015, 1, 1);
