@@ -3,7 +3,7 @@ package com.ayronasystems.rest.bean;
 import com.ayronasystems.core.dao.model.AccountBinder;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -100,7 +100,7 @@ public class StrategyBean {
         strategyModel.setId (id);
         strategyModel.setName (name);
         strategyModel.setCode (code);
-        strategyModel.setSymbol (Symbol.valueOf (symbol));
+        strategyModel.setSymbol (Symbols.of (symbol));
         strategyModel.setPeriod (Period.valueOf (period));
         strategyModel.setState (AccountBinder.State.valueOf (state));
         strategyModel.setInitialBarCount(initialBarCount);

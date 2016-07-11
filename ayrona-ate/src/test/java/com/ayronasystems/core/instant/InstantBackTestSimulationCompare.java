@@ -8,7 +8,7 @@ import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Signal;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.service.MarketDataService;
@@ -42,7 +42,7 @@ public class InstantBackTestSimulationCompare {
         int neededInputCount = signalGenerator.getNeededInputCount ();
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
         MarketData baseMarketData = marketDataService.getOHLC (
-                Symbol.VOB30, Period.M5,
+                Symbols.of ("TEST"), Period.M5,
                 DateUtils.parseDate ("01.01.2015 00:00:00"),
                 DateUtils.parseDate ("01.01.2016 00:00:00")
         );

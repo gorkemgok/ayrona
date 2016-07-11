@@ -3,6 +3,7 @@ package com.ayronasystems.core.dao.mysql.model;
 import com.ayronasystems.core.backtest.MetricType;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.definition.commission.Commission;
 import com.ayronasystems.core.definition.commission.CommissionType;
 import com.ayronasystems.core.definition.commission.ConstantSpreadCommission;
@@ -22,6 +23,7 @@ import java.util.Date;
 /**
  * Created by gorkemgok on 30/09/15.
  */
+//TODO: Get rid of this class
 @XmlRootElement
 @Entity
 @Table(name="strategy_options")
@@ -209,7 +211,7 @@ public class StrategyOptionsModel extends BaseModel{
         StrategyOptions strategyOptions = null;
         strategyOptions = new StrategyOptions.Builder ()
                 .baseSeries (SymbolSeriesManager.getManager (Bar.class)
-                                                .get (Symbol.EURUSD, Period.M5,
+                                                .get (Symbols.of ("TEST"), Period.M5,
                                                       baseSeriesBeginDate, baseSeriesEndDate))
                 .commission (commission)
                 .trainingInterval (this.getTrainingInterval ())

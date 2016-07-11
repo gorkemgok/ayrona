@@ -1,7 +1,7 @@
 package com.ayronasystems.core.data;
 
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.definition.SymbolPeriod;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.util.DateUtils;
@@ -40,7 +40,7 @@ public class MarketDataCacheTest {
         double[] ls = new double[]{0,1,2,3,4,5};
         double[] cs = new double[]{0,1,2,3,4,5};
 
-        ohlc = new OHLC (Symbol.VOB30, Period.M5, dates, os, hs, ls, cs);
+        ohlc = new OHLC (Symbols.of("TEST"), Period.M5, dates, os, hs, ls, cs);
         marketDataCache = new MarketDataCache ();
         marketDataCache.cache (ohlc);
 
@@ -57,7 +57,7 @@ public class MarketDataCacheTest {
         double[] ls2 = new double[]{0,1,2,3,4,5,6,7,8,9,10};
         double[] cs2 = new double[]{0,1,2,3,4,5,6,7,8,9,10};
 
-        ohlc2 = new OHLC (Symbol.VOB30, Period.M5, dates2, os2, hs2, ls2, cs2);
+        ohlc2 = new OHLC (Symbols.of("TEST"), Period.M5, dates2, os2, hs2, ls2, cs2);
 
     }
 
@@ -71,11 +71,11 @@ public class MarketDataCacheTest {
         double[] ls = new double[]{3.22,4.22,5.22};
         double[] cs = new double[]{3.23,4.23,5.23};
 
-        ohlc = new OHLC (Symbol.VOB30, Period.M5, dates, os, hs, ls, cs);
+        ohlc = new OHLC (Symbols.of("TEST"), Period.M5, dates, os, hs, ls, cs);
         marketDataCache.cache(ohlc);
 
         MarketDataCacheResult marketDataCacheResult = marketDataCache.search(
-                new SymbolPeriod(Symbol.VOB30, Period.M5),
+                new SymbolPeriod(Symbols.of("TEST"), Period.M5),
                 new Interval(DateUtils.parseDate ("01.01.2016 00:45:00"), DateUtils.parseDate ("01.01.2016 01:30:00"))
         );
 
@@ -92,7 +92,7 @@ public class MarketDataCacheTest {
         marketDataCache.cache(ohlc2);
 
         marketDataCacheResult = marketDataCache.search(
-                new SymbolPeriod(Symbol.VOB30, Period.M5),
+                new SymbolPeriod(Symbols.of("TEST"), Period.M5),
                 new Interval(DateUtils.parseDate ("01.01.2016 00:40:00"), DateUtils.parseDate ("01.01.2016 01:35:00"))
         );
 
@@ -109,7 +109,7 @@ public class MarketDataCacheTest {
 
     @Test
     public void search () throws Exception {
-        SymbolPeriod symbolPeriod = new SymbolPeriod (Symbol.VOB30, Period.M5);
+        SymbolPeriod symbolPeriod = new SymbolPeriod (Symbols.of("TEST"), Period.M5);
 
         MarketDataCacheResult r0 = marketDataCache.search(symbolPeriod,
                                                         new Interval (

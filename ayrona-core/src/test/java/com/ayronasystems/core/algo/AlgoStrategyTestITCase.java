@@ -9,7 +9,7 @@ import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.SlidingStrategyOHLC;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.timeseries.moment.Bar;
@@ -63,11 +63,11 @@ public class AlgoStrategyTestITCase {
     public void setup () throws Exception {
         FunctionFactory.scanFunctions ();
 
-        allMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date3);
+        allMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date1, date3);
 
-        initialMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date2);
+        initialMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date1, date2);
 
-        liveMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date2, date3);
+        liveMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date2, date3);
 
         algo = new FatihAlgo().toAlgo ();
 
@@ -114,11 +114,11 @@ public class AlgoStrategyTestITCase {
     @Test
     public void compareMarketdataSizes(){
 
-        allMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date3);
+        allMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date1, date3);
 
-        initialMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date1, date2);
+        initialMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date1, date2);
 
-        liveMarketData = mds.getOHLC (Symbol.VOB30, Period.M5, date2, date3);
+        liveMarketData = mds.getOHLC (Symbols.of("TEST"), Period.M5, date2, date3);
 
         assertEquals (allMarketData.size (), initialMarketData.size () + liveMarketData.size ());
     }

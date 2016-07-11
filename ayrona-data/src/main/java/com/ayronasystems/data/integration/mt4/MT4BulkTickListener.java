@@ -1,6 +1,6 @@
 package com.ayronasystems.data.integration.mt4;
 
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.data.listener.BasicTickListener;
 import com.jfx.MT4;
 import com.jfx.Tick;
@@ -26,10 +26,10 @@ public class MT4BulkTickListener implements Strategy.BulkTickListener{
             BigDecimal bid = new BigDecimal (String.valueOf (tick.bid));
             BigDecimal mid = ask.add (bid)
                                 .divide (new BigDecimal (2));
-            if (Symbol.hasSymbol (tick.symbol)) {
+            if ( Symbols.hasSymbolCode (tick.symbol)) {
                 com.ayronasystems.core.timeseries.moment.Tick ayTick =
                         new com.ayronasystems.core.timeseries.moment.Tick (
-                                tick.time, Symbol.valueOf (tick.symbol), ask.doubleValue (), mid.doubleValue (),
+                                tick.time, Symbols.of (tick.symbol), ask.doubleValue (), mid.doubleValue (),
                                 bid.doubleValue ()
                         );
                 tickListener.newTick (ayTick);

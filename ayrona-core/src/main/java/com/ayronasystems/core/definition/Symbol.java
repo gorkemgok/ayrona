@@ -3,36 +3,41 @@ package com.ayronasystems.core.definition;
 /**
  * Created by gorkemgok on 12/03/15.
  */
-public enum Symbol {
-    EURUSD("EUR","USD"),
-    USDTRY("USD","TRY"),
-    VOB30("VOB30"),
-    GRNT("GARANTI"),
-    TEST("TEST");
+public class Symbol {
 
-    private String base;
-    private String secondary;
+    private String name;
+    private String code;
 
-    Symbol(String base, String secondary) {
-        this.base = base;
-        this.secondary = secondary;
+    Symbol (String name, String code) {
+        this.name = name;
+        this.code = code;
     }
 
-    Symbol(String base) {
-        this.base = base;
-        this.secondary = "";
+    public String getName () {
+        return name;
     }
 
-    public String getSymbolString(){
-        return base+secondary;
+    public String getCode () {
+        return code;
     }
 
-    public static boolean hasSymbol(String symbolString){
-        for (Symbol symbol : Symbol.values ()){
-            if (symbol.getSymbolString ().equals (symbolString)){
-                return true;
-            }
+    @Override
+    public boolean equals (Object o) {
+        if ( this == o ) {
+            return true;
         }
-        return false;
+        if ( o == null || getClass () != o.getClass () ) {
+            return false;
+        }
+
+        Symbol symbol = (Symbol) o;
+
+        return name.equals (symbol.name);
+
+    }
+
+    @Override
+    public int hashCode () {
+        return name.hashCode ();
     }
 }

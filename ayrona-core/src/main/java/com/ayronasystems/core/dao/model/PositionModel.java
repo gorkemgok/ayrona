@@ -5,6 +5,7 @@ import com.ayronasystems.core.Position;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 import org.mongodb.morphia.utils.IndexDirection;
@@ -30,7 +31,7 @@ public class PositionModel extends BaseModel{
 
     private String strategyName;
 
-    private Symbol symbol;
+    private String symbol;
 
     private double lot;
 
@@ -102,11 +103,11 @@ public class PositionModel extends BaseModel{
     }
 
     public Symbol getSymbol () {
-        return symbol;
+        return Symbols.of (symbol);
     }
 
     public void setSymbol (Symbol symbol) {
-        this.symbol = symbol;
+        this.symbol = symbol.getName ();
     }
 
     public double getLot () {
@@ -225,7 +226,7 @@ public class PositionModel extends BaseModel{
         Position position = Position
                 .builder (new BasicInitiator (strategyId, strategyName))
                 .accountName (accountName)
-                .symbol (symbol)
+                .symbol (Symbols.of (symbol))
                 .direction (direction)
                 .lot (lot)
                 .description (description)

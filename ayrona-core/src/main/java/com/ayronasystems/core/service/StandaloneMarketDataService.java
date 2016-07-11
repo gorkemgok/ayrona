@@ -12,6 +12,7 @@ import com.ayronasystems.core.data.OHLC;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.definition.SymbolPeriod;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.util.DateUtils;
@@ -260,7 +261,7 @@ public class StandaloneMarketDataService implements MarketDataService {
                     if (symbolPeriodPair.length != 2){
                         throw new IllegalArgumentException ();
                     }else{
-                        symbol = Symbol.valueOf (symbolPeriodPair[0]);
+                        symbol = Symbols.of (symbolPeriodPair[0]);
                         period = Period.valueOf (symbolPeriodPair[1]);
                         if (symbol == null || period == null){
                             throw new IllegalArgumentException ();

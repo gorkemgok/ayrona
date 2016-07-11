@@ -2,6 +2,7 @@ package com.ayronasystems.core.dao.model;
 
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.PostLoad;
 import org.mongodb.morphia.annotations.PrePersist;
@@ -15,7 +16,7 @@ import java.util.List;
 @Entity("strategy")
 public class StrategyModel extends BaseModel {
 
-    private Symbol symbol;
+    private String symbol;
 
     private Period period;
 
@@ -30,11 +31,11 @@ public class StrategyModel extends BaseModel {
     private List<AccountBinder> accounts;
 
     public Symbol getSymbol () {
-        return symbol;
+        return Symbols.of (symbol);
     }
 
     public void setSymbol (Symbol symbol) {
-        this.symbol = symbol;
+        this.symbol = symbol.getName ();
     }
 
     public Period getPeriod () {

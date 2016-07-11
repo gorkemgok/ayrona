@@ -1,10 +1,10 @@
 package com.ayronasystems.core.backtest;
 
-import com.ayronasystems.core.data.OHLC;
 import com.ayronasystems.core.Position;
+import com.ayronasystems.core.data.OHLC;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
 import com.ayronasystems.core.timeseries.moment.EquityBar;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by gorkemgok on 22/05/16.
@@ -53,7 +53,7 @@ public class BackTestCalculatorTest {
     @Before
     public void setup(){
         try {
-            ohlc = new OHLC (Symbol.VOB30, Period.M5, marketDates, series1, series1, series2, series1);
+            ohlc = new OHLC (Symbols.of ("TEST"), Period.M5, marketDates, series1, series1, series2, series1);
             positionList = new ArrayList<Position> ();
 
             Position position = Position.builder (null)

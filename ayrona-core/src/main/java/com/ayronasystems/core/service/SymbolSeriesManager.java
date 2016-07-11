@@ -7,6 +7,7 @@ import com.ayronasystems.core.dao.mysql.Tick4JDaoImpl;
 import com.ayronasystems.core.dao.mysql.model.BarModel;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.Moment;
 import com.ayronasystems.core.timeseries.moment.Tick;
@@ -215,7 +216,7 @@ public class SymbolSeriesManager<M extends Moment> {
                     if (symbolPeriodPair.length != 2){
                         throw new IllegalArgumentException ();
                     }else{
-                        symbol = Symbol.valueOf (symbolPeriodPair[0]);
+                        symbol = Symbols.of (symbolPeriodPair[0]);
                         period = Period.valueOf (symbolPeriodPair[1]);
                         if (symbol == null || period == null){
                             throw new IllegalArgumentException ();

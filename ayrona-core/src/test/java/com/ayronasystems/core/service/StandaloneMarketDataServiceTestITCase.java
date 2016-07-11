@@ -8,7 +8,7 @@ import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
 import com.ayronasystems.core.timeseries.moment.Moment;
@@ -57,14 +57,15 @@ public class StandaloneMarketDataServiceTestITCase {
 
     @Before
     public void setup(){
-        System.setProperty (ConfigurationConstants.PROP_MONGODB_DS, MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+        String ds = MongoDaoTestITCase.AYRONA_TEST_DB_NAME+"_sa_mds";
+        System.setProperty (ConfigurationConstants.PROP_MONGODB_DS, ds);
 
         MongoClient mongoClient = Singletons.INSTANCE.getMongoClient ();
-        mongoClient.dropDatabase (MongoDaoTestITCase.AYRONA_TEST_DB_NAME);
+        mongoClient.dropDatabase (ds);
 
         mds = StandaloneMarketDataService.getInstance ();
 
-        ImportMarketDataBatchJob ibj = new ImportMarketDataBatchJob("VOB30", Arrays.asList(BARS_M5), mongoClient, 1);
+        ImportMarketDataBatchJob ibj = new ImportMarketDataBatchJob("TEST", Arrays.asList(BARS_M5), mongoClient, 1);
         ibj.setCallback(BatchJobManager.NO_OP_CALLBACK);
         ibj.run();
     }
@@ -83,7 +84,7 @@ public class StandaloneMarketDataServiceTestITCase {
 
     public void _getOHLC(int a, int b){
         MarketData marketData = mds.getOHLC(
-                Symbol.VOB30, Period.M5,
+                Symbols.of ("TEST"), Period.M5,
                 BARS_M5[a].getDate(),
                 BARS_M5[b].getDate()
         );
@@ -107,7 +108,7 @@ public class StandaloneMarketDataServiceTestITCase {
     public void fetchBarsInCorrectOrder () throws Exception {
         Date beginDate = DateUtils.parseDate ("01.01.2015 10:00:00");
         Date endDate = DateUtils.parseDate ("01.01.2016 20:00:00");
-        MarketData ohlc = mds.getOHLC (Symbol.VOB30, Period.M5,
+        MarketData ohlc = mds.getOHLC (Symbols.of ("TEST"), Period.M5,
                                        beginDate,
                                        endDate);
 

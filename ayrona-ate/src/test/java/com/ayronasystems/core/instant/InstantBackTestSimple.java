@@ -4,7 +4,7 @@ import com.ayronasystems.core.algo.FunctionFactory;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.backtest.MetricType;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.service.StandaloneBackTestService;
@@ -22,8 +22,8 @@ public class InstantBackTestSimple {
                 "Sistem.BUY = Sistem.GT(SMA_5, SMA_20);" +
                 "Sistem.SELL = Sistem.LT(SMA_5, SMA_20);";
         BackTestService bts = new StandaloneBackTestService ();
-        BackTestResult result = bts.doBackTest (code, Symbol.VOB30, Period.M5, null, null);
-        BackTestResult result2 = bts.doSimulationBackTest (code, Symbol.VOB30, Period.M5, null, null);
+        BackTestResult result = bts.doBackTest (code, Symbols.of("TEST"), Period.M5, null, null);
+        BackTestResult result2 = bts.doSimulationBackTest (code, Symbols.of("TEST"), Period.M5, null, null);
 
         System.out.println (result.getResult (MetricType.NET_PROFIT).getValue ());
         System.out.println (result2.getResult (MetricType.NET_PROFIT).getValue ());

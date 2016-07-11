@@ -10,7 +10,7 @@ import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.configuration.ConfigurationConstants;
 import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
 import com.ayronasystems.core.definition.Direction;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.strategy.Initiator;
 import com.mongodb.MongoClient;
 import org.junit.Before;
@@ -30,13 +30,13 @@ import static org.junit.Assert.assertEquals;
 public class RunnableOrderHandlerTest {
 
     public static Order[] orderArray = new Order[]{
-            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.OPEN).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbol.VOB30).description("test").build(),
-            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbol.VOB30).description("test").build()
+            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.OPEN).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.LONG).order(Order.Type.CLOSE).price(5).symbol(Symbols.of("TEST")).description("test").build(),
+            Order.builder().date(new Date()).direction(Direction.SHORT).order(Order.Type.OPEN).price(5).symbol(Symbols.of("TEST")).description("test").build()
     };
 
     private List<Order> orderList;

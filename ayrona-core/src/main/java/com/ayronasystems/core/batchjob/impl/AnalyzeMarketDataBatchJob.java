@@ -36,8 +36,8 @@ public class AnalyzeMarketDataBatchJob extends AbstractBatchJob{
 
     public void run () {
         Dao dao = new MongoDao (mongoClient);
-        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME).getCollection (symbol.getSymbolString ().toLowerCase ());
-        DBCursor cursor = collection.find (new BasicDBObject ("symbol", symbol.getSymbolString ()).append ("period", period.toString ()))
+        DBCollection collection = mongoClient.getDB (MongoDao.AYRONA_MARKETDATA_DB_NAME).getCollection (symbol.getName ().toLowerCase ());
+        DBCursor cursor = collection.find (new BasicDBObject ("symbol", symbol.getName ()).append ("period", period.toString ()))
                                     .sort (new BasicDBObject ("periodDate", 1));
         MarketDataAnalyzeModel marketDataAnalyzeModel = new MarketDataAnalyzeModel ();
         List<AbsentBar> absentBarList = new ArrayList<AbsentBar> ();

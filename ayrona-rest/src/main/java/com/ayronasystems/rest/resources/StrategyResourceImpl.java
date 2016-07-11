@@ -8,7 +8,7 @@ import com.ayronasystems.core.dao.model.AccountBinder;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.util.DateUtils;
 import com.ayronasystems.rest.bean.*;
@@ -114,7 +114,7 @@ public class StrategyResourceImpl implements StrategyResource {
 
     public Response doBackTest (BackTestBean backTestBean) {
         BackTestResult btr = bts.doBackTest (backTestBean.getCode (),
-                                             Symbol.valueOf(backTestBean.getSymbol ()),
+                                             Symbols.of(backTestBean.getSymbol ()),
                                              Period.valueOf (backTestBean.getPeriod ()),
                                              DateUtils.convertFromISO (backTestBean.getBeginDate ()),
                                              DateUtils.convertFromISO (backTestBean.getEndDate ()));

@@ -47,7 +47,7 @@ public class Edr {
         }
 
         public Builder signal(Symbol symbol, List<Signal> signalList){
-            edr.properties.put("symbol", symbol.getSymbolString());
+            edr.properties.put("symbol", symbol.getName ());
             edr.properties.put("signal", signalList.get(0).toString());
             return this;
         }
@@ -79,7 +79,7 @@ public class Edr {
 
         public Builder position(Position position){
             edr.properties.put("position", position.getDirection().toString());
-            edr.properties.put("position_symbol", position.getSymbol().getSymbolString());
+            edr.properties.put("position_symbol", position.getSymbol().getName ());
             //TODO: Add more info
             return this;
         }

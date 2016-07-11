@@ -1,7 +1,7 @@
 package com.ayronasystems.data;
 
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
 import com.ayronasystems.core.timeseries.moment.Tick;
@@ -24,19 +24,19 @@ public class BarifierTest {
     private static final List<Tick> tickList = new ArrayList<Tick> (
             Arrays.asList (
                     new Tick[]{
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:00"), Symbol.VOB30, 0, 1.4, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:01"), Symbol.VOB30, 0, 2, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:10"), Symbol.VOB30, 0, 0.1, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:50"), Symbol.VOB30, 0, 1.3, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:53"), Symbol.VOB30, 0, .8, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:00"), Symbols.of("TEST"), 0, 1.4, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:01"), Symbols.of("TEST"), 0, 2, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:10"), Symbols.of("TEST"), 0, 0.1, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:50"), Symbols.of("TEST"), 0, 1.3, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:00:53"), Symbols.of("TEST"), 0, .8, 0),
 
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:01"), Symbol.VOB30, 0, 2.4, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:03"), Symbol.VOB30, 0, 5, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:17"), Symbol.VOB30, 0, 2.1, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:50"), Symbol.VOB30, 0, 1.3, 0),
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:53"), Symbol.VOB30, 0, 7.8, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:01"), Symbols.of("TEST"), 0, 2.4, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:03"), Symbols.of("TEST"), 0, 5, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:17"), Symbols.of("TEST"), 0, 2.1, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:50"), Symbols.of("TEST"), 0, 1.3, 0),
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:01:53"), Symbols.of("TEST"), 0, 7.8, 0),
 
-                            new Tick (DateUtils.parseDate ("01.01.2016 01:02:03"), Symbol.VOB30, 0, 7.8, 0)
+                            new Tick (DateUtils.parseDate ("01.01.2016 01:02:03"), Symbols.of("TEST"), 0, 7.8, 0)
                     }
             )
     );
@@ -48,7 +48,7 @@ public class BarifierTest {
             barifier.newTick (tick);
         }
 
-        Optional<TimeSeries<Bar>> actualSeriesOptional = barifier.getSeries (Symbol.VOB30);
+        Optional<TimeSeries<Bar>> actualSeriesOptional = barifier.getSeries (Symbols.of("TEST"));
         assertTrue (actualSeriesOptional.isPresent ());
 
         TimeSeries<Bar> timeSeries = actualSeriesOptional.get ();

@@ -4,7 +4,7 @@ import com.ayronasystems.ate.FatihAlgo;
 import com.ayronasystems.core.algo.FunctionFactory;
 import com.ayronasystems.core.backtest.*;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.service.StandaloneBackTestService;
@@ -32,10 +32,10 @@ public class InstantBackTest {
         BackTestService bts = new StandaloneBackTestService ();
         try {
             long start = System.currentTimeMillis ();
-            BackTestResult result1 = bts.doBackTest (algo1, Symbol.VOB30, Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result2 = bts.doBackTest (algo2, Symbol.VOB30, Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result3 = bts.doBackTest (algo3, Symbol.VOB30, Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result4 = bts.doBackTest (algo4, Symbol.VOB30, Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
+            BackTestResult result1 = bts.doBackTest (algo1, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
+            BackTestResult result2 = bts.doBackTest (algo2, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
+            BackTestResult result3 = bts.doBackTest (algo3, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
+            BackTestResult result4 = bts.doBackTest (algo4, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
             long end = System.currentTimeMillis ();
             System.out.println ("Elapsed Time : "+(end - start)+"ms");
             System.out.println (result1);

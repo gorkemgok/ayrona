@@ -10,6 +10,7 @@ import com.ayronasystems.core.dao.model.*;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.google.common.base.Optional;
 import com.mongodb.MongoClient;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class MongoDaoTestITCase {
 
     @Test
     public void createMarketData(){
-        Symbol symbol = Symbol.USDTRY;
+        Symbol symbol = Symbols.of ("TEST");
         Period period = Period.M15;
         List<MarketDataModel> expectedMarketDataModelList = new ArrayList<MarketDataModel> ();
         for ( int i = 0; i < 100; i++ ) {
@@ -336,7 +337,7 @@ public class MongoDaoTestITCase {
         Date idealCloseDate = new Date(2010);
         Position expectedPosition = Position
                 .builder (new BasicInitiator ("strategyId1", "strategyName1"))
-                .symbol (Symbol.VOB30)
+                .symbol (Symbols.of ("TEST"))
                 .lot (1)
                 .direction (Direction.LONG)
                 .openDate (idealOpenDate)

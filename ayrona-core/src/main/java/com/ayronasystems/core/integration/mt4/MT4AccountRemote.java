@@ -29,8 +29,7 @@ public class MT4AccountRemote implements AccountRemote{
 
     public AccountRemoteResponse openPosition(Position position) {
         try {
-            long brokerId = mt4Connection.orderSend(position.getSymbol()
-                            .getSymbolString(),
+            long brokerId = mt4Connection.orderSend(position.getSymbol().getName (),
                     position.getDirection() == Direction.LONG ? TradeOperation.OP_BUY : TradeOperation.OP_SELL,
                     position.getLot(),
                     position.getOpenPrice(),

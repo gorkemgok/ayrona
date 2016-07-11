@@ -7,6 +7,8 @@ import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.mongodb.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.List;
@@ -15,6 +17,8 @@ import java.util.List;
  * Created by gorkemgok on 05/06/16.
  */
 public class ImportMarketDataBatchJob extends AbstractBatchJob {
+
+    private static Logger log = LoggerFactory.getLogger (ImportMarketDataBatchJob.class);
 
     private static Configuration conf = Configuration.getInstance ();
 
@@ -25,6 +29,8 @@ public class ImportMarketDataBatchJob extends AbstractBatchJob {
     private String symbol;
 
     private int bulkSize;
+
+    private int failedRowCount;
 
     public ImportMarketDataBatchJob (String symbol, List<Bar> barList, MongoClient mongoClient) {
         this(symbol, barList, mongoClient, 1000);
@@ -66,7 +72,11 @@ public class ImportMarketDataBatchJob extends AbstractBatchJob {
             i++;
             if (i == bulkSize){
                 i = 0;
-                bwo.execute ();
+                try {
+                    BulkWriteResult bwr = bwo.execute ();
+                }catch ( BulkWriteException ex){
+                    failedRowCount += ex.getWriteErrors ().size ();
+                }
                 bwo = collection.initializeUnorderedBulkOperation ();
             }
             iu++;
@@ -79,5 +89,9 @@ public class ImportMarketDataBatchJob extends AbstractBatchJob {
         long end = System.currentTimeMillis ();
         BatchJobResult<Long> batchJobResult = new BatchJobResult (this, (end - start));
         batchJobCallback.complete (batchJobResult);
+    }
+
+    public int getFailedRowCount () {
+        return failedRowCount;
     }
 }

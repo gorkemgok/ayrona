@@ -5,7 +5,7 @@ import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.MarketDataAnalyzeModel;
 import com.ayronasystems.core.dao.mongo.MongoDao;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.google.common.base.Optional;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +27,7 @@ public class AnalyzeMarketDataBatchJobTest {
     @Test
     public void run () throws Exception {
         AnalyzeMarketDataBatchJob batchJob = new AnalyzeMarketDataBatchJob (
-                Symbol.VOB30, Period.M5, Singletons.INSTANCE.getMongoClient ()
+                Symbols.of ("TEST"), Period.M5, Singletons.INSTANCE.getMongoClient ()
         );
 
         batchJob.run ();

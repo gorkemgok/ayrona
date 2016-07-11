@@ -2,7 +2,7 @@ package com.ayronasystems.core.data;
 
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.PriceColumn;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.MarketDataConversionException;
 import com.ayronasystems.core.timeseries.moment.Bar;
@@ -82,9 +82,9 @@ public class OHLCTest {
         double[] ls2 = new double[]{0,1,2,3};
         double[] cs2 = new double[]{0,1,2,3};
 
-        ohlc1 = new OHLC (Symbol.VOB30, Period.M5, dates1, os1, hs1, ls1, cs1);
-        ohlc2 = new OHLC (Symbol.VOB30, Period.M5, dates2, os2, hs2, ls2, cs2);
-        ohlc3 = new OHLC (Symbol.VOB30, Period.M5, dates3, os2, hs2, ls2, cs2);
+        ohlc1 = new OHLC (Symbols.of("TEST"), Period.M5, dates1, os1, hs1, ls1, cs1);
+        ohlc2 = new OHLC (Symbols.of("TEST"), Period.M5, dates2, os2, hs2, ls2, cs2);
+        ohlc3 = new OHLC (Symbols.of("TEST"), Period.M5, dates3, os2, hs2, ls2, cs2);
 
     }
 
@@ -98,7 +98,7 @@ public class OHLCTest {
         double[] ls = new double[]{0,1,2,3,4,5};
         double[] cs = new double[]{0,1,2,3,4,5};
 
-        MarketData md = new OHLC (Symbol.VOB30, Period.M5, dates, os, hs, ls, cs);
+        MarketData md = new OHLC (Symbols.of("TEST"), Period.M5, dates, os, hs, ls, cs);
         MarketData subMd = md.subData (0, 3);
 
         assertEquals (4, subMd.size ());
@@ -130,7 +130,7 @@ public class OHLCTest {
 
     @Test
     public void convert() throws CorruptedMarketDataException, MarketDataConversionException {
-        MarketData m1Md = new OHLC (Symbol.VOB30, Period.M1, Arrays.asList (BARS_M1));
+        MarketData m1Md = new OHLC (Symbols.of("TEST"), Period.M1, Arrays.asList (BARS_M1));
         MarketData m5Md = m1Md.convert (Period.M5);
         assertEquals (5, m5Md.size ());
 

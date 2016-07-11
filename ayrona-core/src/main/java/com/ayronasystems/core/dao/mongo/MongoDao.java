@@ -87,7 +87,7 @@ public class MongoDao implements Dao{
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
                 .set ("code", strategyModel.getCode ())
                 .set ("name", strategyModel.getName ())
-                .set ("symbol", strategyModel.getSymbol ())
+                .set ("symbol", strategyModel.getSymbol ().getName ())
                 .set ("period", strategyModel.getPeriod ())
                 .set ("initialBarCount", strategyModel.getInitialBarCount());
         appDatastore.update (query, operations);
@@ -324,7 +324,7 @@ public class MongoDao implements Dao{
 
     public List<MarketDataModel> findMarketData (Symbol symbol, Period period, Date beginningDate, Date endDate) {
         List<MarketDataModel> marketDataModelList = appDatastore.createQuery (MarketDataModel.class)
-                    .field ("symbol").equal (symbol)
+                    .field ("symbol").equal (symbol.getName ())
                     .field ("period").equal (period)
                     .field ("periodDate").greaterThanOrEq (beginningDate)
                     .field ("periodDate").lessThan (endDate)
@@ -334,7 +334,7 @@ public class MongoDao implements Dao{
 
     public List<MarketDataModel> findMarketData (Symbol symbol, Period period, Date endDate, int count) {
         List<MarketDataModel> marketDataModelList = appDatastore.createQuery (MarketDataModel.class)
-                                                                .field ("symbol").equal (symbol)
+                                                                .field ("symbol").equal (symbol.getName ())
                                                                 .field ("period").equal (period)
                                                                 .field ("periodDate").lessThan (endDate)
                                                                 .order ("-periodDate")
