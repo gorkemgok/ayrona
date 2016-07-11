@@ -16,8 +16,6 @@ public class ATAMarketDataPayload implements Serializable {
 
     public static final SimpleDateFormat SDF = new SimpleDateFormat (DATE_FORMAT);
 
-    public static final String VOB_SYMBOL_CODE = "F_XU0300616S0";
-
     @JsonProperty(value = "Price")
     private double price;
 

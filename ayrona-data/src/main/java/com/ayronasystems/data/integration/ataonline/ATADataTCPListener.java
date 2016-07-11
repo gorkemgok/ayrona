@@ -47,6 +47,7 @@ public class ATADataTCPListener implements Runnable {
         try {
             connect ();
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader (clientSocket.getInputStream ()));
+            log.info ("Started listening ata payload");
             while ( !isStop && (dataJson = bufferedReader.readLine ()) != null) {
                 long start = System.currentTimeMillis ();
                 Optional<ATAMarketDataPayload> marketDataPayloadOptional =

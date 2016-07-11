@@ -1,7 +1,6 @@
 package com.ayronasystems.data.integration.mt4;
 
 import com.ayronasystems.core.JMSManager;
-import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Period;
@@ -11,7 +10,6 @@ import com.ayronasystems.data.DataServiceEngine;
 import com.ayronasystems.data.listener.BarAMQSenderListener;
 import com.ayronasystems.data.listener.BarDBSaverListener;
 import com.ayronasystems.data.listener.BasicTickListener;
-import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +27,6 @@ public class MT4DataServiceEngine implements DataServiceEngine{
 
     private JMSManager jmsManager;
 
-    private MongoClient mongoClient;
-
     private MT4Connection mt4ListenerConnection;
 
     public void init(){
@@ -40,12 +36,11 @@ public class MT4DataServiceEngine implements DataServiceEngine{
         System.setProperty ("jfx_server_port", conf.getString (ConfKey.MT4_JFX_PORT));
 
         jmsManager = JMSManager.getManager (conf.getString (ConfKey.AMQ_URI));
-        mongoClient = Singletons.INSTANCE.getMongoClient ();
 
         BasicTickListener tickListener = new BasicTickListener ();
         for ( Period period : Period.values ()) {
             Barifier barifier = new Barifier (period);
-            barifier.addBarListener (new BarDBSaverListener (mongoClient));
+            barifier.addBarListener (new BarDBSaverListener ());
             barifier.addBarListener (new BarAMQSenderListener (jmsManager));
             tickListener.addBarifier (barifier);
 
@@ -76,9 +71,6 @@ public class MT4DataServiceEngine implements DataServiceEngine{
             } catch ( JMSException e ) {
                 log.error ("Cant close jms manager", e);
             }
-        }
-        if (mongoClient != null) {
-            mongoClient.close ();
         }
         if (mt4ListenerConnection != null){
             try {

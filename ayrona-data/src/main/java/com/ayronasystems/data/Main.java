@@ -17,23 +17,27 @@ public class Main {
     private static Configuration conf;
 
     public static void main(String [] args){
+        System.setProperty (PROP_MT4_JFX_AK, "2209463296");
         System.setProperty (PROP_MT4_DS_LISTENER_BROKER, "AtaOnline-Demo");
         System.setProperty (PROP_MT4_DS_LISTENER_LOGIN, "1218368283");
         System.setProperty (PROP_MT4_DS_LISTENER_PASSWORD, "gm7xtnn");
         System.setProperty (PROP_MT4_TERMINAL_HOST, "104.197.70.53");
         System.setProperty (PROP_MT4_TERMINAL_PORT, "7788");
-        System.setProperty (PROP_MT4_JFX_HOST, "85.96.170.210");
+        System.setProperty (PROP_MT4_JFX_HOST, "78.190.226.5");
         System.setProperty (PROP_MT4_JFX_PORT, "7790");
 
         conf = Configuration.getInstance ();
 
         System.out.println (conf.toString ());
 
-        MT4DataServiceEngine MT4DataServiceEngine = new MT4DataServiceEngine ();
-        //MT4DataServiceEngine.init ();
+        MT4DataServiceEngine mt4DataServiceEngine = new MT4DataServiceEngine ();
+        mt4DataServiceEngine.init ();
 
         ATADataServiceEngine ataDataServiceEngine = new ATADataServiceEngine ();
-        ataDataServiceEngine.init ();
+        //ataDataServiceEngine.init ();
+        while ( true ){
+
+        }
 
     }
 

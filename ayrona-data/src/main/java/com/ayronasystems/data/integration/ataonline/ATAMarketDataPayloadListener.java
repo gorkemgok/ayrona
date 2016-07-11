@@ -1,5 +1,7 @@
 package com.ayronasystems.data.integration.ataonline;
 
+import com.ayronasystems.core.configuration.ConfKey;
+import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.timeseries.moment.Tick;
 import com.ayronasystems.data.listener.BasicTickListener;
@@ -13,6 +15,8 @@ public class ATAMarketDataPayloadListener {
 
     private static Logger log = LoggerFactory.getLogger (ATAMarketDataPayloadListener.class);
 
+    private static Configuration conf = Configuration.getInstance ();
+
     private BasicTickListener tickListener;
 
     public ATAMarketDataPayloadListener (BasicTickListener tickListener) {
@@ -21,7 +25,7 @@ public class ATAMarketDataPayloadListener {
 
     public void newPayload(ATAMarketDataPayload marketDataPayload){
         try {
-            if (marketDataPayload.getSymbolCode ().equals (ATAMarketDataPayload.VOB_SYMBOL_CODE)) {
+            if (marketDataPayload.getSymbolCode ().equals (conf.getString (ConfKey.ATA_VOB30_CODE))) {
                 Tick tick = new Tick (
                         ATAMarketDataPayload.SDF.parse (marketDataPayload.getDate ()),
                         Symbol.VOB30,

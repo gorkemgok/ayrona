@@ -117,4 +117,8 @@ public class ConfigurationConstants {
 
     public static final String ENV_ATA_DATA_PORT = "ATA_DATA_PORT";
 
+    public static final String PROP_ATA_VOB30_CODE = "ataonline.vob30.code";
+
+    public static final String ENV_ATA_VOB30_CODE = "ATA_VOB30_CODE";
+
 }
