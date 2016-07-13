@@ -2,6 +2,7 @@ package com.ayronasystems.core.integration.ataonline;
 
 import com.ayronasystems.core.Order;
 import com.ayronasystems.core.definition.Direction;
+import com.ayronasystems.core.definition.Symbol;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +28,7 @@ public class ATAOrderPayload {
     @JsonProperty(value = "Password")
     private String password = "";
     @JsonProperty(value = "Contract")
-    private String contract = "F_XAUTRYM0616S0";
+    private String contract;
     @JsonProperty(value = "Price")
     private double price;
     @JsonProperty(value = "Quantity")
@@ -68,8 +69,9 @@ public class ATAOrderPayload {
     }
 
     public static ATAOrderPayload createInstance (
-            Order.Type order, Direction direction, Date date, double price, String customerNo, String accountNo, double lot){
+            Symbol symbol,Order.Type order, Direction direction, Date date, double price, String customerNo, String accountNo, double lot){
         ATAOrderPayload ATAOrderPayload = new ATAOrderPayload ();
+        ATAOrderPayload.contract = symbol.getCode ();
         ATAOrderPayload.customerExtId = customerNo;
         ATAOrderPayload.accountExtId = Integer.valueOf (accountNo);
         ATAOrderPayload.lot = lot;
@@ -77,7 +79,7 @@ public class ATAOrderPayload {
         Calendar cal = Calendar.getInstance ();
         cal.setTime (date);
         ATAOrderPayload.orderDateDay = cal.get (Calendar.DAY_OF_MONTH);
-        ATAOrderPayload.orderDateMonth = cal.get (Calendar.MONTH);
+        ATAOrderPayload.orderDateMonth = cal.get (Calendar.MONTH) + 1;
         ATAOrderPayload.orderDateYear = cal.get (Calendar.YEAR);
         ATAOrderPayload.isLong = order.equals (Order.Type.OPEN) ?
                 direction.equals (Direction.LONG) : !direction.equals (Direction.LONG);

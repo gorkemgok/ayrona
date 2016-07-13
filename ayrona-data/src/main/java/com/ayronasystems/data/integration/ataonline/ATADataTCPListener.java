@@ -26,9 +26,9 @@ public class ATADataTCPListener implements Runnable {
 
     private volatile boolean isStop = false;
 
-    private ATAMarketDataPayloadListener payloadListener;
+    private ATAMarketDataListener payloadListener;
 
-    public ATADataTCPListener (String host, int port, ATAMarketDataPayloadListener payloadListener) {
+    public ATADataTCPListener (String host, int port, ATAMarketDataListener payloadListener) {
         this.host = host;
         this.port = port;
         this.payloadListener = payloadListener;
@@ -49,6 +49,7 @@ public class ATADataTCPListener implements Runnable {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader (clientSocket.getInputStream ()));
             log.info ("Started listening ata payload");
             while ( !isStop && (dataJson = bufferedReader.readLine ()) != null) {
+                System.out.println (dataJson);
                 long start = System.currentTimeMillis ();
                 Optional<ATAMarketDataPayload> marketDataPayloadOptional =
                         ataJsonConverter.convertFromJson (dataJson);

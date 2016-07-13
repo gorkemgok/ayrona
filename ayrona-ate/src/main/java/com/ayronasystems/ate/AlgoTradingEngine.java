@@ -111,7 +111,7 @@ public class AlgoTradingEngine {
 
         long start = System.currentTimeMillis ();
 
-        int initialBarCount = strategyModel.getInitialBarCount () > 0 ? strategyModel.getInitialBarCount () : algo.getNeededInputCount();
+        int initialBarCount = Math.max (strategyModel.getInitialBarCount (), algo.getNeededInputCount());
         MarketData initialMarketData = marketDataService.getOHLC (symbol, period, new Date(), initialBarCount);
         long end = System.currentTimeMillis ();
         log.info ("Loaded OHLC data {} - {} with {} price in {} ms", symbol, period, initialMarketData.size() , (end-start));
@@ -120,7 +120,7 @@ public class AlgoTradingEngine {
 
         SPStrategy<Bar> strategy = new AlgoStrategy (
                 true,
-                strategyModel.getInitialBarCount (),
+                initialBarCount,
                 strategyModel.getId (),
                 algo,
                 initialMarketData,
@@ -173,14 +173,21 @@ public class AlgoTradingEngine {
     }
 
     public synchronized void newBar(LiveBar liveBar){
-        for (QueueRunner<Bar, SPStrategy<Bar>> strategyRunner : strategyRunners){
-            SPStrategy<Bar> strategy = strategyRunner.unwrapRunnable ();
-            if ( strategy.getSymbolPeriod ().equals (liveBar.getSymbolPeriod ())){
-                try {
-                    strategyRunner.put (liveBar.getBar ());
-                    log.info ("Successfully executed strategy {}", strategy.getName ());
-                } catch ( PrerequisiteException e ) {
-                    log.error ("Cant process strategy "+strategy.getId (), e);
+        for (int i=0; i < strategyRunners.size ();i++){
+            QueueRunner<Bar, SPStrategy<Bar>> strategyRunner = strategyRunners.get (i);
+            if (strategyRunner != null) {
+                SPStrategy<Bar> strategy = strategyRunner.unwrapRunnable ();
+                if ( strategy.getSymbolPeriod ()
+                             .equals (liveBar.getSymbolPeriod ()) ) {
+                    try {
+                        strategyRunner.put (liveBar.getBar ());
+                        log.info ("Successfully executed strategy {} at {}-{}", strategy.getName (),
+                                  strategy.getSymbolPeriod ()
+                                          .getSymbol (), strategy.getSymbolPeriod ()
+                                                                 .getPeriod ());
+                    } catch ( PrerequisiteException e ) {
+                        log.error ("Cant process strategy " + strategy.getId (), e);
+                    }
                 }
             }
         }

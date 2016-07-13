@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 /**
  * Created by gorkemgok on 21/06/16.
  */
-public class ATAMarketDataPayloadListener {
+public class ATAMarketDataListener {
 
-    private static Logger log = LoggerFactory.getLogger (ATAMarketDataPayloadListener.class);
+    private static Logger log = LoggerFactory.getLogger (ATAMarketDataListener.class);
 
     private BasicTickListener tickListener;
 
-    public ATAMarketDataPayloadListener (BasicTickListener tickListener) {
+    public ATAMarketDataListener (BasicTickListener tickListener) {
         this.tickListener = tickListener;
     }
 

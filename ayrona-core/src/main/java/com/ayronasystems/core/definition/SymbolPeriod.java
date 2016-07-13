@@ -34,10 +34,10 @@ public class SymbolPeriod implements Serializable{
 
         SymbolPeriod that = (SymbolPeriod) o;
 
-        if ( symbol != that.symbol ) {
+        if ( !symbol.equals ( that.symbol ) ) {
             return false;
         }
-        return period == that.period;
+        return period.equals ( that.period );
 
     }
 

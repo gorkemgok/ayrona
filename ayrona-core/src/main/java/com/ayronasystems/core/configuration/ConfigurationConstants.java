@@ -85,11 +85,11 @@ public class ConfigurationConstants {
 
     public static final String PROP_MONGODB_DS = TICK4J_PROP_PREFIX + "mongodb.ds";
 
-    public static final String ENV_MONGODB_DS = TICK4J_PROP_PREFIX + "MONGODB_DS";
+    public static final String ENV_MONGODB_DS = "MONGODB_DS";
 
     public static final String PROP_MONGODB_MDS = TICK4J_PROP_PREFIX + "mongodb.mds";
 
-    public static final String ENV_MONGODB_MDS = TICK4J_PROP_PREFIX + "MONGODB_MDS";
+    public static final String ENV_MONGODB_MDS = "MONGODB_MDS";
 
     public static final String JBOSS_SERVER_CONFIG_DIR = "jboss.server.config.dir";
 
@@ -120,5 +120,9 @@ public class ConfigurationConstants {
     public static final String PROP_ATA_VOB30_CODE = "ataonline.vob30.code";
 
     public static final String ENV_ATA_VOB30_CODE = "ATA_VOB30_CODE";
+
+    public static final String PROP_SYMBOLS = TICK4J_PROP_PREFIX + "symbols";
+
+    public static final String ENV_SYMBOLS = "SYMBOLS";
 
 }

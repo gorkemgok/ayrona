@@ -6,7 +6,7 @@ export JFX_PORT=7790
 export LSNR_BROKER=AtaOnline-Demo
 export LSNR_LOGIN=1218368283
 export LSNR_PASS=gm7xtnn
-export MONGODB_HOST=mongodb1.ayronasystems.com
-export AMQ_URI=tcp://docker1.ayronasystems.com:61616
-
+export AMQ_URI=tcp://ata1:61616
+export MONGODB_HOST=ata1
+export SYMBOLS=FX_EURUSD-EURUSD,FX_USDTRY-USDTRY,VOB_XAUTRY-F_XAUTRYM0816S0
 java -jar target/ayrona-data-swarm.jar

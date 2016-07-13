@@ -1,9 +1,11 @@
 package com.ayronasystems.core.definition;
 
+import java.io.Serializable;
+
 /**
  * Created by gorkemgok on 12/03/15.
  */
-public class Symbol {
+public class Symbol implements Serializable{
 
     private String name;
     private String code;
@@ -39,5 +41,10 @@ public class Symbol {
     @Override
     public int hashCode () {
         return name.hashCode ();
+    }
+
+    @Override
+    public String toString () {
+        return name;
     }
 }

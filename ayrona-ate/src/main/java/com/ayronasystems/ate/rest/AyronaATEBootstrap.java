@@ -2,6 +2,8 @@ package com.ayronasystems.ate.rest;
 
 import com.ayronasystems.ate.AlgoTradingEngine;
 import com.ayronasystems.core.algo.FunctionFactory;
+import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,6 +20,11 @@ public class AyronaATEBootstrap implements ServletContextListener {
     public void contextInitialized (ServletContextEvent servletContextEvent) {
         try {
             FunctionFactory.scanFunctions ();
+            Symbols.init ();
+
+            for (Symbol symbol : Symbols.getList ()){
+                log.info ("Initialized symbol:{}", symbol);
+            }
 
             AlgoTradingEngine.INSTANCE.init ();
         } catch ( Exception e ) {

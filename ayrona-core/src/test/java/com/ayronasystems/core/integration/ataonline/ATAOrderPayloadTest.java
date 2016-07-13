@@ -2,6 +2,7 @@ package com.ayronasystems.core.integration.ataonline;
 
 import com.ayronasystems.core.Order;
 import com.ayronasystems.core.definition.Direction;
+import com.ayronasystems.core.definition.Symbols;
 import com.google.common.base.Optional;
 import org.junit.Test;
 
@@ -18,6 +19,7 @@ public class ATAOrderPayloadTest {
     @Test
     public void toJson () throws Exception {
         Optional<String> payloadStringOptional = ATAOrderPayload.createInstance (
+                Symbols.of ("TEST"),
                 Order.Type.OPEN,
                 Direction.LONG,
                 new Date(),

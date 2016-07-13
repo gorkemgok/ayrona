@@ -15,7 +15,7 @@ import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
-import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.timeseries.moment.Bar;
@@ -67,7 +67,7 @@ public class AlgoTradingEngineTestITCase {
         dao.createAccount (accountModel3);
 
         StrategyModel strategyModel = new StrategyModel ();
-        strategyModel.setSymbol (Symbol.VOB30);
+        strategyModel.setSymbol (Symbols.of("TEST"));
         strategyModel.setPeriod (Period.M5);
         strategyModel.setName ("ATE_ETE_TEST");
         strategyModel.setCode ("var SMA_20 = Sistem.SMA(Sistem.C,20);" +
@@ -80,7 +80,7 @@ public class AlgoTradingEngineTestITCase {
         dao.createStrategy (strategyModel);
 
         StrategyModel strategyModel2 = new StrategyModel ();
-        strategyModel2.setSymbol (Symbol.VOB30);
+        strategyModel2.setSymbol (Symbols.of("TEST"));
         strategyModel2.setPeriod (Period.M5);
         strategyModel2.setName ("ATE_ETE_TEST 2");
         strategyModel2.setCode ("var SMA_20 = Sistem.SMA(Sistem.C,20);" +
@@ -104,11 +104,11 @@ public class AlgoTradingEngineTestITCase {
     public void simulateTest(){
         JMSManager jmsManager = JMSManager.getManager (conf.getString (ConfKey.AMQ_URI));
         MarketDataService marketDataService = StandaloneMarketDataService.getInstance ();
-        MarketData marketData = marketDataService.getOHLC (Symbol.VOB30, Period.M5,
+        MarketData marketData = marketDataService.getOHLC (Symbols.of("TEST"), Period.M5,
                                                            DateUtils.parseDate ("01.12.2015 00:00:00"));
         System.out.println ("Loaded market data for producer, "+marketData.size ());
         for ( Moment moment : marketData){
-            LiveBar liveBar = new LiveBar (Symbol.VOB30, Period.M5, (Bar)moment);
+            LiveBar liveBar = new LiveBar (Symbols.of("TEST"), Period.M5, (Bar)moment);
             try {
                 jmsManager.getWorker ().destination (JMSDestination.BARS).send (liveBar);
                 System.out.println ("Send bar:"+liveBar.getBar ());

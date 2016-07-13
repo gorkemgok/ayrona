@@ -40,7 +40,7 @@ public class ATADataServiceEngine implements DataServiceEngine{
                 barifier.addBarListener (new BarAMQSenderListener (jmsManager));
                 tickListener.addBarifier (barifier);
             }
-            ATAMarketDataPayloadListener listener = new ATAMarketDataPayloadListener (tickListener);
+            ATAMarketDataListener listener = new ATAMarketDataListener (tickListener);
 
             tcpListener = new ATADataTCPListener (
                 conf.getString (ConfKey.ATA_DATA_IP),

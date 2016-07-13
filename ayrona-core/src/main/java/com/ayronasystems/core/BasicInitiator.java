@@ -27,4 +27,9 @@ public class BasicInitiator implements Initiator{
     public boolean isSameInitiator (Initiator initiator) {
         return id.equals (initiator.getId ());
     }
+
+    @Override
+    public String toString () {
+        return name;
+    }
 }

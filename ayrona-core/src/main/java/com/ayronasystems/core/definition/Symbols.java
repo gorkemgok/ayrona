@@ -1,5 +1,8 @@
 package com.ayronasystems.core.definition;
 
+import com.ayronasystems.core.configuration.ConfKey;
+import com.ayronasystems.core.configuration.Configuration;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,12 +12,18 @@ import java.util.Map;
  */
 public class Symbols {
 
+    private static Configuration conf = Configuration.getInstance ();
+
     private static Map<String, Symbol> symbolMap = new HashMap<String, Symbol> ();
 
     public static void init(){
-        symbolMap.put ("FX_EURUSD", new Symbol ("FX_EURUSD", "EURUSD"));
-        symbolMap.put ("FX_USDTRY", new Symbol ("FX_USDTRY", "USDTRY"));
-        symbolMap.put ("VOB_X30", new Symbol ("VOB_X30", "EURUSD"));
+        String[] symbolPairList = conf.getString (ConfKey.SYMBOLS).split (",");
+        for (String symbolPair : symbolPairList) {
+            String[] symbol = symbolPair.split ("-");
+            if (symbol.length > 1) {
+                symbolMap.put (symbol[0], new Symbol (symbol[0], symbol[1]));
+            }
+        }
     }
 
     public static Symbol of(String name){

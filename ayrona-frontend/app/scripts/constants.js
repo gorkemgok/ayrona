@@ -4,7 +4,7 @@
 var constantsModule = angular.module("ayronaConstants",[]);
 
 constantsModule.constant('REST', {
-    base : 'http://localhost:18050/ayrona/rest/v1'
+    base : 'http://ata1:18050/ayrona/rest/v1'
 });
 
 constantsModule.constant('METRICS', [
@@ -30,8 +30,8 @@ constantsModule.constant('PERIODS', [
 ]);
 
 constantsModule.constant('SYMBOLS', [
-    {text:'EURUSD (€\\$)', value:'EURUSD'},
-    {text:'Vob30', value:'VOB30'}
+    {text:'FX_EURUSD', value:'FX_EURUSD'},
+    {text:'VOB_XAUTRY', value:'VOB_XAUTRY'}
 ]);
 
 constantsModule.constant('ACCOUNT_TYPE', {
