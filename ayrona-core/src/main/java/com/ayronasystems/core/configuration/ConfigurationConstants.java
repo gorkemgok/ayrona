@@ -109,13 +109,17 @@ public class ConfigurationConstants {
 
     public static final String ENV_ATA_GTP_HOST = "ATA_GTP_HOST";
 
-    public static final String PROP_ATA_DATA_IP = "ataonline.data.ip";
+    public static final String PROP_ATA_DATA_HPLIST = "ataonline.data.hplist";
 
-    public static final String ENV_ATA_DATA_IP = "ATA_DATA_IP";
+    public static final String ENV_ATA_DATA_HPLIST = "ATA_DATA_HPLIST";
 
-    public static final String PROP_ATA_DATA_PORT = "ataonline.data.port";
+    public static final String PROP_ATA_DATA_RETRY_COUNT = "ataonline.data.retry.count";
 
-    public static final String ENV_ATA_DATA_PORT = "ATA_DATA_PORT";
+    public static final String ENV_ATA_DATA_RETRY_COUNT = "ATA_DATA_RETRY_COUNT";
+
+    public static final String PROP_ATA_DATA_RETRY_WAIT = "ataonline.data.retry.wait";
+
+    public static final String ENV_ATA_DATA_RETRY_WAIT = "ATA_DATA_RETRY_WAIT";
 
     public static final String PROP_ATA_VOB30_CODE = "ataonline.vob30.code";
 

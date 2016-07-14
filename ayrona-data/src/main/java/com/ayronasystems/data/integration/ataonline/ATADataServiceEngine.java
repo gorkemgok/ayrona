@@ -3,6 +3,7 @@ package com.ayronasystems.data.integration.ataonline;
 import com.ayronasystems.core.JMSManager;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
+import com.ayronasystems.core.configuration.HostPort;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.data.Barifier;
 import com.ayronasystems.data.DataServiceEngine;
@@ -13,6 +14,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jms.JMSException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by gorkemgok on 21/06/16.
@@ -42,11 +45,13 @@ public class ATADataServiceEngine implements DataServiceEngine{
             }
             ATAMarketDataListener listener = new ATAMarketDataListener (tickListener);
 
-            tcpListener = new ATADataTCPListener (
-                conf.getString (ConfKey.ATA_DATA_IP),
-                conf.getInteger (ConfKey.ATA_DATA_PORT),
-                listener
-            );
+            List<HostPort> hostPortList = new ArrayList<HostPort> ();
+            for (String hpString : conf.getString (ConfKey.ATA_DATA_HPLIST).split (",")){
+                hostPortList.add (new HostPort (hpString));
+            }
+            tcpListener = new ATADataTCPListener (hostPortList, listener);
+            tcpListener.setRetryCount (conf.getInteger (ConfKey.ATA_DATA_RETRY_COUNT));
+            tcpListener.setRetryWaitInSeconds (conf.getInteger (ConfKey.ATA_DATA_RETRY_WAIT));
 
             listenerThread = new Thread (tcpListener);
             listenerThread.start ();
