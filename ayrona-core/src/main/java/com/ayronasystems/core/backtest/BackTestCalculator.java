@@ -89,6 +89,7 @@ public class BackTestCalculator {
             equitySeries.addMoment (equityBar);
         }
         BackTestResult result = new BackTestResult (marketData.getBeginningDate (), marketData.getEndingDate ());
+        result.setPositionList (positionList);
         result.setResult (MetricType.EQUITY_SERIES, new MetricValue (equitySeries));
         result.setResult (MetricType.MAX_TRADE_DRAWDOWN, tradeMDD);
         long start = System.currentTimeMillis ();

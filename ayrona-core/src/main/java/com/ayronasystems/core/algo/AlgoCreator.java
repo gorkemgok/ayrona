@@ -4,13 +4,23 @@ import com.ayronasystems.core.algo.tree.FunctionNode;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
 import com.ayronasystems.core.algo.tree.Node;
 import com.ayronasystems.core.definition.PriceColumn;
+import org.apache.commons.math3.exception.OutOfRangeException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by gorkemgok on 25/05/16.
  */
 public class AlgoCreator {
+
+    private List<OptimizerDef> optimizerDefList = new ArrayList<OptimizerDef> ();
+
+    private List<Double> optimizedValueList;
+
+    private int currentIndex;
 
     public String NAME;
 
@@ -114,6 +124,41 @@ public class AlgoCreator {
 
     public Node X(Node input, int size){
         return new FunctionNode ("X", input, size);
+    }
+
+    //OPTIMIZATION FUNCTIONS
+
+    public AlgoCreator (Double[] optimizedValueList) {
+        if (optimizedValueList != null) {
+            this.optimizedValueList = Arrays.asList (optimizedValueList);
+        }else{
+            this.optimizedValueList = Collections.EMPTY_LIST;
+        }
+    }
+
+    public void OPT(Double[] values){
+        this.optimizedValueList = Arrays.asList (values);
+    }
+
+    public AlgoCreator () {
+        this.optimizedValueList = Collections.EMPTY_LIST;
+    }
+
+    public double Optimize(double start, double end, double step) throws OutOfRangeException {
+        if (currentIndex < optimizedValueList.size ()){
+            return optimizedValueList.get (currentIndex++);
+        }
+        if (!optimizedValueList.isEmpty ()) {
+            throw new OutOfRangeException (currentIndex, 0, optimizedValueList.size () - 1);
+        }
+        else{
+            optimizerDefList.add (new OptimizerDef (start, end, step));
+            return 0;
+        }
+    }
+
+    public List<OptimizerDef> getOptimizerDefList () {
+        return new ArrayList<OptimizerDef> (optimizerDefList);
     }
 
 }

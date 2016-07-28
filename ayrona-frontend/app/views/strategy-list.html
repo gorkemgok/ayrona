@@ -24,8 +24,10 @@
                     <td>{{ strategy.symbol }}</td>
                     <td>{{ strategy.period | period }}</td>
                     <td>
-                        <button class="btn btn-xs btn-danger" ng-click="delete(strategy.id)">Sil</button>
+                        <button class="btn btn-xs btn-danger" ng-click="delete(strategy)">Sil</button>
                         <button class="btn btn-xs btn-primary" ng-click="gotoEditStrategy(strategy.id)">Düzenle</button>
+                        <button class="btn btn-xs btn-success" ng-click="activate(strategy)">Aktif Et</button>
+                        <button class="btn btn-xs btn-danger" ng-click="deactivate(strategy)">Deaktif Et</button>
                     </td>
                 </tr>
                 </tbody>

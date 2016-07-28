@@ -26,6 +26,11 @@ public interface StrategyResource {
     @Consumes(MediaType.APPLICATION_JSON)
     Response updateStrategy(StrategyBean strategyBean);
 
+    @DELETE
+    @Path ("{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    Response deleteStrategy(@PathParam ("id") String strategyId);
+
     @GET
     @Path ("list")
     @Produces(MediaType.APPLICATION_JSON)

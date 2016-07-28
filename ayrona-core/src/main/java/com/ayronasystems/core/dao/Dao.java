@@ -26,7 +26,9 @@ public interface Dao {
 
     StrategyModel createStrategy(StrategyModel strategyModel);
 
-    void updateStrategy(StrategyModel strategyModel);
+    boolean updateStrategy(StrategyModel strategyModel);
+
+    boolean deleteStrategy(String strategyId);
 
     List<StrategyModel> findAllStrategies();
 
@@ -62,9 +64,9 @@ public interface Dao {
 
     BatchJobModel createBatchJob(BatchJobModel batchJobModel);
 
-    void updateBatchJob(String id, BatchJob.Status status);
+    boolean updateBatchJob(String id, BatchJob.Status status);
 
-    void updateBatchJob(String id, int progress);
+    boolean updateBatchJob(String id, int progress);
 
     //Analyze Market Data
     MarketDataAnalyzeModel createMarketDataAnalyze(MarketDataAnalyzeModel marketDataAnalyzeModel);
@@ -85,7 +87,7 @@ public interface Dao {
 
     PositionModel createPosition(PositionModel positionModel);
 
-    void closePosition(PositionModel positionModel);
+    boolean closePosition(PositionModel positionModel);
 
     List<PositionModel> findPositionsByAccountId(String accountId);
 

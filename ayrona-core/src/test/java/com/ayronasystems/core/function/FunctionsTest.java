@@ -86,6 +86,25 @@ public class FunctionsTest {
     }
 
     @Test
+    public void calculateBARSINCE(){
+        double[] conditionArr = new double[]{0, 0, 1, 0, 0, 1, 1, 0, 0, 0, 0};
+        BARSINCE barsince = new BARSINCE ();
+        FIOExchange fioExchange = barsince.calculate (new FIOExchange (conditionArr));
+        double[] barsinceArr = fioExchange.getData (0);
+        assertEquals (0, barsinceArr[0], 0);
+        assertEquals (0, barsinceArr[1], 0);
+        assertEquals (1, barsinceArr[2], 0);
+        assertEquals (2, barsinceArr[3], 0);
+        assertEquals (3, barsinceArr[4], 0);
+        assertEquals (1, barsinceArr[5], 0);
+        assertEquals (1, barsinceArr[6], 0);
+        assertEquals (2, barsinceArr[7], 0);
+        assertEquals (3, barsinceArr[8], 0);
+        assertEquals (4, barsinceArr[9], 0);
+        assertEquals (5, barsinceArr[10], 0);
+    }
+
+    @Test
     public void fnFactoryCreatesReturnsFunctionClass(){
         Function fn = FunctionFactory.getInstance ("WMA");
         assertEquals (fn.getClass (), WMA.class);
@@ -222,6 +241,25 @@ public class FunctionsTest {
     }
 
     @Test
+    public void calculateGT(){
+        FIOExchange testInput = new FIOExchange(baseSeries.toArrays (1,2));
+
+        GT gt = new GT();
+        FIOExchange testOutput = gt.calculate (testInput);
+
+        Assert.assertNotNull (testOutput);
+
+        assertEquals ("Output Size", 1, testOutput.getDataCount ());
+        assertEquals ("Output Value Size", BARS.length , testOutput.getDataSize (0));
+        assertEquals ("Value", 0, testOutput.getData (0, 0), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 1), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 2), 0);
+        assertEquals ("Value", 1, testOutput.getData (0, 3), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 4), 0);
+
+    }
+
+    @Test
     public void calculateLTwithDifferentSizeInputs(){
         FIOExchange testInput = new FIOExchange(baseSeries.toArray (1), longBaseSeries.toArray (2));
 
@@ -237,6 +275,25 @@ public class FunctionsTest {
         assertEquals ("Value", 1, testOutput.getData (0, 2), 0);
         assertEquals ("Value", 0, testOutput.getData (0, 3), 0);
         assertEquals ("Value", 1, testOutput.getData (0, 4), 0);
+
+    }
+
+    @Test
+    public void calculateGTwithDifferentSizeInputs(){
+        FIOExchange testInput = new FIOExchange(baseSeries.toArray (1), longBaseSeries.toArray (2));
+
+        GT gt = new GT();
+        FIOExchange testOutput = gt.calculate (testInput);
+
+        Assert.assertNotNull (testOutput);
+
+        assertEquals ("Output Size", 1, testOutput.getDataCount ());
+        assertEquals ("Output Value Size", BARS.length , testOutput.getDataSize (0));
+        assertEquals ("Value", 0, testOutput.getData (0, 0), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 1), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 2), 0);
+        assertEquals ("Value", 1, testOutput.getData (0, 3), 0);
+        assertEquals ("Value", 0, testOutput.getData (0, 4), 0);
 
     }
 

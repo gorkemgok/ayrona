@@ -14,4 +14,6 @@ public interface Node {
     int getNeededInputCount ();
 
     FIOExchange calculate (MarketData marketData) throws PrerequisiteException;
+
+    FIOExchange calculate (MarketData marketData, FIOTable fioTable) throws PrerequisiteException;
 }

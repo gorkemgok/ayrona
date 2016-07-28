@@ -1,12 +1,13 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.strategy.Initiator;
+import com.ayronasystems.core.algo.tree.FIOTable;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
 import com.ayronasystems.core.algo.tree.Node;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.exception.PrerequisiteException;
+import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.strategy.SignalGenerator;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
@@ -19,6 +20,8 @@ import java.util.List;
  * Created by gorkemgok on 25/05/16.
  */
 public class Algo implements SignalGenerator, Initiator {
+
+    private FIOTable fioTable = new FIOTable ();
 
     private String name;
 
@@ -47,10 +50,11 @@ public class Algo implements SignalGenerator, Initiator {
     }
 
     public List<Signal> getSignalList (MarketData marketData) throws PrerequisiteException {
+        fioTable.clear ();
         buy.checkPrerequisite (true);
         sell.checkPrerequisite (true);
-        double[] buySignals = buy.calculate (marketData).getData (0);
-        double[] sellSignals = sell.calculate (marketData).getData (0);
+        double[] buySignals = buy.calculate (marketData, fioTable).getData (0);
+        double[] sellSignals = sell.calculate (marketData, fioTable).getData (0);
         int minLength = Math.min (buySignals.length, sellSignals.length);
         Signal[] signalList = new Signal[minLength];
         for ( int i = minLength - 1; i > -1; i-- ) {
@@ -67,6 +71,10 @@ public class Algo implements SignalGenerator, Initiator {
         return Arrays.asList (signalList);
     }
 
+    public FIOTable getFioTable () {
+        return fioTable;
+    }
+
     public int getNeededInputCount () {
         return Math.max (buy.getNeededInputCount (), sell.getNeededInputCount ());
     };
@@ -80,16 +88,43 @@ public class Algo implements SignalGenerator, Initiator {
     }
 
     public static Algo createInstance(String code, String name){
-        AlgoCreator algoCreator = new AlgoCreator ();
+        return createInstance (code, null, name);
+    }
+
+    public static Algo createInstance(String code, Double[] optimizedValueList, String name){
+        AlgoCreator algoCreator = new AlgoCreator (optimizedValueList);
+
         Context context = Context.enter ();
         Scriptable scope = context.initStandardObjects ();
         Object jsAlgoCreator = Context.javaToJS (algoCreator, scope);
         ScriptableObject.putProperty (scope, "Sistem", jsAlgoCreator);
+
         Object result = context.evaluateString(scope, code, "<cmd>", 1, null);
+
         if (name == null){
             name = algoCreator.NAME;
         }
         return new Algo (name, algoCreator.BUY, algoCreator.SELL);
     }
 
+    public static List<OptimizerDef> getOptimizerDefList(String code){
+        AlgoCreator algoCreator = new AlgoCreator ();
+
+        Context context = Context.enter ();
+        Scriptable scope = context.initStandardObjects ();
+        Object jsAlgoCreator = Context.javaToJS (algoCreator, scope);
+        ScriptableObject.putProperty (scope, "Sistem", jsAlgoCreator);
+
+        Object result = context.evaluateString(scope, code, "<cmd>", 1, null);
+
+        return algoCreator.getOptimizerDefList ();
+    }
+
+    @Override
+    public String toString () {
+        return "Algo{" +
+                "buy=" + buy +
+                ", sell=" + sell +
+                '}';
+    }
 }

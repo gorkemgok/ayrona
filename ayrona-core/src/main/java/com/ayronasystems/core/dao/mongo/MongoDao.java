@@ -9,10 +9,7 @@ import com.ayronasystems.core.edr.EdrModule;
 import com.ayronasystems.core.edr.EdrType;
 import com.ayronasystems.core.util.MongoUtils;
 import com.google.common.base.Optional;
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.MongoClient;
+import com.mongodb.*;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Morphia;
@@ -82,15 +79,14 @@ public class MongoDao implements Dao{
         return strategyModel;
     }
 
-    public void updateStrategy (StrategyModel strategyModel) {
+    public boolean updateStrategy (StrategyModel strategyModel) {
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter (Mapper.ID_KEY, strategyModel.getObjectId ());
-        UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
-                .set ("code", strategyModel.getCode ())
-                .set ("name", strategyModel.getName ())
-                .set ("symbol", strategyModel.getSymbol ().getName ())
-                .set ("period", strategyModel.getPeriod ())
-                .set ("initialBarCount", strategyModel.getInitialBarCount());
-        appDatastore.update (query, operations);
+        return appDatastore.updateFirst (query, strategyModel, false).getUpdatedCount () > 0;
+    }
+
+    public boolean deleteStrategy (String strategyId) {
+        WriteResult result = appDatastore.delete (StrategyModel.class, new ObjectId (strategyId));
+        return result.getN () > 0;
     }
 
     public List<StrategyModel> findAllStrategies () {
@@ -194,18 +190,18 @@ public class MongoDao implements Dao{
         return batchJobModel;
     }
 
-    public void updateBatchJob (String id, BatchJob.Status status) {
+    public boolean updateBatchJob (String id, BatchJob.Status status) {
         DBCollection collection = mongoClient.getDB (ayronaDbName).getCollection ("batch_job");
         DBObject query = new BasicDBObject ("_id", new ObjectId (id));
         DBObject update = new BasicDBObject ("$set", new BasicDBObject ("status", status.toString ()));
-        collection.findAndModify (query, update);
+        return collection.findAndModify (query, update) != null;
     }
 
-    public void updateBatchJob (String id, int progress) {
+    public boolean updateBatchJob (String id, int progress) {
         DBCollection collection = mongoClient.getDB (ayronaDbName).getCollection ("batch_job");
         DBObject query = new BasicDBObject ("_id", new ObjectId (id));
         DBObject update = new BasicDBObject ("$set", new BasicDBObject ("progress", progress));
-        collection.findAndModify (query, update);
+        return collection.findAndModify (query, update) != null;
     }
 
     public MarketDataAnalyzeModel createMarketDataAnalyze (MarketDataAnalyzeModel marketDataAnalyzeModel) {
@@ -263,7 +259,7 @@ public class MongoDao implements Dao{
         return positionModel;
     }
 
-    public void closePosition (PositionModel positionModel) {
+    public boolean closePosition (PositionModel positionModel) {
         Query<PositionModel> query = appDatastore
                 .createQuery (PositionModel.class)
                 .field ("_id")
@@ -274,7 +270,7 @@ public class MongoDao implements Dao{
                 .set ("idealCloseDate", positionModel.getIdealCloseDate ())
                 .set ("idealClosePrice", positionModel.getIdealClosePrice ())
                 .set ("isClosed", true);
-        appDatastore.update (query, update);
+        return appDatastore.update (query, update).getUpdatedCount () > 0;
     }
 
     public List<PositionModel> findPositionsByAccountId (String accountId) {

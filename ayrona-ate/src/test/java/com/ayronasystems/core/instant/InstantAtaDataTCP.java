@@ -11,12 +11,13 @@ public class InstantAtaDataTCP {
 
     public static void main(String[] args) throws Exception{
         String sentence;
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader (System.in));
         Socket clientSocket = new Socket ("172.16.192.40", 7000);
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader (clientSocket.getInputStream ()));
+        System.out.println ("Connected.Listening...");
         while ((sentence = bufferedReader.readLine()) != null){
             System.out.println (sentence);
         }
-
+        System.out.println ("Stopped");
         clientSocket.close();
     }
 

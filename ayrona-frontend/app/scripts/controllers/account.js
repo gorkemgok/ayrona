@@ -35,17 +35,19 @@ angular.module('ayronaApp')
                 }
             })
     })
-    .controller('AccountListCtrl', function ($scope, $timeout, $location, accounts, Rest, Notify, Helper) {
+    .controller('AccountListCtrl', function ($scope, $timeout, $location, accounts, Rest, Confirm, Notify, Helper) {
         $scope.accounts = accounts;
-        $scope.delete = function (accountId) {
-            Rest.all("account/"+accountId).remove().then(
-                function (response) {
-                    $location.path("/account/list");
-                },
-                function (error) {
-                    console.log(error);
-                }
-            );
+        $scope.delete = function (account) {
+            Confirm.show("Bu hesabı silmek istiyor musunuz? "+account.name,function () {
+                Rest.all("account/" + account.id).remove().then(
+                    function (response) {
+                        Helper.removeById($scope.accounts, account.id);
+                    },
+                    function (error) {
+                        console.log(error);
+                    }
+                );
+            });
         };
         $scope.gotoCreateAccount = function () {
             $location.path("/account/create");

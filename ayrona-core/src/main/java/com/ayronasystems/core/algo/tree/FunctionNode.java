@@ -57,18 +57,22 @@ public class FunctionNode implements Node {
         this.params = EMPTY_PARAM;
     }
 
-    public FIOExchange calculate (MarketData marketData) throws PrerequisiteException {
+    public FIOExchange calculate (MarketData marketData, FIOTable fioTable) throws PrerequisiteException {
         List<FIOExchange> fioExchangeList = new ArrayList<FIOExchange> (nodes.size ());
         for (Node node : nodes){
             node.checkPrerequisite (checkPrerequisite);
-            FIOExchange fioExchange = node.calculate (marketData);
+            FIOExchange fioExchange = node.calculate (marketData, fioTable);
             fioExchangeList.add (fioExchange);
         }
         FIOExchange fioExchange = new FIOExchange (fioExchangeList);
         if (checkPrerequisite){
             function.checkPrerequisites (fioExchange, params);
         }
-        return function.calculate (fioExchange, params);
+        FIOExchange result = function.calculate (fioExchange, params);
+        if (fioTable != null){
+            fioTable.add (toString (), result);
+        }
+        return result;
     }
 
     public void checkPrerequisite (boolean checkPrerequisite) {
@@ -86,6 +90,10 @@ public class FunctionNode implements Node {
         }else{
             return nnc + fnc - 1;
         }
+    }
+
+    public FIOExchange calculate (MarketData marketData) throws PrerequisiteException {
+        return calculate (marketData, null);
     }
 
     @Override

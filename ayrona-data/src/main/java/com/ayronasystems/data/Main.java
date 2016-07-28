@@ -25,16 +25,17 @@ public class Main {
         System.setProperty (PROP_MT4_TERMINAL_PORT, "7788");
         System.setProperty (PROP_MT4_JFX_HOST, "78.190.226.5");
         System.setProperty (PROP_MT4_JFX_PORT, "7790");
+        System.setProperty (PROP_SYMBOLS, "FX_EURUSD-EURUSD,FX_USDTRY-USDTRY,VOB_XAUTRY-F_XAUTRYM0816S0,VOB_X30-F_XU0300816S0");
 
         conf = Configuration.getInstance ();
 
         System.out.println (conf.toString ());
 
         MT4DataServiceEngine mt4DataServiceEngine = new MT4DataServiceEngine ();
-        mt4DataServiceEngine.init ();
+        //mt4DataServiceEngine.init ();
 
         ATADataServiceEngine ataDataServiceEngine = new ATADataServiceEngine ();
-        //ataDataServiceEngine.init ();
+        ataDataServiceEngine.init ();
         while ( true ){
 
         }

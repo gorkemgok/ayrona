@@ -70,6 +70,16 @@ public class StrategyResourceImpl implements StrategyResource {
         }
     }
 
+    public Response deleteStrategy (String strategyId) {
+        boolean deleted = dao.deleteStrategy (strategyId);
+        if (deleted) {
+            return Response.ok ()
+                           .build ();
+        }else{
+            return Response.noContent ().build ();
+        }
+    }
+
     public Response getList () {
         List<StrategyModel> strategyModelList = dao.findAllStrategies ();
         List<StrategyBean> strategyBeanList = new ArrayList<StrategyBean> (strategyModelList.size ());

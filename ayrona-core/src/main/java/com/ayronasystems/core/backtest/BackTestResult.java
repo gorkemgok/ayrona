@@ -1,9 +1,11 @@
 package com.ayronasystems.core.backtest;
 
+import com.ayronasystems.core.Position;
 import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by gorkemgok on 21/05/16.
@@ -12,12 +14,22 @@ public class BackTestResult extends AbstractSummary {
 
     public static final String SPACE = "%30s";
 
+    private List<Position> positionList;
+
     public BackTestResult (Date startDate, Date endDate) {
         super (startDate, endDate);
     }
 
     public MetricType[] getSummarizedMetricTypes () {
         return MetricType.values ();
+    }
+
+    public List<Position> getPositionList () {
+        return positionList;
+    }
+
+    public void setPositionList (List<Position> positionList) {
+        this.positionList = positionList;
     }
 
     @Override

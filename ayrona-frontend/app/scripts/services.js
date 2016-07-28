@@ -91,7 +91,50 @@ servicesModule.factory("Notify", function ($rootScope, $timeout) {
       globalAlert : globalAlert,
       globalError : globalError
   }
-})
+});
+
+angular.module('ayronaApp').controller("ConfirmModalCtrl", function ($scope, text) {
+    $scope.text = text;
+    $scope.confirm = function () {
+        $scope.$close(true);
+    }
+    $scope.cancel = function () {
+        $scope.$close(false);
+    }
+});
+
+servicesModule.factory("Confirm", function ($uibModal) {
+    var show = function (text, callback) {
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'views/modals/confirmation.html',
+            controller: 'ConfirmModalCtrl',
+            size: 'lg',
+            resolve: {
+                text: function () {
+                    return text;
+                }
+            }
+        });
+
+        modalInstance.result.then(
+            function (result) {
+                if (result === true){
+                    console.log("Modal confirmed");
+                    callback();
+                }else{
+                    console.log("Modal canceled");
+                }
+            }, function () {
+                console.log('Modal dismissed');
+            }
+        );
+    }
+
+    return {
+        show : show
+    }
+});
 
 servicesModule.factory("Helper", function(METRICS){
 
@@ -114,7 +157,7 @@ servicesModule.factory("Helper", function(METRICS){
             prerequisite[check.field] = message;
         });
         return prerequisite;
-    }
+    };
 
     var prepareStrategy = function(strategy){
     var data = {};
@@ -243,7 +286,7 @@ servicesModule.factory("Helper", function(METRICS){
     };
 
     return to;
-  }
+  };
 
     var preparePages = function(totalPage, currentPage){
         var pages = [];
@@ -251,12 +294,23 @@ servicesModule.factory("Helper", function(METRICS){
             pages.push({no:i, active:(i==currentPage)});
         }
         return pages;
-        }
+        };
     var preparePagesFromBean = function(paginatedBean){
         return preparePages(paginatedBean.totalPage, paginatedBean.currentBean);
+    };
+
+    var removeById = function (arr, id) {
+        var i = 0;
+        angular.forEach(arr, function (obj) {
+            if (obj.id === id){
+                arr.splice(i ,1);
+            }
+            i++;
+        });
     }
 
     return {
+        removeById : removeById,
         prepareStrategy : prepareStrategy,
         setTimeToZero : setTimeToZero,
         prepareGEOptions : prepareGEOptions,

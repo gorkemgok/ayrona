@@ -58,7 +58,7 @@ public class Singletons {
                         int port = conf.getInteger (ConfKey.MONGODB_PORT);
                         mongoClient = new MongoClient (host, port);
                         log.info ("Connected to mongodb {}:{}", host, port);
-                    } catch ( UnknownHostException e ) {
+                    } catch ( Exception e ) {
                         log.error ("Can connect to mongoDB", e);
                     }
                 }

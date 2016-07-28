@@ -1,5 +1,6 @@
 package com.ayronasystems.core.algo;
 
+import com.ayronasystems.core.algo.tree.FIOTable;
 import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.algo.tree.FunctionNode;
 import com.ayronasystems.core.algo.tree.MarketDataNode;
@@ -17,6 +18,8 @@ import java.util.List;
  * Created by gorkemgok on 13/05/16.
  */
 public abstract class AlgoModule implements SignalGenerator{
+
+    private FIOTable fioTable = new FIOTable ();
 
     protected String NAME;
 
@@ -46,10 +49,11 @@ public abstract class AlgoModule implements SignalGenerator{
     }
 
     public List<Signal> getSignalList (MarketData marketData) throws PrerequisiteException {
+        fioTable.clear ();
         BUY.checkPrerequisite (true);
         SELL.checkPrerequisite (true);
-        double[] buySignals = BUY.calculate (marketData).getData (0);
-        double[] sellSignals = SELL.calculate (marketData).getData (0);
+        double[] buySignals = BUY.calculate (marketData, fioTable).getData (0);
+        double[] sellSignals = SELL.calculate (marketData, fioTable).getData (0);
         int minLength = Math.min (buySignals.length, sellSignals.length);
         Signal[] signalList = new Signal[minLength];
         for ( int i = minLength - 1; i > -1; i-- ) {
@@ -66,11 +70,13 @@ public abstract class AlgoModule implements SignalGenerator{
         return Arrays.asList (signalList);
     }
 
+    public FIOTable getFioTable () {
+        return fioTable;
+    }
+
     public int getNeededInputCount () {
         return Math.max (BUY.getNeededInputCount (), SELL.getNeededInputCount ());
     }
-
-    ;
 
     public String getName () {
         return NAME;

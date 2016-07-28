@@ -23,6 +23,7 @@
                     <div class="col-sm-4">
                         <select id="symbol" ng-model="strategy.symbol" class="form-control input-sm">
                             <option value="VOB_XAUTRY">VOB_XAUTRY</option>
+                            <option value="VOB_X030">VOB_X030</option>
                             <option value="EURUSD">EURUSD</option>
                             <option value="USDTRY">USDTRY</option>
                         </select>
@@ -35,6 +36,11 @@
                         <select id="period" ng-model="strategy.period" class="form-control input-sm">
                             <option value="M1">1 dk</option>
                             <option value="M5">5 dk</option>
+                            <option value="M15">15 dk</option>
+                            <option value="M30">30 dk</option>
+                            <option value="H1">1 saat</option>
+                            <option value="H4">4 saat</option>
+                            <option value="D1">1 gün</option>
                         </select>
                         <span ng-if="prerequisite.strategy.period" class="help-block">{{prerequisite.strategy.period}}</span>
                     </div>

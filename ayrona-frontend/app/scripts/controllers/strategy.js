@@ -30,8 +30,9 @@ angular.module('ayronaApp')
                 }
             })
     })
-    .controller("StrategyListCtrl", function ($scope, $location, strategies, Rest) {
+    .controller("StrategyListCtrl", function ($scope, $controller, $location, strategies) {
         $scope.strategies = strategies;
+        $controller("StrategyBase", {$scope:$scope});
 
         $scope.gotoCreateStrategy = function () {
             $location.path("/strategy/create");
@@ -41,7 +42,7 @@ angular.module('ayronaApp')
             $location.path("/strategy/edit/"+strategyId);
         }
     })
-    .controller("StrategyBase", function ($scope, $location, $uibModal, Rest, STRATEGY_STATE) {
+    .controller("StrategyBase", function ($scope, $location, $uibModal, Confirm, Rest, Helper, STRATEGY_STATE) {
         $scope.compile = function (code) {
             Rest.all("strategy/compile").post(code).then(
                 function (response) {
@@ -72,6 +73,53 @@ angular.module('ayronaApp')
                     $scope.compilationMessage = msg;
                 }
             );
+        };
+        $scope.delete = function(strategy){
+            Confirm.show("Bu stratejiyi silmek istediğinizden emin misiniz? "+strategy.name, function () {
+                Rest.one("strategy",strategy.id).remove().then(
+                    function (response) {
+                        Helper.removeById($scope.strategies, strategy.id);
+                        console.log("Deleted strategy "+strategy.name);
+                    },
+                    function (error) {
+                        console.log("Can't delete strategy "+strategy.name);
+                    }
+                );
+            });
+        };
+        $scope.activate = function (strategy) {
+            Confirm.show("Bu Stratejiyi aktive etmek istiyor musunuz? "+strategy.name, function () {
+                Rest.one("ate/strategy/"+strategy.id+"/start").post().then(
+                    function (response) {
+                        angular.forEach($scope.strategies, function (obj) {
+                            if (obj.id == strategy.id){
+                                strategy.state = "ACTIVE";
+                            }
+                        });
+                        console.log("Strategy activated:"+strategy.name);
+                    },
+                    function (error) {
+                        console.log("Error while activating strategy:"+strategy.name+", "+error);
+                    }
+                );
+            });
+        };
+        $scope.deactivate = function (strategy) {
+            Confirm.show("Bu Stratejiyi deaktive etmek istiyor musunuz? "+strategy.name, function () {
+                Rest.one("ate/strategy/"+strategy.id+"/stop").remove().then(
+                    function (response) {
+                        angular.forEach($scope.strategies, function (obj) {
+                            if (obj.id == strategy.id){
+                                strategy.state = "INACTIVE";
+                            }
+                        });
+                        console.log("Strategy deactivated:"+strategy.name);
+                    },
+                    function (error) {
+                        console.log("Error while deactivating strategy:"+strategy.name+", "+error);
+                    }
+                );
+            });
         };
         $scope.openBackTestModal = function () {
 

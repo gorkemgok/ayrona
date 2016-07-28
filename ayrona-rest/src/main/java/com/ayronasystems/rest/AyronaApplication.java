@@ -22,6 +22,7 @@ public class AyronaApplication extends Application {
         resources.add (new AuthResourceImpl (TokenManager.getInstance ()));
         resources.add (new AccountResourceImpl ());
         resources.add (new MarketDataResourceImpl ());
+        resources.add (new ATEResourceImpl ());
     }
 
     @Override
