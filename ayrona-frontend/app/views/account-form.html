@@ -56,6 +56,7 @@
                 <th>S</th>
                 <th>H</th>
                 <th>Strateji</th>
+                <th>Lot</th>
                 <th>Sembol</th>
                 <th>Period</th>
                 <th></th>
@@ -75,10 +76,21 @@
                            class="glyphicon glyphicon-pause text-danger"></i>
                     </td>
                     <td>{{ boundStrategy.strategy.name }}</td>
+                    <td>{{ boundStrategy.lot }}</td>
                     <td>{{ boundStrategy.strategy.symbol }}</td>
                     <td>{{ boundStrategy.strategy.period | period }}</td>
                     <td>
-                        <button class="btn btn-xs btn-danger" ng-click="delete(strategy.id)">Sil</button>
+                        <button class="btn btn-xs btn-danger" ng-click="unbindAccount(boundStrategy.strategy)">Sil</button>
+                        <button class="btn btn-xs btn-success"
+                                ng-show="boundStrategy.state=='INACTIVE'"
+                                ng-click="changeAccountBinderState(boundStrategy, true)">
+                            <i class="glyphicon glyphicon-play"></i>
+                        </button>
+                        <button class="btn btn-xs btn-danger"
+                                ng-show="boundStrategy.state=='ACTIVE'"
+                                ng-click="changeAccountBinderState(boundStrategy, false)">
+                            <i class="glyphicon glyphicon-pause"></i>
+                        </button>
                         <button class="btn btn-xs btn-primary" ng-click="editBond(strategy.id, account.id)">
                             <i class="glyphicon glyphicon-edit"></i>
                         </button>

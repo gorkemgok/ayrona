@@ -72,7 +72,7 @@ public interface StrategyResource {
     @Path ("{id}/account/")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response updateAccountState(@PathParam ("id") String strategyId, AccountBinderBean accountBinderBean);
+    Response updateAccountBound (@PathParam ("id") String strategyId, AccountBinderBean accountBinderBean);
 
     @DELETE
     @Path ("{id}/account/{aid}")

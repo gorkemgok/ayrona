@@ -35,6 +35,7 @@ public class ATEResourceImpl implements ATEResource{
     }
 
     public Response getStrategyList () {
+        ate.syncStrategies ();
         List<RunningStrategy> runningStrategyList = ate.getRunningStrategyList ();
         List<RunningStrategyBean> runningStrategyBeanList = new ArrayList<RunningStrategyBean> (runningStrategyList.size ());
         for (RunningStrategy runningStrategy : runningStrategyList){

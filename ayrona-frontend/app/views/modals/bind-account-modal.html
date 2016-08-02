@@ -2,10 +2,11 @@
     <div class="form-group" ng-class="{'has-error':prerequisite.type}">
         <label for="strategyToBind" class="col-sm-3 control-label">Hesap Türü</label>
         <div class="col-sm-6">
-            <select id="strategyToBind" ng-model="strategyToBind" class="form-control input-sm">
-                <option value="">Strateji seçiniz</option>
-                <option ng-repeat="strategy in strategies"
-                        value="{{strategy.id}}">{{ strategy.name }}</option>
+            <select id="strategyToBind"
+                    ng-model="strategyToBind"
+                    ng-options="option.name for option in strategies track by option.id"
+                    class="form-control input-sm">
+
             </select>
             <span ng-if="prerequisite.type" class="help-block">{{prerequisite.type}}</span>
         </div>

@@ -93,6 +93,10 @@ public class MongoDao implements Dao{
         return appDatastore.createQuery (StrategyModel.class).asList ();
     }
 
+    public List<StrategyModel> findActiveStrategies () {
+        return appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.ACTIVE).asList ();
+    }
+
     public Optional<StrategyModel> findStrategy (String id) {
         StrategyModel strategyModel = appDatastore.get (StrategyModel.class, new ObjectId (id));
         if (strategyModel == null){
@@ -121,7 +125,7 @@ public class MongoDao implements Dao{
 
     public void unboundAccount (String strategyId, String accountId) {
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
-                                                                 .removeFirst ("accounts.$");
+                                                                 .removeFirst ("accounts");
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class)
                                                  .field (Mapper.ID_KEY).equal (new ObjectId (strategyId))
                                                  .field ("accounts.id").equal (accountId);

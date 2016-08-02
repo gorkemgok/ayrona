@@ -3,9 +3,7 @@ package com.ayronasystems.core.dao.model;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.definition.Symbols;
-import org.mongodb.morphia.annotations.Entity;
-import org.mongodb.morphia.annotations.PostLoad;
-import org.mongodb.morphia.annotations.PrePersist;
+import org.mongodb.morphia.annotations.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +24,7 @@ public class StrategyModel extends BaseModel {
 
     private int initialBarCount;
 
+    @Indexed(name = "state")
     private AccountBinder.State state;
 
     private List<AccountBinder> accounts;

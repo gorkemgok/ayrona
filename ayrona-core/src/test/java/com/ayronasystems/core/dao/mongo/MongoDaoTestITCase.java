@@ -227,7 +227,7 @@ public class MongoDaoTestITCase {
     }
 
     @Test
-    public void createAndFindAllStrategiesAndFindBoundAccounts(){
+    public void createAndFindAllAndActiveStrategiesAndFindBoundAccounts(){
         StrategyModel expectedStrategyModel = new StrategyModel ();
         expectedStrategyModel.setName ("Fatih ate");
         expectedStrategyModel.setCode ("<code></code>");
@@ -265,6 +265,18 @@ public class MongoDaoTestITCase {
         AccountModel actualAccountModel = accountModelList.get (0);
         assertEquals (expectedAccountModel.getAccountantName (), actualAccountModel.getAccountantName ());
 
+        expectedStrategyModel = new StrategyModel ();
+        expectedStrategyModel.setName ("Fatih ate1");
+        expectedStrategyModel.setCode ("<code></code>");
+        expectedStrategyModel.setState (AccountBinder.State.ACTIVE);
+        dao.createStrategy (expectedStrategyModel);
+
+        actualStrategyModelList = dao.findAllStrategies ();
+        assertEquals (2, actualStrategyModelList.size ());
+
+        actualStrategyModelList = dao.findActiveStrategies ();
+        assertEquals (1, actualStrategyModelList.size ());
+        assertEquals ("Fatih ate1", actualStrategyModelList.get (0).getName ());
     }
 
     @Test

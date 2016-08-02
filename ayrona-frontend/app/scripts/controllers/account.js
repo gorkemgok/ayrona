@@ -73,7 +73,7 @@ angular.module('ayronaApp')
         }
 
     })
-    .controller('AccountEditCtrl', function ($scope, $timeout, $uibModal, $location, account, strategies, Rest, Notify, Helper) {
+    .controller('AccountEditCtrl', function ($scope, $timeout, $uibModal, $location, account, strategies, Confirm, AynRest, Rest, Notify, Helper) {
         $scope.account = account;
         $scope.strategies = strategies;
         $scope.update = function (account) {
@@ -87,7 +87,39 @@ angular.module('ayronaApp')
                 }
             );
         };
+        $scope.changeAccountBinderState = function (boundStrategy, isActive) {
+            var strategy = boundStrategy.strategy;
+            var state = isActive?"ACTIVE":"INACTIVE";
+            Confirm.show(strategy.name+(isActive?" ACTIVE":" INACTIVE"),function () {
+                    AynRest.updateAccountBinder(strategy.id, account.id, boundStrategy.lot, state,
+                        function (response) {
+                            boundStrategy.state = state;
+                        },
+                        function (error) {
+                            console.log(error);
+                        }
+                    );
+                }
+            );
+        };
+        $scope.unbindAccount = function(strategy){
+            Confirm.show("Bu stratejiyi bu hesaptan silmek istiyor musunuz? "+strategy.name,
+                function () {
+                    AynRest.unbindAccount(strategy.id, account.id, function (response) {
+                        console.log(strategy.name+" is unbound from "+account.name);
+                        var i = 0;
+                        angular.forEach($scope.strategies, function (obj) {
+                            if (obj.strategy.id === strategy.id){
+                                $scope.strategies.splice(i ,1);
+                            }
+                            i++;
+                        });
+                    },function (error) {
 
+                    });
+                }
+            );    
+        };
         $scope.openBindModal = function () {
 
             var modalInstance = $uibModal.open({
@@ -106,8 +138,9 @@ angular.module('ayronaApp')
             });
 
             modalInstance.result.then(
-                function (selectedItem) {
-                    $scope.selected = selectedItem;
+                function (strategyToBind) {
+                    console.log("Strategy added to account"+ strategyToBind.name);
+                    $scope.strategies.push(strategyToBind);
                 }, function () {
                     console.log('Modal dismissed at: ' + new Date());
                 }
@@ -122,9 +155,15 @@ angular.module('ayronaApp')
         $scope.accountBinder.lot = 1;
 
         $scope.bind = function (strategyToBind, accountBinder) {
-            Rest.all("strategy/"+strategyToBind+"/account").post(accountBinder).then(
+            console.log("Strategy bound" + strategyToBind.name);
+            Rest.all("strategy/"+strategyToBind.id+"/account").post(accountBinder).then(
                 function (response) {
-                    $scope.$close(response);
+                    var boundStrategy = {
+                        strategy : strategyToBind,
+                        lot : accountBinder.lot,
+                        state : accountBinder.state
+                    }
+                    $scope.$close(boundStrategy);
                 },
                 function (error) {
                     $scope.$close(error);

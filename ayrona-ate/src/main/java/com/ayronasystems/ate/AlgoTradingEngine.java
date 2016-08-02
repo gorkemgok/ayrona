@@ -24,6 +24,7 @@ import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.strategy.SPStrategy;
+import com.ayronasystems.core.strategy.Strategy;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import com.ayronasystems.core.util.DateUtils;
 import com.google.common.base.Optional;
@@ -187,6 +188,61 @@ public class AlgoTradingEngine {
                                                                  .getPeriod ());
                     } catch ( PrerequisiteException e ) {
                         log.error ("Cant process strategy " + strategy.getId (), e);
+                    }
+                }
+            }
+        }
+    }
+
+    public void syncStrategies(){
+        log.info ("Synchronization started...");
+        List<StrategyModel> strategyModelList = dao.findActiveStrategies ();
+        for ( StrategyModel strategyModel : strategyModelList){
+            boolean exists = false;
+            for (QueueRunner<Bar, SPStrategy<Bar>> strategyRunner : strategyRunners){
+                SPStrategy<Bar> strategy = strategyRunner.unwrapRunnable ();
+                if (strategyModel.getId ().equals (strategy.getId ())){
+                    exists = true;
+                    syncAccountBinders (strategyModel, strategy);
+                    break;
+                }
+            }
+            if (!exists){
+                registerStrategy (strategyModel);
+            }
+        }
+    }
+
+    private void syncAccountBinders(StrategyModel strategyModel, Strategy strategy){
+        List<AccountBindInfo> accountBindInfoList = strategy.getAccountBindInfoList ();
+        List<AccountBinder> accountBinderList = strategyModel.getAccounts ();
+        for (AccountBinder accountBinder : accountBinderList){
+            if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)){
+                boolean exists = false;
+                for (AccountBindInfo accountBindInfo : accountBindInfoList) {
+                    if ( accountBinder.getId ().equals (accountBindInfo.getAccount ().getId ())){
+                        exists = true;
+                        double currentLot = accountBindInfo.getLot ();
+                        if (currentLot != accountBinder.getLot ()) {
+                            accountBindInfo.setLot (accountBinder.getLot ());
+                            log.info ("Synchronized lot of account {} to {} from {}",
+                                      accountBindInfo.getAccount ().getName (),
+                                      accountBinder.getLot (),
+                                      currentLot);
+                        }
+                    }
+                }
+                if (!exists){
+                    Optional<AccountModel> accountModelOptional = dao.findAccount (accountBinder.getId ());
+                    if (accountModelOptional.isPresent ()) {
+                        AccountModel accountModel = accountModelOptional.get ();
+                        Account account = new BasicAccount (accountModel.getId (), accountModel.getAccountantName (),
+                                                            BasicAccount.createAccountRemoteUsing (accountModel));
+                        AccountBindInfo accountBindInfo = new AccountBindInfo (account, accountBinder.getLot ());
+                        strategy.registerAccount (accountBindInfo);
+                        log.info ("Registered account {} to strategy {} with {} lot(s)", account.getName (),
+                                  strategy.getName (),
+                                  accountBindInfo.getLot ());
                     }
                 }
             }

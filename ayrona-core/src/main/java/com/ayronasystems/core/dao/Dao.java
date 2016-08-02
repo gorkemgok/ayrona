@@ -32,6 +32,8 @@ public interface Dao {
 
     List<StrategyModel> findAllStrategies();
 
+    List<StrategyModel> findActiveStrategies();
+
     Optional<StrategyModel> findStrategy(String id);
 
     void bindAccountToStrategy(String strategyId, AccountBinder accountBinder);

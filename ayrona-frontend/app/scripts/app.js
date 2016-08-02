@@ -2,6 +2,7 @@
 
 angular.module('ayronaApp', [
     'ayronaServices',
+    'ayronaRestServices',
     'ayronaConstants',
     'ayronaFilters',
     'ngCookies',

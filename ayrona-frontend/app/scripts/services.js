@@ -303,11 +303,12 @@ servicesModule.factory("Helper", function(METRICS){
         var i = 0;
         angular.forEach(arr, function (obj) {
             if (obj.id === id){
+                console.log("Removed by id : ",id);
                 arr.splice(i ,1);
             }
             i++;
         });
-    }
+    };
 
     return {
         removeById : removeById,

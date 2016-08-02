@@ -26,8 +26,12 @@
                     <td>
                         <button class="btn btn-xs btn-danger" ng-click="delete(strategy)">Sil</button>
                         <button class="btn btn-xs btn-primary" ng-click="gotoEditStrategy(strategy.id)">Düzenle</button>
-                        <button class="btn btn-xs btn-success" ng-click="activate(strategy)">Aktif Et</button>
-                        <button class="btn btn-xs btn-danger" ng-click="deactivate(strategy)">Deaktif Et</button>
+                        <button ng-show="strategy.state == 'INACTIVE'" class="btn btn-xs btn-success" ng-click="activate(strategy)">
+                            <i class="glyphicon glyphicon-play"></i>
+                        </button>
+                        <button ng-show="strategy.state == 'ACTIVE'" class="btn btn-xs btn-danger" ng-click="deactivate(strategy)">
+                            <i class="glyphicon glyphicon-pause"></i>
+                        </button>
                     </td>
                 </tr>
                 </tbody>

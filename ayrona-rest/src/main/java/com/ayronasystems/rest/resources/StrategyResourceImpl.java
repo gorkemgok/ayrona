@@ -12,7 +12,6 @@ import com.ayronasystems.core.definition.Symbols;
 import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.util.DateUtils;
 import com.ayronasystems.rest.bean.*;
-import com.ayronasystems.rest.client.ServiceRest;
 import com.ayronasystems.rest.resources.definition.StrategyResource;
 import com.google.common.base.Optional;
 import org.mozilla.javascript.EcmaError;
@@ -137,21 +136,22 @@ public class StrategyResourceImpl implements StrategyResource {
         return Response.ok ().build ();
     }
 
-    public Response updateAccountState (String strategyId, AccountBinderBean accountBinderBean) {
+    public Response updateAccountBound (String strategyId, AccountBinderBean accountBinderBean) {
         AccountBinder accountBinder = accountBinderBean.toAccountBinder ();
         dao.updateBoundAccount (strategyId, accountBinder);
-        if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)) {
+        /*if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)) {
             return ServiceRest.INSTANCE.getAteEndpoint ()
                                 .startAccount (strategyId, accountBinder.getId (), accountBinder.getLot ());
         }else{
             return ServiceRest.INSTANCE.getAteEndpoint ()
                                 .stopAccount (strategyId, accountBinder.getId ());
-        }
+        }*/
+        return Response.ok ().build ();
     }
 
     public Response deleteAccount (String id, String accountId) {
         dao.unboundAccount (id, accountId);
-        return ServiceRest.INSTANCE.getAteEndpoint ()
-                                   .stopAccount (id, accountId);
+        //return ServiceRest.INSTANCE.getAteEndpoint ().stopAccount (id, accountId);
+        return Response.ok ().build ();
     }
 }

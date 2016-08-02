@@ -21,4 +21,8 @@ public class AccountBindInfo {
     public double getLot () {
         return lot;
     }
+
+    public void setLot (double lot) {
+        this.lot = lot;
+    }
 }
