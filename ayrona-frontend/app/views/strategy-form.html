@@ -21,11 +21,8 @@
                 <div class="form-group" ng-class="{'has-error':prerequisite.strategy.symbol}">
                     <label for="symbol" class="col-sm-2 control-label">Sembol</label>
                     <div class="col-sm-4">
-                        <select id="symbol" ng-model="strategy.symbol" class="form-control input-sm">
-                            <option value="VOB_XAUTRY">VOB_XAUTRY</option>
-                            <option value="VOB_X30">VOB_X30</option>
-                            <option value="EURUSD">EURUSD</option>
-                            <option value="USDTRY">USDTRY</option>
+                        <select id="symbol" class="form-control input-sm" ng-model="strategy.symbol">
+                            <option ng-repeat="symbol in SYMBOLS" value="{{ symbol.value }}">{{ symbol.text }}</option>
                         </select>
                         <span ng-if="prerequisite.strategy.symbol" class="help-block">{{prerequisite.strategy.symbol}}</span>
                     </div>
@@ -34,13 +31,7 @@
                     <label for="period" class="col-sm-2 control-label">Periyot</label>
                     <div class="col-sm-4">
                         <select id="period" ng-model="strategy.period" class="form-control input-sm">
-                            <option value="M1">1 dk</option>
-                            <option value="M5">5 dk</option>
-                            <option value="M15">15 dk</option>
-                            <option value="M30">30 dk</option>
-                            <option value="H1">1 saat</option>
-                            <option value="H4">4 saat</option>
-                            <option value="D1">1 gün</option>
+                            <option ng-repeat="period in PERIODS" value="{{ period.value }}">{{ period.text }}</option>
                         </select>
                         <span ng-if="prerequisite.strategy.period" class="help-block">{{prerequisite.strategy.period}}</span>
                     </div>
@@ -65,26 +56,36 @@
             <div ng-show="compilationResult == 1" class="alert alert-sm alert-danger alert-dismissible" role="alert">{{ compilationMessage }}</div>
         </div>
         <div class="col-sm-6 well">
-            <p>Net Profit : {{backTestResult.netProfit}}</p>
-            <p>Maxdrawdown : {{backTestResult.mdd}}</p>
-            <p>Stability : {{backTestResult.stability}}</p>
+            <p>Net Profit : {{ backTestResult.netProfit | decimalFormat }}</p>
+            <p>Maxdrawdown : {{ backTestResult.mdd | decimalFormat }}</p>
+            <p>Stability : {{ backTestResult.stability | decimalFormat }}</p>
             <div>
                 <canvas id="line" class="chart chart-line" chart-data="data"
                         chart-labels="labels" chart-options="options"
                         chart-dataset-override="datasetOverride" chart-click="onClick">
                 </canvas>
             </div>
+            <!--<button class="btn btn-primary btn-xs" ng-class="{ active : isSeriesOpen[0]}" ng-click="toggleSeries(0)">Equity</button>-->
+            Göster/Gizle:
+            <button class="btn btn-primary btn-xs" ng-class="{ active : isSeriesOpen[1]}" ng-click="toggleSeries(1)">Profit</button>
+            <button class="btn btn-primary btn-xs" ng-class="{ active : isSeriesOpen[2]}" ng-click="toggleSeries(2)">MDD</button>
         </div>
-        <div class="col-sm-6 well">
-            <table class="table">
+        <div class="col-sm-6 well position-table">
+            <table class="table table-condensed">
                 <thead>
                     <th></th>
-                    <th></th>
+                    <th>Açılış Tarihi</th>
+                    <th>Açılış Fiyatı</th>
+                    <th>Kapanış Tarihi</th>
+                    <th>Kapanış Fiyatı</th>
+                    <th>Kâr</th>
                 </thead>
                 <tr ng-repeat="position in backTestResult.positionList | orderBy:'-'" ng-class="{ success : calculateProfit(position) > 0, danger : calculateProfit(position) < 0}">
                     <td><i class="glyphicon {{ position.direction | directionIcon}}"></i></td>
-                    <td>{{ position.type }}</td>
                     <td>{{ position.openDate | millisToDate }}</td>
+                    <td>{{ position.openPrice }}</td>
+                    <td>{{ position.closeDate | millisToDate }}</td>
+                    <td>{{ position.closePrice }}</td>
                     <td>{{ position | profit }}</td>
                 </tr>
             </table>

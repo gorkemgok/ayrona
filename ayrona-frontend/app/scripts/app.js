@@ -21,7 +21,9 @@ angular.module('ayronaApp', [
     .config(function ($stateProvider, $urlRouterProvider) {
         $urlRouterProvider.otherwise('/dashboard');
     })
-    .run(function ($state, $rootScope, $timeout, Session, AynRest, Rest) {
+    .run(function ($state, $rootScope, $timeout, Session, AynRest, Rest, SYMBOLS, PERIODS) {
+        $rootScope.SYMBOLS = SYMBOLS;
+        $rootScope.PERIODS = PERIODS;
         $rootScope.uiState = $state;
         $rootScope.logout = function () {
             Session.stop();

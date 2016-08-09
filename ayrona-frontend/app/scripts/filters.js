@@ -155,4 +155,13 @@ filtersModule.filter("profit", function (Helper) {
         var profit = Helper.calculateProfit(position);
         return profit;
     };
-})
+});
+
+filtersModule.filter("decimalFormat", function () {
+   return function (input, toFixed) {
+       if (toFixed === undefined){
+           toFixed = 4;
+       }
+       return Number(input).toFixed(toFixed);
+   };
+});

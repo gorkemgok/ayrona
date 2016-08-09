@@ -121,6 +121,8 @@ angular.module('ayronaApp')
                 );
             });
         };
+        
+        var graphData = [];
         $scope.openBackTestModal = function () {
 
             var modalInstance = $uibModal.open({
@@ -143,15 +145,32 @@ angular.module('ayronaApp')
 
             modalInstance.result.then(
                 function (result) {
+                    var equitySeries = [];
+                    var profitSeries = [];
+                    var mddSeries = [];
+                    angular.forEach(result.equitySeries, function (value) {
+                        equitySeries.push(Number(value).toFixed(4));
+                    });
+                    angular.forEach(result.profitSeries, function (value) {
+                        profitSeries.push(Number(value).toFixed(4));
+                    });
+                    angular.forEach(result.mddSeries, function (value) {
+                        mddSeries.push(Number(value).toFixed(4));
+                    });
+                    graphData = [
+                        equitySeries,
+                        profitSeries,
+                        mddSeries
+                    ];
                     $scope.data = [
-                        result.equitySeries,
-                        result.profitSeries,
-                        result.mddSeries
+                        equitySeries,
+                        profitSeries,
+                        mddSeries
                     ];
                     var i = 0;
                     var labels = [];
-                    angular.forEach(result.equitySeries, function (value) {
-                        labels.push(i++);
+                    angular.forEach(result.dateSeries, function (value) {
+                        labels.push(moment(value).format("DD-MM-YYYY"));
                     });
                     $scope.labels = labels;
                     $scope.backTestResult = result;
@@ -162,6 +181,16 @@ angular.module('ayronaApp')
         };
         $scope.calculateProfit = function (position) {
             return Helper.calculateProfit(position);
+        };
+        $scope.isSeriesOpen = [true, true, true];
+        $scope.toggleSeries = function (seriesIdx) {
+            if ($scope.isSeriesOpen[seriesIdx]){
+                $scope.data[seriesIdx] = [];
+                $scope.isSeriesOpen[seriesIdx] = false;
+            }else{
+                $scope.data[seriesIdx] = graphData[seriesIdx];
+                $scope.isSeriesOpen[seriesIdx] = true;
+            }
         };
     })
     .controller("StrategyCreateCtrl", function ($scope, $controller, $location, Rest, Notify, STRATEGY_STATE) {
@@ -214,7 +243,7 @@ angular.module('ayronaApp')
         $scope.options = {
             scales: {
                 xAxes: [{
-                    display: false
+                    display: true
                 }],
                 yAxes: [
                     {

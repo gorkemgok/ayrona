@@ -25,14 +25,17 @@ constantsModule.constant('PERIODS', [
     {text:'1 Dakika', value:'M1'},
     {text:'5 Dakika', value:'M5'},
     {text:'15 Dakika', value:'M15'},
+    {text:'30 Dakika', value:'M30'},
     {text:'1 Saat', value:'H1'},
     {text:'4 Saat', value:'H4'},
     {text:'1 Gün', value:'D1'}
 ]);
 
 constantsModule.constant('SYMBOLS', [
+    {text:'VOB_XAUTRY', value:'VOB_XAUTRY'},
+    {text:'VOB_X30', value:'VOB_X30'},
+    {text:'VOB_USDTRY', value:'VOB_USDTRY'},
     {text:'FX_EURUSD', value:'FX_EURUSD'},
-    {text:'VOB_XAUTRY', value:'VOB_XAUTRY'}
 ]);
 
 constantsModule.constant('ACCOUNT_TYPE', {
