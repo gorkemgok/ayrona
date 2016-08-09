@@ -23,6 +23,7 @@ public class AyronaApplication extends Application {
         resources.add (new AccountResourceImpl ());
         resources.add (new MarketDataResourceImpl ());
         resources.add (new ATEResourceImpl ());
+        resources.add (new EdrResourceImpl ());
     }
 
     @Override

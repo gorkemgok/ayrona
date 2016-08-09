@@ -1,1 +1,2 @@
+export SYMBOLS=FX_EURUSD-EURUSD,FX_USDTRY-USDTRY,VOB_XAUTRY-F_XAUTRYM0816S0,VOB_X30-F_XU0300816S0
 java -jar -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005 target/ayrona-rest-swarm.jar

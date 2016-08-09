@@ -23,7 +23,7 @@
                     <div class="col-sm-4">
                         <select id="symbol" ng-model="strategy.symbol" class="form-control input-sm">
                             <option value="VOB_XAUTRY">VOB_XAUTRY</option>
-                            <option value="VOB_X030">VOB_X030</option>
+                            <option value="VOB_X30">VOB_X30</option>
                             <option value="EURUSD">EURUSD</option>
                             <option value="USDTRY">USDTRY</option>
                         </select>
@@ -74,6 +74,20 @@
                         chart-dataset-override="datasetOverride" chart-click="onClick">
                 </canvas>
             </div>
+        </div>
+        <div class="col-sm-6 well">
+            <table class="table">
+                <thead>
+                    <th></th>
+                    <th></th>
+                </thead>
+                <tr ng-repeat="position in backTestResult.positionList | orderBy:'-'" ng-class="{ success : calculateProfit(position) > 0, danger : calculateProfit(position) < 0}">
+                    <td><i class="glyphicon {{ position.direction | directionIcon}}"></i></td>
+                    <td>{{ position.type }}</td>
+                    <td>{{ position.openDate | millisToDate }}</td>
+                    <td>{{ position | profit }}</td>
+                </tr>
+            </table>
         </div>
     </div>
 </div>

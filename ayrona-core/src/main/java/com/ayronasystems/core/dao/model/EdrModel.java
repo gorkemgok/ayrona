@@ -6,7 +6,6 @@ import com.ayronasystems.core.edr.EdrStatus;
 import com.ayronasystems.core.edr.EdrType;
 import org.mongodb.morphia.annotations.Entity;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,10 +22,6 @@ public class EdrModel extends BaseModel{
     private EdrStatus status;
 
     private Map<String, String> properties = new HashMap<String, String>();
-
-    public Date getCreateDate() {
-        return getCreateDate();
-    }
 
     public EdrModule getModule() {
         return module;

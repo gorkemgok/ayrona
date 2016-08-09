@@ -27,8 +27,14 @@ restServicesModule.factory("AynRest", function (Rest) {
         );
     };
 
+    var checkEdr = function (module, type, startDate, successCallback, errorCallback) {
+        Rest.one("edr/?module="+module+"&type="+type+"&startDate="+startDate).get().then(
+            successCallback, errorCallback
+        );
+    };
     return {
         unbindAccount : unbindAccount,
-        updateAccountBinder : updateAccountBinder
+        updateAccountBinder : updateAccountBinder,
+        checkEdr : checkEdr
     };
 });

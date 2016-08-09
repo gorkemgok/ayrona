@@ -52,8 +52,30 @@
 <!-- Add your site or application content here -->
 
 <div ui-view=""></div>
-
-
+<!--
+<div class="edr-container container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <th>T</th>
+                    <th>S</th>
+                    <th>St</th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="edr in edrList">
+                        <td>
+                            <i class="glyphicon {{ edr | edr_icon }}"></i>
+                        </td>
+                        <td>{{edr.status}}</td>
+                        <td>{{edr.properties['strategy']}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+-->
 <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
 <script>
     (function (i, s, o, g, r, a, m) {

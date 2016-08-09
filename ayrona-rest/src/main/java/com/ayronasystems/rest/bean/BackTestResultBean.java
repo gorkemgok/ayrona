@@ -1,5 +1,6 @@
 package com.ayronasystems.rest.bean;
 
+import com.ayronasystems.core.Position;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.backtest.MetricType;
 import com.ayronasystems.core.timeseries.moment.EquityBar;
@@ -7,7 +8,6 @@ import com.ayronasystems.core.timeseries.series.BasicTimeSeries;
 import org.joda.time.DateTime;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -29,6 +29,16 @@ public class BackTestResultBean {
     private List<Double> mddSeries;
 
     private List<Double> profitSeries;
+
+    private List<Position> positionList;
+
+    public List<Position> getPositionList () {
+        return positionList;
+    }
+
+    public void setPositionList (List<Position> positionList) {
+        this.positionList = positionList;
+    }
 
     public double getNetProfit () {
         return netProfit;
@@ -91,7 +101,7 @@ public class BackTestResultBean {
         btrBean.setNetProfit (btr.getResultAsDouble (MetricType.NET_PROFIT));
         btrBean.setMdd (btr.getResultAsDouble (MetricType.MAX_TRADE_DRAWDOWN));
         btrBean.setStability (btr.getResultAsDouble (MetricType.STABILITY));
-
+        btrBean.setPositionList (btr.getPositionList ());
         BasicTimeSeries<EquityBar> equityTimeSeries = (BasicTimeSeries<EquityBar>)
                 btr.getResult (MetricType.EQUITY_SERIES).getValue ();
 

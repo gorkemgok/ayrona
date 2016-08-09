@@ -59,10 +59,15 @@ public class StrategyResourceImpl implements StrategyResource {
             if (compilationResponse.getStatus() != 200){
                 return compilationResponse;
             }else {
-                StrategyModel strategyModel = strategyBean.toStrategyModel ();
-                dao.updateStrategy (strategyModel);
-                return Response.ok (StrategyBean.valueOf (strategyModel))
-                               .build ();
+                Optional<StrategyModel> strategyModelOptional = dao.findStrategy (strategyBean.getId ());
+                if (strategyModelOptional.isPresent ()) {
+                    StrategyModel newStrategyModel = strategyBean.toStrategyModel ();
+                    dao.updateStrategy (newStrategyModel);
+                    return Response.ok (StrategyBean.valueOf (newStrategyModel))
+                                   .build ();
+                }else{
+                    return Response.noContent ().build ();
+                }
             }
         }else{
             return Response.status (Response.Status.BAD_REQUEST).entity (check.toBean ()).build ();

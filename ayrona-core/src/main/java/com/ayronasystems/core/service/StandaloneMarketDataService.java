@@ -94,7 +94,8 @@ public class StandaloneMarketDataService implements MarketDataService {
         );
         long end = System.currentTimeMillis();
         if (cacheResult.hasData()) {
-            log.info("Loaded market data from cache {}, {} between {}, {} in {} ms",
+            log.info("Loaded {} market data from cache {}, {} between {}, {} in {} ms",
+                    cacheResult.getFoundData ().size (),
                     symbol, period,
                     DateUtils.formatDate(cacheResult.getFoundData().getBeginningDate()),
                     DateUtils.formatDate(cacheResult.getFoundData().getEndingDate()),

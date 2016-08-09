@@ -75,7 +75,11 @@ public interface Dao {
 
     Optional<MarketDataAnalyzeModel> findMarketDataAnalyze(String id);
 
+    //EDR
+
     EdrModel createEdr(EdrModel edrModel);
+
+    List<EdrModel> findEdr(Date startDate, Date endDate);
 
     List<EdrModel> findEdr(EdrModule edrModule, Date startDate, Date endDate);
 

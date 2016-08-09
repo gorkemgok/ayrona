@@ -44,3 +44,24 @@ constantsModule.constant('STRATEGY_STATE', {
     active : 'ACTIVE',
     inactive : 'INACTIVE'
 });
+
+constantsModule.constant('EDR', {
+   strategy : {
+       name:'STRATEGY',
+       types:{
+           start : 'START_STRATEGY',
+           stop : 'STOP_STRATEGY',
+           newSignal : 'NEW_SIGNAL',
+           boundAccount : 'BOUND_ACCOUNT',
+           unboundAccount : 'UNBOUND_ACCOUNT'
+       }
+   },
+   account : {
+       name: 'ACCOUNT',
+       types: {
+           start: 'START_ACCOUNT',
+           stop: 'STOP_ACCOUNT',
+           newPosition : 'NEW_POSITION'
+       }
+   }
+});

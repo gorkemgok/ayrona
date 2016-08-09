@@ -63,7 +63,11 @@ public class ATAAccountRemote implements AccountRemote {
                 position.getIdealOpenDate (),
                 position.getIdealOpenPrice (),
                 position.getLot ()));
-        log.info ("Opened position account:{}, {}", accountNo, position);
+        if (response.getTradeOperationResult ().isFailed ()){
+            log.info ("Failed Opening position account:{}, {}", accountNo, position);
+        }else{
+            log.info ("Opened position account:{}, {}", accountNo, position);
+        }
         return response;
     }
 
@@ -75,7 +79,11 @@ public class ATAAccountRemote implements AccountRemote {
                 closeDate,
                 closePrice,
                 position.getLot ()));
-        log.info ("Closed position account:{}, {}", accountNo, position);
+        if (response.getTradeOperationResult ().isFailed ()){
+            log.info ("Failed Closing position account:{}, {}", accountNo, position);
+        }else {
+            log.info ("Closed position account:{}, {}", accountNo, position);
+        }
         return response;
     }
 

@@ -16,5 +16,5 @@ angular.module('ayronaApp')
     })
     .controller('DashboardCtrl', function ($scope, $rootScope, $state, $timeout, stat, Rest) {
         $scope.stat = stat;
-        console.log(stat);
+        console.log("Dashboard stat loaded");
     });

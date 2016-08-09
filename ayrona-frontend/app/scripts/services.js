@@ -3,49 +3,46 @@
  */
 var servicesModule = angular.module("ayronaServices",[]);
 
-servicesModule.factory('SessionService', function($rootScope, $location, $timeout, Rest){
-  var session = {};
-  session.token = '';
-
-  session.start = function(token){
-    session.token = token;
-    window.localStorage.setItem('token',token)
-    Rest.setDefaultHeaders(
-      {
-        "Access-Control-Allow-Origin": "*",
-        token:token
-      }
-    );
-    var lastPath = $rootScope.lastPath;
-    if (lastPath != undefined && lastPath != ''){
-      $timeout(function(){
-        $location.path(lastPath);
-      },0)
-    }
-  };
-
-  session.stop = function(){
+servicesModule.factory('Session', function($rootScope, $location, $timeout){
+    var session = {};
     session.token = '';
-    Rest.setDefaultHeaders(
-      {
-        "Access-Control-Allow-Origin": "*",
-        token:''
-      }
-    );
-    console.log('Loggedout')
-    $location.path("/login");
-  };
+    session.active = false;
+    session.start = function(token){
+        session.token = token;
+        session.active = true;
+        window.localStorage.setItem('token',token);
+        console.log('LoggedIn');
+        var lastPath = $rootScope.lastPath;
+        if (lastPath != undefined && lastPath != ''){
+            $timeout(function(){
+                $location.path(lastPath);
+              },0)
+        }
+    };
 
-  return session;
+    session.stop = function(){
+        session.token = '';
+        session.active = false;
+        window.localStorage.setItem('token','');
+        console.log('LoggedOut');
+        $location.path("/login");
+    };
+
+    session.isActive = function () {
+        return session.active;
+    };
+
+      return session;
 });
 
-servicesModule.factory("Rest", function($location, $rootScope, $timeout, Notify, Restangular, REST){
+servicesModule.factory("Rest", function($location, $rootScope, $timeout, Notify,Session, Restangular, REST){
   return Restangular.withConfig(function(RestangularConfigurer) {
     RestangularConfigurer.setBaseUrl(REST.base);
     RestangularConfigurer.setErrorInterceptor(function(response) {
       console.log(response);
       if(response.status === 401) {
         $rootScope.lastPath = $location.path();
+        Session.stop();
         $timeout(function(){$location.path('/login');},0);
         return response; // error handled
       }else if (response.status === -1){
@@ -137,6 +134,22 @@ servicesModule.factory("Confirm", function ($uibModal) {
 });
 
 servicesModule.factory("Helper", function(METRICS){
+
+    var calculateProfit = function (position) {
+        if ( position.closePrice !== 0 ) {
+            var diff = Number(position.closePrice - position.openPrice).toFixed(4);
+            switch (position.direction) {
+                case "LONG":
+                    return diff;
+                case "SHORT":
+                    return diff * -1;
+                default:
+                    return diff;
+            }
+        }else{
+            return 0;
+        }
+    };
 
     var setTimeToZero  = function(date){
         date.setHours(0);
@@ -317,7 +330,8 @@ servicesModule.factory("Helper", function(METRICS){
         prepareGEOptions : prepareGEOptions,
         preparePages : preparePages,
         preparePagesFromBean : preparePagesFromBean,
-        preparePrerequisite : preparePrerequisite
+        preparePrerequisite : preparePrerequisite,
+        calculateProfit: calculateProfit
     }
 });
 

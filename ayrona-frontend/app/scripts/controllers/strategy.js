@@ -160,6 +160,9 @@ angular.module('ayronaApp')
                 }
             );
         };
+        $scope.calculateProfit = function (position) {
+            return Helper.calculateProfit(position);
+        };
     })
     .controller("StrategyCreateCtrl", function ($scope, $controller, $location, Rest, Notify, STRATEGY_STATE) {
         $controller("StrategyBase", {$scope:$scope});

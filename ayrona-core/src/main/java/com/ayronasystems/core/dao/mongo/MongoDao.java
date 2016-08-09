@@ -226,6 +226,13 @@ public class MongoDao implements Dao{
         return edrModel;
     }
 
+    public List<EdrModel> findEdr (Date startDate, Date endDate) {
+        Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
+                                            .field("createDate").greaterThanOrEq(startDate)
+                                            .field("createDate").lessThanOrEq(endDate);
+        return query.asList();
+    }
+
     public List<EdrModel> findEdr(EdrModule edrModule, Date startDate, Date endDate) {
         Query<EdrModel> query = appDatastore.createQuery(EdrModel.class)
                 .field("module").equal(edrModule)

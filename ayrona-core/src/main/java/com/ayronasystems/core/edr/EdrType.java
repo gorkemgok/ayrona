@@ -3,7 +3,8 @@ package com.ayronasystems.core.edr;
 /**
  * Created by gorkemg on 10.06.2016.
  */
-public enum EdrType {
+public enum
+EdrType {
     NEW_SIGNAL (EdrModule.STRATEGY),
     BOUND_ACCOUNT( EdrModule.STRATEGY ),
     UNBOUND_ACCOUNT( EdrModule.STRATEGY ),
