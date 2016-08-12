@@ -125,4 +125,12 @@ public class Interval {
         }
         return intervalList;
     }
+
+    @Override
+    public String toString () {
+        return "Interval{" +
+                "beginDate=" + beginDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }
