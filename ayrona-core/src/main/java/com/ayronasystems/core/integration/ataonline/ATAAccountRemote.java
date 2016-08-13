@@ -1,7 +1,7 @@
 package com.ayronasystems.core.integration.ataonline;
 
-import com.ayronasystems.core.Order;
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Order;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.account.AccountRemote;
 import com.ayronasystems.core.account.AccountRemoteResponse;
 import com.ayronasystems.core.configuration.ConfKey;

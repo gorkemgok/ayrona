@@ -1,6 +1,6 @@
 package com.ayronasystems.core.integration.ataonline;
 
-import com.ayronasystems.core.Order;
+import com.ayronasystems.core.strategy.Order;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;
 import com.fasterxml.jackson.annotation.JsonIgnore;

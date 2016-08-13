@@ -1,7 +1,7 @@
 package com.ayronasystems.core.dao.model;
 
-import com.ayronasystems.core.BasicInitiator;
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.BasicInitiator;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;

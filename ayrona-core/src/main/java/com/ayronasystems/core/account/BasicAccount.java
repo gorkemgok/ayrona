@@ -1,6 +1,6 @@
 package com.ayronasystems.core.account;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.model.AccountModel;

@@ -1,6 +1,6 @@
 package com.ayronasystems.rest.bean;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.backtest.MetricType;
 import com.ayronasystems.core.timeseries.moment.EquityBar;

@@ -1,6 +1,6 @@
 package com.ayronasystems.data.integration.ataonline;
 
-import com.ayronasystems.core.JMSManager;
+import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.configuration.HostPort;

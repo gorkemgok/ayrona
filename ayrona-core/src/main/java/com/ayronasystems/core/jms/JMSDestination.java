@@ -1,4 +1,4 @@
-package com.ayronasystems.core;
+package com.ayronasystems.core.jms;
 
 import org.apache.activemq.broker.region.BaseDestination;
 

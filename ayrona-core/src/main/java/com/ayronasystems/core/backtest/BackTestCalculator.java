@@ -1,7 +1,7 @@
 package com.ayronasystems.core.backtest;
 
 import com.ayronasystems.core.data.MarketData;
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.timeseries.moment.ColumnDefinition;
 import com.ayronasystems.core.timeseries.moment.EquityBar;

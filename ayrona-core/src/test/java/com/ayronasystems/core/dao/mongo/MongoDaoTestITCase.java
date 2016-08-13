@@ -1,7 +1,7 @@
 package com.ayronasystems.core.dao.mongo;
 
-import com.ayronasystems.core.BasicInitiator;
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.BasicInitiator;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.batchjob.BatchJob;

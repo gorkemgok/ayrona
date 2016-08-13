@@ -113,4 +113,10 @@ public interface Dao {
 
     List<MarketDataModel> findMarketData(Symbol symbol, Period period, Date endDate, int count);
 
+    //Market Calendar
+
+    MarketCalendarModel createMarketCalendarModel(MarketCalendarModel marketCalendarModel);
+
+    List<MarketCalendarModel> findAllMarketCalendars();
+
 }

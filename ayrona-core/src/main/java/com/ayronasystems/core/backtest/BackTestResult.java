@@ -1,6 +1,6 @@
 package com.ayronasystems.core.backtest;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;

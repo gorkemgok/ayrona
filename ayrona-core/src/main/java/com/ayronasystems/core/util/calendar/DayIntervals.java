@@ -1,4 +1,4 @@
-package com.ayronasystems.core;
+package com.ayronasystems.core.util.calendar;
 
 import com.ayronasystems.core.util.Interval;
 
@@ -10,26 +10,30 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by gorkemgok on 09/08/16.
+ * Created by gorkemgok on 12/08/16.
  */
-public class MarketCalendar {
+public class DayIntervals {
 
     private static final long DAY_IN_MILLIS = 1000 * 60 * 60 * 24;
 
     private static final SimpleDateFormat SDF = new SimpleDateFormat ("dd.MM.yyyy");
 
-    private List<Interval> businessDayIntervals = new ArrayList<Interval> ();
+    private List<Interval> dayIntervals = new ArrayList<Interval> ();
 
     private Calendar cal = Calendar.getInstance ();
 
-    public boolean isMarketOpen(Date date){
-        for ( Interval interval : businessDayIntervals ){
-            return interval.contains (date);
-        }
-        return false;
+    private boolean isOff;
+
+    public static DayIntervals createOffDays(String expression, int... excludeDays) throws ParseException {
+        return new DayIntervals (expression, true, excludeDays);
     }
 
-    public void include(String expression, int... excludeDays) throws ParseException {
+    public static DayIntervals createBusinessDays(String expression, int... excludeDays) throws ParseException {
+        return new DayIntervals (expression, false, excludeDays);
+    }
+
+    private DayIntervals(String expression, boolean isOff, int... excludeDays) throws ParseException {
+        this.isOff = isOff;
         String[] dateTime = expression.split (" ");
         if (dateTime.length == 2) {
             String[] startEndDate = dateTime[0].split ("-");
@@ -48,6 +52,10 @@ public class MarketCalendar {
         }else{
             throw new ParseException (expression, expression.length ());
         }
+    }
+
+    public boolean isOff () {
+        return isOff;
     }
 
     private void addInterval (Date date, String[] dateTime, String[] startEndTime, int... excludeDays) throws ParseException {
@@ -73,7 +81,7 @@ public class MarketCalendar {
                     cal.set (Calendar.HOUR_OF_DAY, Integer.valueOf (endHourMin[0]));
                     cal.set (Calendar.MINUTE, Integer.valueOf (endHourMin[1]));
                     intervalDateEnd = cal.getTime ();
-                    businessDayIntervals.add (new Interval (intervalDateStart, intervalDateEnd));
+                    dayIntervals.add (new Interval (intervalDateStart, intervalDateEnd));
                 } catch ( NumberFormatException e ) {
                     throw new ParseException (startEndTime[0], startEndTime[0].length ());
                 }
@@ -83,7 +91,17 @@ public class MarketCalendar {
         }
     }
 
-    public List<Interval> getBusinessDayIntervals () {
-        return new ArrayList<Interval> (businessDayIntervals);
+    public List<Interval> getDayIntervals () {
+        return new ArrayList<Interval> (dayIntervals);
     }
+
+    public boolean contains(Date date){
+        for ( Interval interval : dayIntervals ){
+            if (interval.contains (date)){
+                return true;
+            }
+        }
+        return false;
+    }
+
 }

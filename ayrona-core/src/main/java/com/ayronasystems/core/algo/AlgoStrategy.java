@@ -1,6 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.Order;
+import com.ayronasystems.core.strategy.Order;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.account.BasicAccount;

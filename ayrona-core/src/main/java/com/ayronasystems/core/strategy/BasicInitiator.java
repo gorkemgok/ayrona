@@ -1,4 +1,4 @@
-package com.ayronasystems.core;
+package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.strategy.Initiator;
 

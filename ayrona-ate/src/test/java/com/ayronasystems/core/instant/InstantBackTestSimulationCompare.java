@@ -1,6 +1,6 @@
 package com.ayronasystems.core.instant;
 
-import com.ayronasystems.core.Order;
+import com.ayronasystems.core.strategy.Order;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.algo.FunctionFactory;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;

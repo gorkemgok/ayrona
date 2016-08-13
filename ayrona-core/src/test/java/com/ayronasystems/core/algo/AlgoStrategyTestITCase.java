@@ -1,6 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.account.BasicAccount;

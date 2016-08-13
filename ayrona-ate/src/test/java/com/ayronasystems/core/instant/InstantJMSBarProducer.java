@@ -1,7 +1,7 @@
 package com.ayronasystems.core.instant;
 
-import com.ayronasystems.core.JMSDestination;
-import com.ayronasystems.core.JMSManager;
+import com.ayronasystems.core.jms.JMSDestination;
+import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.algo.LiveBar;
 import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;

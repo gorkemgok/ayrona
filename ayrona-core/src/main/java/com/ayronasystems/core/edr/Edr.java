@@ -1,6 +1,6 @@
 package com.ayronasystems.core.edr;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.definition.Symbol;
 

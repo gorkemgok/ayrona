@@ -1,6 +1,6 @@
 package com.ayronasystems.core.integration.mt4;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.account.AccountRemote;
 import com.ayronasystems.core.account.AccountRemoteResponse;
 import com.ayronasystems.core.account.TORConverter;

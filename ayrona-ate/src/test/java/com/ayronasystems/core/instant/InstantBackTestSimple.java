@@ -1,6 +1,6 @@
 package com.ayronasystems.core.instant;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.algo.FunctionFactory;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.backtest.MetricType;

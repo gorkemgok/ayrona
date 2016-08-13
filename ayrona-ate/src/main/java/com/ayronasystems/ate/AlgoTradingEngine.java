@@ -1,7 +1,7 @@
 package com.ayronasystems.ate;
 
-import com.ayronasystems.core.JMSDestination;
-import com.ayronasystems.core.JMSManager;
+import com.ayronasystems.core.jms.JMSDestination;
+import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;

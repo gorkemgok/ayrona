@@ -1,8 +1,8 @@
 package com.ayronasystems.core.strategy.concurrent;
 
-import com.ayronasystems.core.BasicInitiator;
-import com.ayronasystems.core.Order;
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.BasicInitiator;
+import com.ayronasystems.core.strategy.Order;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBindInfo;
