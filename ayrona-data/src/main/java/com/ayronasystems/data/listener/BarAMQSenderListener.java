@@ -1,11 +1,11 @@
 package com.ayronasystems.data.listener;
 
-import com.ayronasystems.core.JMSDestination;
-import com.ayronasystems.core.JMSManager;
 import com.ayronasystems.core.algo.LiveBar;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.jms.JMSDestination;
+import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.timeseries.moment.Bar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
