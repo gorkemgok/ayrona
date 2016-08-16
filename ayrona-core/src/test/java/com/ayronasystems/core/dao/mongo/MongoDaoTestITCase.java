@@ -397,4 +397,55 @@ public class MongoDaoTestITCase {
         assertTrue (expectedPosition.isSame (actualPosition));
     }
 
+    @Test
+    public void createAndFindMarketCalendar(){
+        MarketCalendarModel expectedMarketCalendarModel_1 = createSampleMarketCalendarModel (
+                "TEST_1",
+                "01.01.2015-01.01.2016 09:10-17:45",
+                "01.01.2015-01.01.2016 13:00-14:00",
+                "05.01.2015-07.01.2015 00:00-23:59",
+                "TEST_SYMBOL_1","TEST_SYMBOL_2"
+        );
+
+        dao.createMarketCalendar (expectedMarketCalendarModel_1);
+
+        List<MarketCalendarModel> actualMarketCalendarModelList = dao.findAllMarketCalendars ();
+
+        assertEquals (1, actualMarketCalendarModelList.size ());
+
+        MarketCalendarModel actualMarketCalendarModel = actualMarketCalendarModelList.get (0);
+        assertEquals (expectedMarketCalendarModel_1.getName (), actualMarketCalendarModel.getName ());
+
+
+    }
+
+    public static MarketCalendarModel createSampleMarketCalendarModel(
+            String name, String exp_1, String exp_2, String exp_3, String... symbolArr){
+        MarketCalendarModel marketCalendarModel = new MarketCalendarModel ();
+        marketCalendarModel.setName (name);
+        marketCalendarModel.setSymbols (
+                Arrays.asList (symbolArr)
+        );
+        DayIntervalsEmbedded dayIntervalsEmbedded_include = new DayIntervalsEmbedded ();
+        dayIntervalsEmbedded_include.setOff (false);
+        dayIntervalsEmbedded_include.setExcludedDays (new int[]{1,7});
+        dayIntervalsEmbedded_include.setExpression (exp_1);
+
+        DayIntervalsEmbedded dayIntervalsEmbedded_exclude = new DayIntervalsEmbedded ();
+        dayIntervalsEmbedded_exclude.setOff (true);
+        dayIntervalsEmbedded_exclude.setExcludedDays (new int[]{1,7});
+        dayIntervalsEmbedded_exclude.setExpression (exp_2);
+
+        DayIntervalsEmbedded dayIntervalsEmbedded_holiday = new DayIntervalsEmbedded ();
+        dayIntervalsEmbedded_holiday.setOff (true);
+        dayIntervalsEmbedded_holiday.setExcludedDays (new int[]{1,7});
+        dayIntervalsEmbedded_holiday.setExpression (exp_3);
+
+        marketCalendarModel.setDayIntervalsEmbeddedList (
+                Arrays.asList (new DayIntervalsEmbedded[]{
+                        dayIntervalsEmbedded_include, dayIntervalsEmbedded_exclude, dayIntervalsEmbedded_holiday
+                })
+        );
+        return marketCalendarModel;
+    }
 }

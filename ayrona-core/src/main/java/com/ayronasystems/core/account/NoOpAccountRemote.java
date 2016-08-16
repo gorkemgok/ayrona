@@ -1,7 +1,7 @@
 package com.ayronasystems.core.account;
 
-import com.ayronasystems.core.Position;
 import com.ayronasystems.core.definition.TradeOperationResult;
+import com.ayronasystems.core.strategy.Position;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

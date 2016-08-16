@@ -1,6 +1,6 @@
 package com.ayronasystems.core.definition.commission;
 
-import com.ayronasystems.core.Position;
+import com.ayronasystems.core.strategy.Position;
 
 public class PercentCommission implements Commission {
 

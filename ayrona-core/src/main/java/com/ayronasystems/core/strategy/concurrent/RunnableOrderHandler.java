@@ -1,9 +1,9 @@
 package com.ayronasystems.core.strategy.concurrent;
 
-import com.ayronasystems.core.Order;
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.strategy.BasicOrderHandler;
 import com.ayronasystems.core.strategy.Initiator;
+import com.ayronasystems.core.strategy.Order;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

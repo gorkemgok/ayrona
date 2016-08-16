@@ -2,7 +2,6 @@ package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.account.AccountBindInfo;
 import com.ayronasystems.core.account.AccountStrategyPair;
-import com.ayronasystems.core.Position;
 
 import java.util.ArrayList;
 import java.util.Date;

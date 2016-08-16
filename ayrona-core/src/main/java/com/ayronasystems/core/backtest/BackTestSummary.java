@@ -1,12 +1,12 @@
 package com.ayronasystems.core.backtest;
 
-import com.ayronasystems.core.Position;
 import com.ayronasystems.core.dao.mysql.Tick4JDao;
 import com.ayronasystems.core.dao.mysql.Tick4JDaoImpl;
 import com.ayronasystems.core.dao.mysql.model.StrategyModel;
 import com.ayronasystems.core.dao.mysql.model.StrategySessionModel;
 import com.ayronasystems.core.dao.mysql.model.SummaryModel;
 import com.ayronasystems.core.definition.BackTestType;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.strategy.StrategyOptions;
 
 import java.util.*;

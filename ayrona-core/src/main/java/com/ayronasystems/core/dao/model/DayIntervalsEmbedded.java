@@ -2,17 +2,25 @@ package com.ayronasystems.core.dao.model;
 
 import org.mongodb.morphia.annotations.Embedded;
 
-import java.util.List;
-
 /**
  * Created by gorkemgok on 12/08/16.
  */
 @Embedded
-public class DayIntervals {
+public class DayIntervalsEmbedded {
 
     private boolean isOff;
 
-    private List<String> expression;
+    private String expression;
+
+    private int[] excludedDays;
+
+    public int[] getExcludedDays () {
+        return excludedDays;
+    }
+
+    public void setExcludedDays (int[] excludedDays) {
+        this.excludedDays = excludedDays;
+    }
 
     public boolean isOff () {
         return isOff;
@@ -22,11 +30,11 @@ public class DayIntervals {
         isOff = off;
     }
 
-    public List<String> getExpression () {
+    public String getExpression () {
         return expression;
     }
 
-    public void setExpression (List<String> expression) {
+    public void setExpression (String expression) {
         this.expression = expression;
     }
 }

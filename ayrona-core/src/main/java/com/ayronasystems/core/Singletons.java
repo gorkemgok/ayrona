@@ -9,11 +9,10 @@ import com.ayronasystems.core.service.BackTestService;
 import com.ayronasystems.core.service.StandaloneBackTestService;
 import com.ayronasystems.core.service.discovery.ConsulServiceExplorer;
 import com.ayronasystems.core.service.discovery.ServiceExplorer;
+import com.ayronasystems.core.util.calendar.MarketCalendarService;
 import com.mongodb.MongoClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.net.UnknownHostException;
 
 /**
  * Created by gorkemgok on 26/05/16.
@@ -34,6 +33,8 @@ public class Singletons {
 
     private volatile BackTestService backTestService = null;
 
+    private volatile MarketCalendarService marketCalendarService = null;
+
     private volatile Dao dao = null;
 
     private final Object lock1 = new Object ();
@@ -45,6 +46,8 @@ public class Singletons {
     private final Object lock4 = new Object ();
 
     private final Object lock5 = new Object ();
+
+    private final Object lock6 = new Object ();
 
     private Singletons () {
     }
@@ -109,5 +112,16 @@ public class Singletons {
             }
         }
         return backTestService;
+    }
+
+    public MarketCalendarService getMarketCalendarService () {
+        if ( marketCalendarService == null){
+            synchronized (lock6){
+                if ( marketCalendarService == null){
+                    marketCalendarService = new MarketCalendarService ();
+                }
+            }
+        }
+        return marketCalendarService;
     }
 }

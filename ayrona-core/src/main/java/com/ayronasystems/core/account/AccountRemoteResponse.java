@@ -1,7 +1,7 @@
 package com.ayronasystems.core.account;
 
-import com.ayronasystems.core.Position;
 import com.ayronasystems.core.definition.TradeOperationResult;
+import com.ayronasystems.core.strategy.Position;
 
 /**
  * Created by gorkemg on 09.06.2016.

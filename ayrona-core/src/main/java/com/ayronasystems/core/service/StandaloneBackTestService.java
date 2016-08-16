@@ -1,6 +1,5 @@
 package com.ayronasystems.core.service;
 
-import com.ayronasystems.core.Position;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.backtest.BackTestCalculator;
@@ -11,6 +10,7 @@ import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
 import com.ayronasystems.core.exception.PrerequisiteException;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.strategy.SignalGenerator;
 
 import java.util.Date;

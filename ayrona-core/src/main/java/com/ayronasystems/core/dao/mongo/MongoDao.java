@@ -353,7 +353,7 @@ public class MongoDao implements Dao{
         return invertedMarketDataModelList;
     }
 
-    public MarketCalendarModel createMarketCalendarModel (MarketCalendarModel marketCalendarModel) {
+    public MarketCalendarModel createMarketCalendar (MarketCalendarModel marketCalendarModel) {
         appDatastore.save (marketCalendarModel);
         return marketCalendarModel;
     }

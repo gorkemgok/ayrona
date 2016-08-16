@@ -1,7 +1,9 @@
 package com.ayronasystems.core.dao.model;
 
+import com.ayronasystems.core.util.calendar.MarketCalendar;
 import org.mongodb.morphia.annotations.Indexed;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ public class MarketCalendarModel extends BaseModel{
     @Indexed(name = "name", unique = true)
     private String name;
 
-    private List<DayIntervals> includedExpression;
+    private List<DayIntervalsEmbedded> dayIntervalsEmbeddedList;
 
     private List<String> symbols;
 
@@ -24,12 +26,12 @@ public class MarketCalendarModel extends BaseModel{
         this.name = name;
     }
 
-    public List<DayIntervals> getIncludedExpression () {
-        return includedExpression;
+    public List<DayIntervalsEmbedded> getDayIntervalsEmbeddedList () {
+        return dayIntervalsEmbeddedList;
     }
 
-    public void setIncludedExpression (List<DayIntervals> includedExpression) {
-        this.includedExpression = includedExpression;
+    public void setDayIntervalsEmbeddedList (List<DayIntervalsEmbedded> dayIntervalsEmbeddedList) {
+        this.dayIntervalsEmbeddedList = dayIntervalsEmbeddedList;
     }
 
     public List<String> getSymbols () {
@@ -38,5 +40,23 @@ public class MarketCalendarModel extends BaseModel{
 
     public void setSymbols (List<String> symbols) {
         this.symbols = symbols;
+    }
+
+    public MarketCalendar toMarketCalendar() throws ParseException {
+        MarketCalendar marketCalendar = new MarketCalendar ();
+        for (DayIntervalsEmbedded dayIntervalsEmbedded : dayIntervalsEmbeddedList){
+            if (dayIntervalsEmbedded.isOff ()){
+                marketCalendar.exclude (
+                        dayIntervalsEmbedded.getExpression (),
+                        dayIntervalsEmbedded.getExcludedDays ()
+                );
+            }else{
+                marketCalendar.include (
+                        dayIntervalsEmbedded.getExpression (),
+                        dayIntervalsEmbedded.getExcludedDays ()
+                );
+            }
+        }
+        return marketCalendar;
     }
 }

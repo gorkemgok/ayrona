@@ -115,7 +115,7 @@ public interface Dao {
 
     //Market Calendar
 
-    MarketCalendarModel createMarketCalendarModel(MarketCalendarModel marketCalendarModel);
+    MarketCalendarModel createMarketCalendar (MarketCalendarModel marketCalendarModel);
 
     List<MarketCalendarModel> findAllMarketCalendars();
 

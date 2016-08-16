@@ -1,7 +1,6 @@
 package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.data.MarketData;
-import com.ayronasystems.core.Order;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Signal;

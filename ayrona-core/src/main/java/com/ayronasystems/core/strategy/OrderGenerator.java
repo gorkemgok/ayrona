@@ -1,7 +1,6 @@
 package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.data.MarketData;
-import com.ayronasystems.core.Order;
 import com.ayronasystems.core.definition.Signal;
 
 import java.util.List;
