@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('ayronaApp')
     .config(function($stateProvider){
         $stateProvider
@@ -8,13 +6,16 @@ angular.module('ayronaApp')
                 templateUrl: 'views/dashboard.html', 
                 controller:'DashboardCtrl',
                 resolve:{
-                    stat : function (Rest) {
+                    stat : ["Rest", function (Rest) {
                         return Rest.one('dashboard').get();
-                    }
+                    }]
                 }
             });
     })
-    .controller('DashboardCtrl', function ($scope, $rootScope, $state, $timeout, stat, Rest) {
+    .controller('DashboardCtrl', function ($scope, $rootScope, $state, $timeout, $location, stat, Session) {
         $scope.stat = stat;
         console.log("Dashboard stat loaded");
+        if (!Session.isActive()){
+            $location.path("/login");
+        }
     });

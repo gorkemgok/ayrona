@@ -11,9 +11,9 @@ angular.module('ayronaApp')
                 templateUrl: 'views/account-list.html',
                 controller:'AccountListCtrl',
                 resolve : {
-                    accounts : function(Rest){
+                    accounts : ["Rest", function(Rest){
                         return Rest.one("account/list").get();
-                    }
+                    }]
                 }
             })
             .state('create_account', {
@@ -26,12 +26,12 @@ angular.module('ayronaApp')
                 templateUrl: 'views/account-form.html',
                 controller:'AccountEditCtrl',
                 resolve : {
-                    account : function($stateParams, Rest){
+                    account : ["$stateParams","Rest", function($stateParams, Rest){
                         return Rest.one("account/"+$stateParams.accountId).get();
-                    },
-                    strategies: function ($stateParams, Rest){
+                    }],
+                    strategies: ["$stateParams","Rest", function ($stateParams, Rest){
                         return Rest.one("account/"+$stateParams.accountId+"/strategies").get();
-                    }
+                    }]
                 }
             })
     })

@@ -9,9 +9,9 @@ angular.module('ayronaApp')
                 templateUrl: 'views/strategy-list.html',
                 controller: 'StrategyListCtrl',
                 resolve: {
-                    strategies: function (Rest) {
+                    strategies: ["Rest", function (Rest) {
                         return Rest.one("strategy/list").get();
-                    }
+                    }]
                 }
             })
             .state('strategy_create', {
@@ -24,9 +24,9 @@ angular.module('ayronaApp')
                 templateUrl: 'views/strategy-form.html',
                 controller: 'StrategyUpdateCtrl',
                 resolve : {
-                    strategy : function ($stateParams, Rest) {
+                    strategy : ["$stateParams","Rest", function ($stateParams, Rest) {
                         return Rest.one("strategy/"+$stateParams.strategyId).get();
-                    }
+                    }]
                 }
             })
     })

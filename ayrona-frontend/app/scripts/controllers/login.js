@@ -21,6 +21,7 @@ angular.module('ayronaApp')
                     var token = response.token;
                     Session.start(token);
                     Rest.setDefaultHeaders({"Access-Control-Allow-Origin": "*", token:token});
+                    console.log("redirecting to dashboard");
                     $location.path("/dashboard");
                 },
                 function(response){
