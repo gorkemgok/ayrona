@@ -21,7 +21,7 @@ public class Configuration {
     private static Object lock = new Object ();
 
     private Configuration () {
-        String confFileName = getConfDir () + "/tick4j.properties";
+        String confFileName = getConfDir () + "/ayrona.properties";
         log.info ("Loading configuration from {}", confFileName);
         try {
             Properties properties = new Properties ();
