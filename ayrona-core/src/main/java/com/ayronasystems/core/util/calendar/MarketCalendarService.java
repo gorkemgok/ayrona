@@ -26,6 +26,11 @@ public class MarketCalendarService {
     private Map<Symbol, MarketCalendar> calendarMap = new HashMap<Symbol, MarketCalendar> ();
 
     public MarketCalendarService () {
+        calendarMap = loadMap ();
+    }
+
+    private Map<Symbol, MarketCalendar> loadMap (){
+        Map<Symbol, MarketCalendar> calendarMap = new HashMap<Symbol, MarketCalendar> ();
         List<MarketCalendarModel> marketCalendarModelList = dao.findAllMarketCalendars ();
         for(MarketCalendarModel marketCalendarModel : marketCalendarModelList){
             try {
@@ -41,6 +46,11 @@ public class MarketCalendarService {
         for(Map.Entry<Symbol, MarketCalendar> entry : calendarMap.entrySet ()){
             log.info ("Loaded market calendar for {}", entry.getKey ());
         }
+        return calendarMap;
+    }
+
+    public void reload(){
+        calendarMap = loadMap ();
     }
 
     public boolean isMarketOpen(Symbol symbol, Date date){

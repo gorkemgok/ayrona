@@ -73,13 +73,23 @@ public class DayIntervals {
         if (!exclude) {
             if ( startEndTime.length == 2 ) {
                 try {
-                    String[] startHourMin = startEndTime[0].split (":");
-                    cal.set (Calendar.HOUR_OF_DAY, Integer.valueOf (startHourMin[0]));
-                    cal.set (Calendar.MINUTE, Integer.valueOf (startHourMin[1]));
+                    String[] startHourMinSec = startEndTime[0].split (":");
+                    cal.set (Calendar.HOUR_OF_DAY, Integer.valueOf (startHourMinSec[0]));
+                    cal.set (Calendar.MINUTE, Integer.valueOf (startHourMinSec[1]));
+                    if (startHourMinSec.length < 3){
+                        cal.set (Calendar.SECOND, 0);
+                    }else{
+                        cal.set (Calendar.SECOND, Integer.valueOf (startHourMinSec[2]));
+                    }
                     intervalDateStart = cal.getTime ();
-                    String[] endHourMin = startEndTime[1].split (":");
-                    cal.set (Calendar.HOUR_OF_DAY, Integer.valueOf (endHourMin[0]));
-                    cal.set (Calendar.MINUTE, Integer.valueOf (endHourMin[1]));
+                    String[] endHourMinSec = startEndTime[1].split (":");
+                    cal.set (Calendar.HOUR_OF_DAY, Integer.valueOf (endHourMinSec[0]));
+                    cal.set (Calendar.MINUTE, Integer.valueOf (endHourMinSec[1]));
+                    if (endHourMinSec.length < 3){
+                        cal.set (Calendar.SECOND, 0);
+                    }else{
+                        cal.set (Calendar.SECOND, Integer.valueOf (endHourMinSec[2]));
+                    }
                     intervalDateEnd = cal.getTime ();
                     dayIntervals.add (new Interval (intervalDateStart, intervalDateEnd));
                 } catch ( NumberFormatException e ) {

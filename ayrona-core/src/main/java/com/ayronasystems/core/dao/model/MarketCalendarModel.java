@@ -1,6 +1,7 @@
 package com.ayronasystems.core.dao.model;
 
 import com.ayronasystems.core.util.calendar.MarketCalendar;
+import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Indexed;
 
 import java.text.ParseException;
@@ -9,6 +10,7 @@ import java.util.List;
 /**
  * Created by gorkemgok on 09/08/16.
  */
+@Entity("market_calendar")
 public class MarketCalendarModel extends BaseModel{
 
     @Indexed(name = "name", unique = true)

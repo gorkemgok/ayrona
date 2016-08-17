@@ -1,6 +1,7 @@
 package com.ayronasystems.core.timeseries.moment;
 
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.util.DateUtils;
 
 import java.util.Date;
 import java.util.NoSuchElementException;
@@ -155,7 +156,15 @@ public class Tick extends AbstractMoment {
     }
 
     @Override
-    public boolean hasValue(ColumnDefinition columnDefiniton) {
+    public boolean hasValue(ColumnDefinition columnDefinition) {
         return false;
+    }
+
+    @Override
+    public String toString () {
+        return "Tick{" +
+                "date="+ DateUtils.formatDate (getDate ())+", "+
+                "symbol=" + symbol +
+                '}';
     }
 }

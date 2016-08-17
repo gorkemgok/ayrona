@@ -416,7 +416,6 @@ public class MongoDaoTestITCase {
         MarketCalendarModel actualMarketCalendarModel = actualMarketCalendarModelList.get (0);
         assertEquals (expectedMarketCalendarModel_1.getName (), actualMarketCalendarModel.getName ());
 
-
     }
 
     public static MarketCalendarModel createSampleMarketCalendarModel(
