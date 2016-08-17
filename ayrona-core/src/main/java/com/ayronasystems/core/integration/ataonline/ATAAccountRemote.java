@@ -44,6 +44,29 @@ public class ATAAccountRemote implements AccountRemote {
 
     private String url;
 
+    private static class SendOrderResult{
+        private String refCode;
+
+        private TradeOperationResult tradeOperationResult;
+
+        public SendOrderResult (TradeOperationResult tradeOperationResult) {
+            this.tradeOperationResult = tradeOperationResult;
+        }
+
+        public SendOrderResult (String refCode, TradeOperationResult tradeOperationResult) {
+            this.refCode = refCode;
+            this.tradeOperationResult = tradeOperationResult;
+        }
+
+        public String getRefCode () {
+            return refCode;
+        }
+
+        public TradeOperationResult getTradeOperationResult () {
+            return tradeOperationResult;
+        }
+    }
+
     public ATAAccountRemote (String accountNo) {
         String[] an = accountNo.split ("-");
         this.customerNo = an[0];
@@ -55,39 +78,42 @@ public class ATAAccountRemote implements AccountRemote {
     }
 
     public AccountRemoteResponse openPosition (Position position) {
-
-        AccountRemoteResponse response = new AccountRemoteResponse(position, sendOrder (
+        SendOrderResult sendOrderResult = sendOrder (
                 position.getSymbol (),
                 Order.Type.OPEN,
                 position.getDirection (),
                 position.getIdealOpenDate (),
                 position.getIdealOpenPrice (),
-                position.getLot ()));
+                position.getLot ());
+        position.setRemoteId (sendOrderResult.getRefCode ());
+        AccountRemoteResponse response = new AccountRemoteResponse(position, sendOrderResult.getTradeOperationResult ());
         if (response.getTradeOperationResult ().isFailed ()){
-            log.info ("Failed Opening position account:{}, {}", accountNo, position);
+            log.info ("Failed Opening position account:{}-{}, {}", customerNo, accountNo, position);
         }else{
-            log.info ("Opened position account:{}, {}", accountNo, position);
+            log.info ("Opened position account:{}-{}, {}", customerNo, accountNo, position);
         }
         return response;
     }
 
     public AccountRemoteResponse closePosition (Position position, Date closeDate, double closePrice) {
-        AccountRemoteResponse response = new AccountRemoteResponse(position, sendOrder (
+        SendOrderResult sendOrderResult = sendOrder (
                 position.getSymbol (),
                 Order.Type.CLOSE,
                 position.getDirection (),
                 closeDate,
                 closePrice,
-                position.getLot ()));
+                position.getLot ());
+        position.setRemoteId (sendOrderResult.getRefCode ());
+        AccountRemoteResponse response = new AccountRemoteResponse(position, sendOrderResult.getTradeOperationResult ());
         if (response.getTradeOperationResult ().isFailed ()){
-            log.info ("Failed Closing position account:{}, {}", accountNo, position);
+            log.info ("Failed Closing position account:{}-{}, {}", customerNo, accountNo, position);
         }else {
-            log.info ("Closed position account:{}, {}", accountNo, position);
+            log.info ("Closed position account:{}-{}, {}", customerNo, accountNo, position);
         }
         return response;
     }
 
-    private TradeOperationResult sendOrder(Symbol symbol, Order.Type type, Direction direction, Date date, double price, double lot){
+    private SendOrderResult sendOrder(Symbol symbol, Order.Type type, Direction direction, Date date, double price, double lot){
         Optional<String> jsonPayloadOptional = ATAOrderPayload.createInstance (
                                         symbol,
                                         type,
@@ -114,17 +140,30 @@ public class ATAAccountRemote implements AccountRemote {
                 }
                 ObjectMapper objectMapper = new ObjectMapper ();
                 ATAOrderResponse ataOrderResponse = objectMapper.readValue (responseString.toString (), ATAOrderResponse.class);
-                log.info ("Order send:{}, {}-{}, {}, price:{}, lot:{}, {}, message : {}, full response {}",
-                          ataOrderResponse.isSuccessful () ? "SUCCESSFUL" : "FAILED",
-                          customerNo, accountNo, type, price, lot, DateUtils.formatDate (date, "dd.MM.yyyy HH:mm:ss"),
-                          ataOrderResponse.getMessage (),
-                          responseString);
-                return ataOrderResponse.isSuccessful () ? TradeOperationResult.SUCCESSFUL : TradeOperationResult.FAILED;
+                String msg = ataOrderResponse.getMessage ();
+                SendOrderResult sendOrderResult;
+                if (ataOrderResponse.isSuccessful ()){
+                    int p = msg.indexOf (':');
+                    String refCode = msg.substring (p+1).trim ();
+                    sendOrderResult = new SendOrderResult(refCode, TradeOperationResult.SUCCESSFUL);
+                    log.info ("Order send:{}, {}-{}, {}, price:{}, lot:{}, {}, refCode : {}",
+                              "SUCCESSFUL",
+                              customerNo, accountNo, type, price, lot, DateUtils.formatDate (date, "dd.MM.yyyy HH:mm:ss"),
+                              refCode);
+                }else {
+                    sendOrderResult = new SendOrderResult (TradeOperationResult.FAILED);
+                    log.info ("Order send:{}, account:{}-{}, {}, price:{}, lot:{}, {}, message : {}, full response {}",
+                              "FAILED",
+                              customerNo, accountNo, type, price, lot, DateUtils.formatDate (date, "dd.MM.yyyy HH:mm:ss"),
+                              msg,
+                              responseString);
+                }
+                return sendOrderResult;
             } catch ( IOException e ) {
                 log.error ("Cant send order to GTP.", e);
             }
         }
-        return TradeOperationResult.FAILED;
+        return new SendOrderResult (TradeOperationResult.FAILED);
     }
 
     public static void main(String[] args){
