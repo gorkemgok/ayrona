@@ -7,3 +7,4 @@ logs
 *.log.1
 ayrona-data/docker/*.jar
 .DS_Store
+*.zip

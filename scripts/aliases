@@ -1,0 +1,5 @@
+alias logdata="tail -f /space/ayrona-data/logs/all.log"
+alias logate="tail -f /space/ayrona-ate/logs/all.log"
+alias logrest="tail -f /space/ayrona-rest/logs/all.log"
+alias psayrn="ps -aux | grep ayrona"
+
