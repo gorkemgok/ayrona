@@ -4,6 +4,7 @@ import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.timeseries.moment.Tick;
 import com.ayronasystems.core.util.calendar.MarketCalendarService;
 import com.ayronasystems.data.Barifier;
+import com.ayronasystems.data.LiveTick;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +31,15 @@ public class BasicTickListener implements TickListener{
     private MarketCalendarService mds = Singletons.INSTANCE.getMarketCalendarService ();
 
     public void newTick (Tick tick) {
+        LiveTick liveTick;
         if (mds.isMarketOpen (tick.getSymbol (), tick.getDate ())) {
-            for ( Barifier barifier : getBarifierList () ) {
-                barifier.newTick (tick);
-            }
+            liveTick = new LiveTick (tick, false);
         }else{
+            liveTick = new LiveTick (tick, true);
             log.debug ("Dirty market data {}", tick);
+        }
+        for ( Barifier barifier : getBarifierList () ) {
+            barifier.newTick (liveTick);
         }
     }
 }
