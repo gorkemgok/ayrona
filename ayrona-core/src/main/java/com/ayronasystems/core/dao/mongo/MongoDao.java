@@ -82,8 +82,16 @@ public class MongoDao implements Dao{
     }
 
     public boolean updateStrategy (StrategyModel strategyModel) {
-        Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter (Mapper.ID_KEY, strategyModel.getObjectId ());
-        return appDatastore.updateFirst (query, strategyModel, false).getUpdatedCount () > 0;
+        Optional<StrategyModel> strategyModelOptional = findStrategy (strategyModel.getId ());
+        if (strategyModelOptional.isPresent ()) {
+            StrategyModel orgStrategyModel = strategyModelOptional.get ();
+            strategyModel.setAccounts (orgStrategyModel.getAccounts ());
+            Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class)
+                                                     .filter (Mapper.ID_KEY, strategyModel.getObjectId ());
+            return appDatastore.updateFirst (query, strategyModel, false)
+                               .getUpdatedCount () > 0;
+        }
+        return false;
     }
 
     public boolean deleteStrategy (String strategyId) {
