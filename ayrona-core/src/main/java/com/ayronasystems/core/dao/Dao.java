@@ -36,9 +36,9 @@ public interface Dao {
 
     Optional<StrategyModel> findStrategy(String id);
 
-    void bindAccountToStrategy(String strategyId, AccountBinder accountBinder);
+    void bindAccountToStrategy(String strategyId, AccountBinderModel accountBinderModel);
 
-    void updateBoundAccount(String strategyId, AccountBinder accountBinder);
+    void updateBoundAccount(String strategyId, AccountBinderModel accountBinderModel);
 
     void unboundAccount(String strategyId, String accountId);
 

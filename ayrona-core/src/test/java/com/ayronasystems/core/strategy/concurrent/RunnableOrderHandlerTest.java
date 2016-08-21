@@ -5,7 +5,7 @@ import com.ayronasystems.core.strategy.Order;
 import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.configuration.ConfigurationConstants;
 import com.ayronasystems.core.dao.mongo.MongoDaoTestITCase;
@@ -41,7 +41,7 @@ public class RunnableOrderHandlerTest {
 
     private List<Order> orderList;
 
-    private List<AccountBindInfo> accountBindInfoList;
+    private List<AccountBinder> accountBinderList;
 
     private Initiator initiator;
 
@@ -57,9 +57,9 @@ public class RunnableOrderHandlerTest {
         orderList = Arrays.asList(orderArray);
         Account account = new BasicAccount("test");
         Account account2 = new BasicAccount("test2");
-        accountBindInfoList = Arrays.asList(new AccountBindInfo[]{
-            new AccountBindInfo(account, 1),
-            new AccountBindInfo(account2, 2)
+        accountBinderList = Arrays.asList(new AccountBinder[]{
+            new AccountBinder (account, 1),
+            new AccountBinder (account2, 2)
         });
         initiator = new BasicInitiator ("TEST1", "TEST1");
 
@@ -68,15 +68,15 @@ public class RunnableOrderHandlerTest {
 
     @Test
     public void run() throws Exception {
-        for (AccountBindInfo accountBindInfo : accountBindInfoList){
-            RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler(orderList, initiator, accountBindInfo, 0, 0);
+        for (AccountBinder accountBinder : accountBinderList ){
+            RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler(orderList, initiator, accountBinder, 0, 0);
             executor.submit(runnableOrderHandler);
         }
 
         Thread.currentThread().sleep(1000);
 
-        List<Position> positionList1 = accountBindInfoList.get(0).getAccount().getPositions();
-        List<Position> positionList2 = accountBindInfoList.get(1).getAccount().getPositions();
+        List<Position> positionList1 = accountBinderList.get(0).getAccount().getPositions();
+        List<Position> positionList2 = accountBinderList.get(1).getAccount().getPositions();
 
         assertEquals(positionList1.size(), positionList2.size());
         assertEquals(4, positionList1.size());

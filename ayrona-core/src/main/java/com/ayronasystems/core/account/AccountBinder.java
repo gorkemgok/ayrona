@@ -3,13 +3,13 @@ package com.ayronasystems.core.account;
 /**
  * Created by gorkemgok on 29/05/16.
  */
-public class AccountBindInfo {
+public class AccountBinder {
 
     private Account account;
 
     private double lot;
 
-    public AccountBindInfo (Account account, double lot) {
+    public AccountBinder (Account account, double lot) {
         this.account = account;
         this.lot = lot;
     }

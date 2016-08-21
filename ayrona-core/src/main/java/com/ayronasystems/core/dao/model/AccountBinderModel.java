@@ -6,7 +6,7 @@ import org.mongodb.morphia.annotations.Embedded;
  * Created by gorkemgok on 06/06/16.
  */
 @Embedded
-public class AccountBinder {
+public class AccountBinderModel {
 
     public enum State{
         ACTIVE,
@@ -19,13 +19,13 @@ public class AccountBinder {
 
     private double lot;
 
-    public AccountBinder (String id, State state, double lot) {
+    public AccountBinderModel (String id, State state, double lot) {
         this.id = id;
         this.state = state;
         this.lot = lot;
     }
 
-    public AccountBinder () {
+    public AccountBinderModel () {
     }
 
     public String getId () {

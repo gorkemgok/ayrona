@@ -2,7 +2,7 @@ package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.strategy.Order;
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
@@ -46,7 +46,7 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private double stopLossRatio;
 
-    private List<AccountBindInfo> accountBindInfoList;
+    private List<AccountBinder> accountBinderList;
 
     private StrategyOHLC ohlc;
 
@@ -54,10 +54,10 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private SymbolPeriod symbolPeriod;
 
-    public AlgoStrategy (boolean slidingData, int initialBarCount, String id, Algo algo, MarketData initialMarketData, List<AccountBindInfo> accountBindInfoList, double takeProfitRatio, double stopLossRatio) {
+    public AlgoStrategy (boolean slidingData, int initialBarCount, String id, Algo algo, MarketData initialMarketData, List<AccountBinder> accountBinderList, double takeProfitRatio, double stopLossRatio) {
         this.id = id;
         this.algo = algo;
-        this.accountBindInfoList = accountBindInfoList;
+        this.accountBinderList = accountBinderList;
         this.takeProfitRatio = takeProfitRatio;
         this.stopLossRatio = stopLossRatio;
         this.symbolPeriod = new SymbolPeriod (initialMarketData.getSymbol (), initialMarketData.getPeriod ());
@@ -107,10 +107,10 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
             orderHandler.process (orderList, this, dummyAccount, 1, takeProfit, stopLoss);
             synchronized (this) {
-                for ( AccountBindInfo accountBindInfo : accountBindInfoList ) {
+                for ( AccountBinder accountBinder : accountBinderList ) {
                     RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,
                                                                                           this,
-                                                                                          accountBindInfo,
+                                                                                          accountBinder,
                                                                                           takeProfit,
                                                                                           stopLoss
                     );
@@ -125,19 +125,19 @@ public class AlgoStrategy implements SPStrategy<Bar> {
         return symbolPeriod;
     }
 
-    public synchronized List<AccountBindInfo> getAccountBindInfoList () {
-        return new ArrayList<AccountBindInfo> (accountBindInfoList);
+    public synchronized List<AccountBinder> getAccountBinderList () {
+        return new ArrayList<AccountBinder> (accountBinderList);
     }
 
-    public synchronized void registerAccount (AccountBindInfo accountBindInfo) {
-        accountBindInfoList.add (accountBindInfo);
+    public synchronized void registerAccount (AccountBinder accountBinder) {
+        accountBinderList.add (accountBinder);
     }
 
     public synchronized void deregisterAccount (String accountId) {
-        Iterator<AccountBindInfo> iterator = accountBindInfoList.iterator ();
+        Iterator<AccountBinder> iterator = accountBinderList.iterator ();
         while ( iterator.hasNext () ){
-            AccountBindInfo accountBindInfo = iterator.next ();
-            if (accountBindInfo.getAccount ().getId ().equals (accountId)){
+            AccountBinder accountBinder = iterator.next ();
+            if ( accountBinder.getAccount ().getId ().equals (accountId)){
                 iterator.remove ();
                 break;
             }

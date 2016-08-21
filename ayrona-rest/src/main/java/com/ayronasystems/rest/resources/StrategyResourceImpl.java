@@ -4,7 +4,7 @@ import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.dao.Dao;
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.definition.Period;
@@ -142,8 +142,8 @@ public class StrategyResourceImpl implements StrategyResource {
     }
 
     public Response updateAccountBound (String strategyId, AccountBinderBean accountBinderBean) {
-        AccountBinder accountBinder = accountBinderBean.toAccountBinder ();
-        dao.updateBoundAccount (strategyId, accountBinder);
+        AccountBinderModel accountBinderModel = accountBinderBean.toAccountBinder ();
+        dao.updateBoundAccount (strategyId, accountBinderModel);
         /*if (accountBinder.getState ().equals (AccountBinder.State.ACTIVE)) {
             return ServiceRest.INSTANCE.getAteEndpoint ()
                                 .startAccount (strategyId, accountBinder.getId (), accountBinder.getLot ());

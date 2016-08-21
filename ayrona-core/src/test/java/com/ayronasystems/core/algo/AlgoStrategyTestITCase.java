@@ -2,7 +2,7 @@ package com.ayronasystems.core.algo;
 
 import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.backtest.PositionGenerator;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
@@ -77,15 +77,15 @@ public class AlgoStrategyTestITCase {
 
         slidingStrategyAccount = new BasicAccount ("TEST3");
 
-        AccountBindInfo accountBindInfo2 = new AccountBindInfo (growingStrategyAccount, 1);
+        AccountBinder accountBinder2 = new AccountBinder (growingStrategyAccount, 1);
 
-        AccountBindInfo accountBindInfo3 = new AccountBindInfo (slidingStrategyAccount, 1);
+        AccountBinder accountBinder3 = new AccountBinder (slidingStrategyAccount, 1);
 
         slidingAlgoStrategy = new AlgoStrategy (true, initialMarketData.size (), "TEST1", algo, SlidingStrategyOHLC.valueOf (
-                initialMarketData), Arrays.asList (accountBindInfo3), 0, 0);
+                initialMarketData), Arrays.asList (accountBinder3), 0, 0);
 
         growingAlgoStrategy = new AlgoStrategy (false, 0, "TEST3", algo, GrowingStrategyOHLC.valueOf (
-                initialMarketData), Arrays.asList (accountBindInfo2), 0, 0);
+                initialMarketData), Arrays.asList (accountBinder2), 0, 0);
 
         long start = System.currentTimeMillis ();
         for (Moment moment : liveMarketData ){

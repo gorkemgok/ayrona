@@ -1,6 +1,6 @@
 package com.ayronasystems.core.strategy.concurrent;
 
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.strategy.BasicOrderHandler;
 import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.strategy.Order;
@@ -16,7 +16,7 @@ public class RunnableOrderHandler extends BasicOrderHandler implements Runnable{
 
     private static Logger log = LoggerFactory.getLogger (RunnableOrderHandler.class);
 
-    private AccountBindInfo accountBindInfo;
+    private AccountBinder accountBinder;
 
     private List<Order> orderList;
 
@@ -26,17 +26,17 @@ public class RunnableOrderHandler extends BasicOrderHandler implements Runnable{
 
     private Initiator initiator;
 
-    public RunnableOrderHandler(List<Order> orderList, Initiator initiator, AccountBindInfo accountBindInfo, double takeProfit, double stopLoss) {
+    public RunnableOrderHandler(List<Order> orderList, Initiator initiator, AccountBinder accountBinder, double takeProfit, double stopLoss) {
         this.orderList = orderList;
         this.initiator = initiator;
-        this.accountBindInfo = accountBindInfo;
+        this.accountBinder = accountBinder;
         this.takeProfit = takeProfit;
         this.stopLoss = stopLoss;
     }
 
     public void run() {
         try {
-            super.process(orderList, initiator, accountBindInfo.getAccount(), accountBindInfo.getLot(), takeProfit, stopLoss);
+            super.process(orderList, initiator, accountBinder.getAccount(), accountBinder.getLot(), takeProfit, stopLoss);
         }catch ( Exception e){
             log.error ("Order handler error:",e);
         }

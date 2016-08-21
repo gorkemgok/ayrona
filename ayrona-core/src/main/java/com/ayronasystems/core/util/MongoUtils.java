@@ -1,6 +1,6 @@
 package com.ayronasystems.core.util;
 
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ public class MongoUtils {
         return objectIdList;
     }
 
-    public static List<ObjectId> convertToObjectIdsAB(List<AccountBinder> accountBinderList){
-        List<ObjectId> objectIdList = new ArrayList<ObjectId> (accountBinderList.size ());
-        for (AccountBinder accountBinder : accountBinderList){
+    public static List<ObjectId> convertToObjectIdsAB(List<AccountBinderModel> accountBinderModelList){
+        List<ObjectId> objectIdList = new ArrayList<ObjectId> (accountBinderModelList.size ());
+        for (AccountBinderModel accountBinder : accountBinderModelList){
             objectIdList.add (new ObjectId (accountBinder.getId ()));
         }
         return objectIdList;

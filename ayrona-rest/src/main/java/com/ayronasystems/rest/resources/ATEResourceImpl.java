@@ -2,9 +2,8 @@ package com.ayronasystems.rest.resources;
 
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.Dao;
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
-import com.ayronasystems.core.edr.Edr;
 import com.ayronasystems.rest.resources.definition.ATEResource;
 import com.google.common.base.Optional;
 import org.slf4j.Logger;
@@ -29,11 +28,9 @@ public class ATEResourceImpl implements ATEResource{
         Optional<StrategyModel> strategyModelOptional = dao.findStrategy (strategyId);
         if (strategyModelOptional.isPresent ()){
             StrategyModel strategyModel = strategyModelOptional.get ();
-            strategyModel.setState (AccountBinder.State.INACTIVE);
+            strategyModel.setState (AccountBinderModel.State.INACTIVE);
             if (dao.updateStrategy (strategyModel)){
                 log.info ("Stopped strategy {}, id : {}", strategyModel.getName (), strategyModel.getId ());
-                Edr.stopStrategy ().success ().strategy (strategyModel.getName ())
-                   .strategyId (strategyModel.getId ()).putQueue ();
                 return Response.ok ().build ();
             } else {
                 return Response.notModified ().build ();
@@ -46,11 +43,9 @@ public class ATEResourceImpl implements ATEResource{
         Optional<StrategyModel> strategyModelOptional = dao.findStrategy (strategyId);
         if (strategyModelOptional.isPresent ()){
             StrategyModel strategyModel = strategyModelOptional.get ();
-            strategyModel.setState (AccountBinder.State.ACTIVE);
+            strategyModel.setState (AccountBinderModel.State.ACTIVE);
             if (dao.updateStrategy (strategyModel)){
                 log.info ("Started strategy {}, id : {}", strategyModel.getName (), strategyModel.getId ());
-                Edr.startStrategy ().success ().strategy (strategyModel.getName ())
-                        .strategyId (strategyModel.getId ()).putQueue ();
                 return Response.ok ().build ();
             } else {
               return Response.notModified ().build ();

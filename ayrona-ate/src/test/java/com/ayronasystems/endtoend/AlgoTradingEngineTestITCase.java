@@ -10,7 +10,7 @@ import com.ayronasystems.core.configuration.ConfKey;
 import com.ayronasystems.core.configuration.Configuration;
 import com.ayronasystems.core.configuration.ConfigurationConstants;
 import com.ayronasystems.core.dao.Dao;
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.data.MarketData;
@@ -75,8 +75,8 @@ public class AlgoTradingEngineTestITCase {
                                        "Sistem.BUY = Sistem.GT(SMA_5, SMA_20);" +
                                        "Sistem.SELL = Sistem.LT(SMA_5, SMA_20);");
         strategyModel.setAccounts (Arrays.asList (
-                new AccountBinder (accountModel.getId (), AccountBinder.State.ACTIVE, 1),
-                new AccountBinder (accountModel2.getId (), AccountBinder.State.ACTIVE, 1)));
+                new AccountBinderModel (accountModel.getId (), AccountBinderModel.State.ACTIVE, 1),
+                new AccountBinderModel (accountModel2.getId (), AccountBinderModel.State.ACTIVE, 1)));
         dao.createStrategy (strategyModel);
 
         StrategyModel strategyModel2 = new StrategyModel ();
@@ -88,8 +88,8 @@ public class AlgoTradingEngineTestITCase {
                                        "Sistem.BUY = Sistem.LT(SMA_5, SMA_20);" +
                                        "Sistem.SELL = Sistem.GT(SMA_5, SMA_20);");
         strategyModel2.setAccounts (Arrays.asList (
-                new AccountBinder (accountModel2.getId (), AccountBinder.State.ACTIVE, 1),
-                new AccountBinder (accountModel3.getId (), AccountBinder.State.ACTIVE, 1)));
+                new AccountBinderModel (accountModel2.getId (), AccountBinderModel.State.ACTIVE, 1),
+                new AccountBinderModel (accountModel3.getId (), AccountBinderModel.State.ACTIVE, 1)));
         dao.createStrategy (strategyModel2);
 
         ate = new AlgoTradingEngine ();

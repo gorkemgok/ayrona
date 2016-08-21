@@ -2,7 +2,7 @@ package com.ayronasystems.rest.resources;
 
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.dao.Dao;
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 import com.ayronasystems.core.dao.model.AccountModel;
 import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.rest.bean.*;
@@ -53,9 +53,9 @@ public class AccountResourceImpl implements AccountResource {
         List<BoundStrategyBean> boundStrategyBeanList = new ArrayList<BoundStrategyBean> (strategyModelList.size ());
         for (StrategyModel strategyModel : strategyModelList){
             StrategyBean strategyBean = StrategyBean.valueOf (strategyModel);
-            AccountBinder.State state = AccountBinder.State.INACTIVE;
+            AccountBinderModel.State state = AccountBinderModel.State.INACTIVE;
             double lot = 0;
-            for ( AccountBinder accountBinder : strategyModel.getAccounts ()){
+            for ( AccountBinderModel accountBinder : strategyModel.getAccounts ()){
                 if (accountBinder.getId ().equals (id)){
                     state = accountBinder.getState ();
                     lot = accountBinder.getLot ();

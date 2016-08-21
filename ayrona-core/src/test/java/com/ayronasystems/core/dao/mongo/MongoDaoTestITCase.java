@@ -242,8 +242,8 @@ public class MongoDaoTestITCase {
         expectedAccountModel.setLoginDetail (loginDetail);
         dao.createAccount (expectedAccountModel);
 
-        expectedStrategyModel.setAccounts (Arrays.asList (new AccountBinder (expectedAccountModel.getId (),
-                                                                             AccountBinder.State.ACTIVE, 1)));
+        expectedStrategyModel.setAccounts (Arrays.asList (new AccountBinderModel (expectedAccountModel.getId (),
+                                                                                  AccountBinderModel.State.ACTIVE, 1)));
         dao.createStrategy (expectedStrategyModel);
 
         List<StrategyModel> actualStrategyModelList = dao.findAllStrategies ();
@@ -268,7 +268,7 @@ public class MongoDaoTestITCase {
         expectedStrategyModel = new StrategyModel ();
         expectedStrategyModel.setName ("Fatih ate1");
         expectedStrategyModel.setCode ("<code></code>");
-        expectedStrategyModel.setState (AccountBinder.State.ACTIVE);
+        expectedStrategyModel.setState (AccountBinderModel.State.ACTIVE);
         dao.createStrategy (expectedStrategyModel);
 
         actualStrategyModelList = dao.findAllStrategies ();
@@ -299,11 +299,11 @@ public class MongoDaoTestITCase {
         List<StrategyModel> actualStrategyModelList = dao.findBoundStrategies (expectedAccountModel.getId ());
         assertEquals (0, actualStrategyModelList.size ());
 
-        AccountBinder accountBinder = new AccountBinder ();
-        accountBinder.setId (expectedAccountModel.getId ());
-        accountBinder.setLot (1);
-        accountBinder.setState (AccountBinder.State.ACTIVE);
-        dao.bindAccountToStrategy (expectedStrategyModel.getId (), accountBinder);
+        AccountBinderModel accountBinderModel = new AccountBinderModel ();
+        accountBinderModel.setId (expectedAccountModel.getId ());
+        accountBinderModel.setLot (1);
+        accountBinderModel.setState (AccountBinderModel.State.ACTIVE);
+        dao.bindAccountToStrategy (expectedStrategyModel.getId (), accountBinderModel);
 
         actualStrategyModelList = dao.findBoundStrategies (expectedAccountModel.getId ());
         assertEquals (1, actualStrategyModelList.size ());
@@ -322,22 +322,22 @@ public class MongoDaoTestITCase {
         assertTrue (strategyModelOptional.isPresent ());
         actualStrategyModel = strategyModelOptional.get ();
         assertEquals (1, actualStrategyModel.getAccounts ().size ());
-        AccountBinder actualAccountBinder = actualStrategyModel.getAccounts ().get (0);
-        assertEquals (AccountBinder.State.ACTIVE, actualAccountBinder.getState ());
-        assertEquals (accountBinder.getId (), actualAccountBinder.getId ());
-        assertEquals (accountBinder.getLot (), actualAccountBinder.getLot (), 0);
+        AccountBinderModel actualAccountBinderModel = actualStrategyModel.getAccounts ().get (0);
+        assertEquals (AccountBinderModel.State.ACTIVE, actualAccountBinderModel.getState ());
+        assertEquals (accountBinderModel.getId (), actualAccountBinderModel.getId ());
+        assertEquals (accountBinderModel.getLot (), actualAccountBinderModel.getLot (), 0);
 
-        accountBinder.setState (AccountBinder.State.INACTIVE);
-        accountBinder.setLot (2);
-        dao.updateBoundAccount (expectedStrategyModel.getId (), accountBinder);
+        accountBinderModel.setState (AccountBinderModel.State.INACTIVE);
+        accountBinderModel.setLot (2);
+        dao.updateBoundAccount (expectedStrategyModel.getId (), accountBinderModel);
         strategyModelOptional = dao.findStrategy (expectedStrategyModel.getId ());
         assertTrue (strategyModelOptional.isPresent ());
         actualStrategyModel = strategyModelOptional.get ();
         assertEquals (1, actualStrategyModel.getAccounts ().size ());
-        actualAccountBinder = actualStrategyModel.getAccounts ().get (0);
-        assertEquals (AccountBinder.State.INACTIVE, actualAccountBinder.getState ());
-        assertEquals (accountBinder.getId (), actualAccountBinder.getId ());
-        assertEquals (accountBinder.getLot (), actualAccountBinder.getLot (), 0);
+        actualAccountBinderModel = actualStrategyModel.getAccounts ().get (0);
+        assertEquals (AccountBinderModel.State.INACTIVE, actualAccountBinderModel.getState ());
+        assertEquals (accountBinderModel.getId (), actualAccountBinderModel.getId ());
+        assertEquals (accountBinderModel.getLot (), actualAccountBinderModel.getLot (), 0);
 
     }
 

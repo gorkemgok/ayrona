@@ -17,8 +17,8 @@ public class OrderQueueRunnable implements QueueRunnable<OrderQueueElement>{
     public void process(OrderQueueElement element) {
         orderHandler.process (element.getOrderList(),
                 element.getInitiator(),
-                element.getAccountBindInfo().getAccount (),
-                element.getAccountBindInfo().getLot (),
+                element.getAccountBinder().getAccount (),
+                element.getAccountBinder().getLot (),
                 element.getTakeProfit(),
                 element.getStopLoss()
         );

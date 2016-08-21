@@ -31,17 +31,17 @@ public class EdrLoggerTest {
         @Override
         public void run() {
             for (int i = 0; i < 10; i++) {
-                Edr.boundAccount().strategy("Fatih ate").strategyId("1s").account("Görkem Gök").accountId("1a").lot(1).putQueue();
+                Edr.boundAccount().strategyName("Fatih ate").strategyId("1s").accountName("Görkem Gök").accountId("1a").lot(1).putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.unboundAccount().strategy("Fatih ate").strategyId("1s").account("Görkem Gök").accountId("1a").putQueue();
+                Edr.unboundAccount().strategyName("Fatih ate").strategyId("1s").accountName("Görkem Gök").accountId("1a").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.startStrategy().strategy("Fatih ate 2").strategyId("2s").putQueue();
+                Edr.startStrategy().strategyName("Fatih ate 2").strategyId("2s").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.stopStrategy().strategy("Fatih ate 2").strategyId("2s").putQueue();
+                Edr.stopStrategy().strategyName("Fatih ate 2").strategyId("2s").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.startAccount().account("Fatih").accountId("2a").putQueue();
+                Edr.startAccount().accountName("Fatih").accountId("2a").putQueue();
                 System.out.println("Thread "+id+"edr "+i+" put");
-                Edr.stopAccount().account("Cemal").accountId("3a").putQueue();
+                Edr.stopAccount().accountName("Cemal").accountId("3a").putQueue();
             }
         }
     }

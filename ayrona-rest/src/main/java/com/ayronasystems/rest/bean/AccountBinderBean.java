@@ -1,6 +1,6 @@
 package com.ayronasystems.rest.bean;
 
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 
 /**
  * Created by gorkemgok on 06/06/16.
@@ -37,11 +37,11 @@ public class AccountBinderBean {
         this.lot = lot;
     }
 
-    public AccountBinder toAccountBinder(){
-        AccountBinder accountBinder = new AccountBinder ();
+    public AccountBinderModel toAccountBinder(){
+        AccountBinderModel accountBinder = new AccountBinderModel ();
         accountBinder.setId (id);
         accountBinder.setLot (lot);
-        accountBinder.setState (AccountBinder.State.valueOf (state));
+        accountBinder.setState (AccountBinderModel.State.valueOf (state));
         return accountBinder;
     }
 }

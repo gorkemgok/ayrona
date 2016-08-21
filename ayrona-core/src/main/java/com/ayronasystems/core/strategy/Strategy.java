@@ -1,6 +1,6 @@
 package com.ayronasystems.core.strategy;
 
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.concurrent.QueueRunnable;
 
 import java.util.List;
@@ -12,9 +12,9 @@ public interface Strategy<E> extends Initiator, QueueRunnable<E> {
 
     void process(E exchange);
 
-    List<AccountBindInfo> getAccountBindInfoList();
+    List<AccountBinder> getAccountBinderList ();
 
-    void registerAccount(AccountBindInfo accountBindInfo);
+    void registerAccount(AccountBinder accountBindInfo);
 
     void deregisterAccount(String accountId);
 }

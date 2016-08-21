@@ -69,8 +69,10 @@ public class MongoDao implements Dao{
     }
 
     public StrategyStat getStrategyStat () {
-        long activeCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.ACTIVE));
-        long inactiveCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.INACTIVE));
+        long activeCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (
+                AccountBinderModel.State.ACTIVE));
+        long inactiveCount = appDatastore.getCount (appDatastore.createQuery (StrategyModel.class).field ("state").equal (
+                AccountBinderModel.State.INACTIVE));
         return new StrategyStat (activeCount, inactiveCount);
     }
 
@@ -94,7 +96,7 @@ public class MongoDao implements Dao{
     }
 
     public List<StrategyModel> findActiveStrategies () {
-        return appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinder.State.ACTIVE).asList ();
+        return appDatastore.createQuery (StrategyModel.class).field ("state").equal (AccountBinderModel.State.ACTIVE).asList ();
     }
 
     public Optional<StrategyModel> findStrategy (String id) {
@@ -106,20 +108,20 @@ public class MongoDao implements Dao{
         }
     }
 
-    public void bindAccountToStrategy (String strategyId, AccountBinder accountBinder) {
+    public void bindAccountToStrategy (String strategyId, AccountBinderModel accountBinderModel) {
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
-                                                                 .add ("accounts", accountBinder);
+                                                                 .add ("accounts", accountBinderModel);
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class).filter (
                 Mapper.ID_KEY, new ObjectId (strategyId));
         appDatastore.update (query, operations);
     }
 
-    public void updateBoundAccount (String strategyId, AccountBinder accountBinder) {
+    public void updateBoundAccount (String strategyId, AccountBinderModel accountBinderModel) {
         UpdateOperations<StrategyModel> operations = appDatastore.createUpdateOperations (StrategyModel.class)
-                                                                 .set ("accounts.$", accountBinder);
+                                                                 .set ("accounts.$", accountBinderModel);
         Query<StrategyModel> query = appDatastore.createQuery (StrategyModel.class)
                                                  .field (Mapper.ID_KEY).equal (new ObjectId (strategyId))
-                                                 .field ("accounts.id").equal (accountBinder.getId ());
+                                                 .field ("accounts.id").equal (accountBinderModel.getId ());
         appDatastore.update (query, operations);
     }
 

@@ -25,9 +25,9 @@ public class StrategyModel extends BaseModel {
     private int initialBarCount;
 
     @Indexed(name = "state")
-    private AccountBinder.State state;
+    private AccountBinderModel.State state;
 
-    private List<AccountBinder> accounts;
+    private List<AccountBinderModel> accounts;
 
     public Symbol getSymbol () {
         return Symbols.of (symbol);
@@ -45,11 +45,11 @@ public class StrategyModel extends BaseModel {
         this.period = period;
     }
 
-    public List<AccountBinder> getAccounts () {
+    public List<AccountBinderModel> getAccounts () {
         return accounts;
     }
 
-    public void setAccounts (List<AccountBinder> accounts) {
+    public void setAccounts (List<AccountBinderModel> accounts) {
         this.accounts = accounts;
     }
 
@@ -69,11 +69,11 @@ public class StrategyModel extends BaseModel {
         this.code = code;
     }
 
-    public AccountBinder.State getState () {
+    public AccountBinderModel.State getState () {
         return state;
     }
 
-    public void setState (AccountBinder.State state) {
+    public void setState (AccountBinderModel.State state) {
         this.state = state;
     }
 

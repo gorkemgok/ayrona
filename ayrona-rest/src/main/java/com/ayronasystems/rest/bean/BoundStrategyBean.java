@@ -1,6 +1,6 @@
 package com.ayronasystems.rest.bean;
 
-import com.ayronasystems.core.dao.model.AccountBinder;
+import com.ayronasystems.core.dao.model.AccountBinderModel;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -10,23 +10,23 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class BoundStrategyBean {
 
-    private AccountBinder.State state;
+    private AccountBinderModel.State state;
 
     private double lot;
 
     private StrategyBean strategy;
 
-    public BoundStrategyBean (AccountBinder.State state, double lot, StrategyBean strategy) {
+    public BoundStrategyBean (AccountBinderModel.State state, double lot, StrategyBean strategy) {
         this.state = state;
         this.lot = lot;
         this.strategy = strategy;
     }
 
-    public AccountBinder.State getState () {
+    public AccountBinderModel.State getState () {
         return state;
     }
 
-    public void setState (AccountBinder.State state) {
+    public void setState (AccountBinderModel.State state) {
         this.state = state;
     }
 

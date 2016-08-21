@@ -1,7 +1,7 @@
 package com.ayronasystems.ate.rest.bean;
 
 import com.ayronasystems.ate.RunningStrategy;
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,16 +63,16 @@ public class RunningStrategyBean {
 
     public static RunningStrategyBean valueOf(RunningStrategy runningStrategy){
         RunningStrategyBean bean = new RunningStrategyBean ();
-        bean.setId (runningStrategy.getStrategyModel ().getId ());
-        bean.setName (runningStrategy.getStrategyModel ().getName ());
-        bean.setSymbol (runningStrategy.getStrategyModel ().getSymbol ().toString ());
-        bean.setPeriod (runningStrategy.getStrategyModel ().getPeriod ().toString ());
+        bean.setId (runningStrategy.getStrategy ().getId ());
+        bean.setName (runningStrategy.getStrategy ().getName ());
+        bean.setSymbol (runningStrategy.getStrategy ().getSymbolPeriod ().getSymbol ().toString ());
+        bean.setPeriod (runningStrategy.getStrategy ().getSymbolPeriod ().getPeriod ().toString ());
         List<RunningAccountBean> accountBeanList = new ArrayList<RunningAccountBean> ();
-        for ( AccountBindInfo accountBindInfo : runningStrategy.getAccountBindInfoList ()){
+        for ( AccountBinder accountBinder : runningStrategy.getAccountBinderList ()){
             RunningAccountBean accountBean = new RunningAccountBean (
-                    accountBindInfo.getAccount ().getId (),
-                    accountBindInfo.getAccount ().getName (),
-                    accountBindInfo.getLot ()
+                    accountBinder.getAccount ().getId (),
+                    accountBinder.getAccount ().getName (),
+                    accountBinder.getLot ()
             );
             accountBeanList.add (accountBean);
         }

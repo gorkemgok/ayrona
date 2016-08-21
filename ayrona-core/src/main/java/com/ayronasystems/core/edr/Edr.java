@@ -1,8 +1,10 @@
 package com.ayronasystems.core.edr;
 
-import com.ayronasystems.core.strategy.Position;
+import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.strategy.Position;
+import com.ayronasystems.core.strategy.Strategy;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -52,12 +54,25 @@ public class Edr {
             return this;
         }
 
-        public Builder strategy(String name){
+        public Builder strategy(Strategy strategy){
+            edr.properties.put("strategy", strategy.getName ());
+            edr.properties.put ("strategyId", strategy.getId ());
+            return this;
+        }
+
+
+        public Builder strategyName(String name){
             edr.properties.put("strategy", name);
             return this;
         }
 
-        public Builder account(String name){
+        public Builder account(Account account){
+            edr.properties.put("account", account.getName ());
+            edr.properties.put ("accountId", account.getId ());
+            return this;
+        }
+
+        public Builder accountName(String name){
             edr.properties.put("account", name);
             return this;
         }

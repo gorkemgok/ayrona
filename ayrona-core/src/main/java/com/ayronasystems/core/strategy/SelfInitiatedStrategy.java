@@ -1,6 +1,6 @@
 package com.ayronasystems.core.strategy;
 
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.account.AccountStrategyPair;
 
 import java.util.ArrayList;
@@ -29,11 +29,11 @@ public class SelfInitiatedStrategy implements Strategy<Recommendation>{
         }
     }
 
-    public List<AccountBindInfo> getAccountBindInfoList () {
+    public List<AccountBinder> getAccountBinderList () {
         return null;
     }
 
-    public void registerAccount (AccountBindInfo accountBindInfo) {
+    public void registerAccount (AccountBinder accountBinder) {
 
     }
 

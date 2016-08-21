@@ -1,7 +1,7 @@
 package com.ayronasystems.ate;
 
-import com.ayronasystems.core.account.AccountBindInfo;
-import com.ayronasystems.core.dao.model.StrategyModel;
+import com.ayronasystems.core.account.AccountBinder;
+import com.ayronasystems.core.strategy.SPStrategy;
 
 import java.util.List;
 
@@ -10,20 +10,20 @@ import java.util.List;
  */
 public class RunningStrategy {
 
-    private StrategyModel strategyModel;
+    private SPStrategy strategy;
 
-    private List<AccountBindInfo> accountBindInfoList;
+    private List<AccountBinder> accountBinderList;
 
-    public RunningStrategy (StrategyModel strategyModel, List<AccountBindInfo> accountBindInfoList) {
-        this.strategyModel = strategyModel;
-        this.accountBindInfoList = accountBindInfoList;
+    public RunningStrategy (SPStrategy strategy) {
+        this.strategy = strategy;
+        this.accountBinderList = strategy.getAccountBinderList ();
     }
 
-    public StrategyModel getStrategyModel () {
-        return strategyModel;
+    public SPStrategy getStrategy () {
+        return strategy;
     }
 
-    public List<AccountBindInfo> getAccountBindInfoList () {
-        return accountBindInfoList;
+    public List<AccountBinder> getAccountBinderList () {
+        return accountBinderList;
     }
 }

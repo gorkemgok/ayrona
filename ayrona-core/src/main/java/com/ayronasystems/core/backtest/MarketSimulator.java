@@ -1,7 +1,7 @@
 package com.ayronasystems.core.backtest;
 
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.account.AccountBindInfo;
+import com.ayronasystems.core.account.AccountBinder;
 import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.algo.Algo;
 import com.ayronasystems.core.algo.AlgoStrategy;
@@ -25,11 +25,11 @@ public class MarketSimulator {
     private int neededInputCount;
 
     public MarketSimulator (String code, MarketData marketData) {
-        AccountBindInfo accountBindInfo = new AccountBindInfo (new BasicAccount (), 1);
+        AccountBinder accountBinder = new AccountBinder (new BasicAccount (), 1);
         Algo algo = Algo.createInstance (code);
         neededInputCount = algo.getNeededInputCount ();
         MarketData initialData = marketData.subData (0, neededInputCount - 1);
-        strategy = new AlgoStrategy (false, 0, "0", algo , initialData, Arrays.asList (accountBindInfo), 0, 0);
+        strategy = new AlgoStrategy (false, 0, "0", algo , initialData, Arrays.asList (accountBinder), 0, 0);
         this.marketData = marketData;
     }
 
@@ -44,6 +44,6 @@ public class MarketSimulator {
                 e.printStackTrace ();
             }
         }
-        return strategy.getAccountBindInfoList ().get (0).getAccount ();
+        return strategy.getAccountBinderList ().get (0).getAccount ();
     }
 }

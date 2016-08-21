@@ -9,11 +9,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by gorkemgok on 26/05/16.
  */
 public class AyronaATEBootstrap implements ServletContextListener {
+
+    private static final long SYNC_PERIOD = 1000 * 60;
 
     private static Logger log = LoggerFactory.getLogger (AyronaATEBootstrap.class);
 
@@ -27,6 +31,16 @@ public class AyronaATEBootstrap implements ServletContextListener {
             }
 
             AlgoTradingEngine.INSTANCE.init ();
+
+            Timer timer = new Timer (true);
+            timer.schedule (new TimerTask () {
+                @Override
+                public void run () {
+                    AlgoTradingEngine.INSTANCE.syncStrategies ();
+                }
+            }, SYNC_PERIOD, SYNC_PERIOD);
+            log.info ("Strategy sync is scheduled.");
+
         } catch ( Exception e ) {
             log.error ("AlgoTrading Engine initialization error", e);
         }
