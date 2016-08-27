@@ -9,7 +9,12 @@ public enum MetricType {
     NET_PROFIT(Double.TYPE),
     GROSS_PROFIT(Double.TYPE),
     GROSS_LOSS(Double.TYPE),
+    NET_PROFIT_PERCENTAGE(Double.TYPE),
+    GROSS_PROFIT_PERCENTAGE(Double.TYPE),
+    GROSS_LOSS_PERCENTAGE(Double.TYPE),
     PROFIT_FACTOR(Double.TYPE),
+    PROFIT_STD(Double.TYPE),
+    NEGATIVE_PROFIT_STD(Double.TYPE),
 
     TOTAL_NUMBER_OF_TRADES(Integer.TYPE),
     WINNING_TRADE_COUNT(Integer.TYPE),
@@ -30,6 +35,9 @@ public enum MetricType {
 
     MAX_TRADE_DRAWDOWN(Double.TYPE),
     STABILITY(Double.TYPE),
+
+    SHARPE(Double.TYPE),
+    SORTINO(Double.TYPE),
 
     EQUITY_SERIES (SymbolTimeSeries.class),
     EQUITY_SERIES_EQUITY(Double.TYPE),

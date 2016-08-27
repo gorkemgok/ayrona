@@ -2,7 +2,6 @@ package com.ayronasystems.core.strategy;
 
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.Symbol;
-import com.ayronasystems.core.strategy.Initiator;
 import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;
@@ -136,6 +135,11 @@ public class Position {
 
     public double calculateProfit(){
         return direction == Direction.LONG ? closePrice - openPrice : openPrice - closePrice;
+    }
+
+    public double calculateProfitPercentage(){
+        double diff = direction == Direction.LONG ? closePrice - openPrice : openPrice - closePrice;
+        return diff / openPrice;
     }
 
     public double getIdealOpenPrice () {

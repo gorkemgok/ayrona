@@ -18,9 +18,17 @@ public class BackTestResultBean {
 
     private double netProfit;
 
+    private double netProfitPercentage;
+
     private double mdd;
 
     private double stability;
+
+    private double profitStd;
+
+    private double sharpe;
+
+    private double sortino;
 
     private List<Date> dateSeries;
 
@@ -96,11 +104,47 @@ public class BackTestResultBean {
         this.profitSeries = profitSeries;
     }
 
+    public double getNetProfitPercentage () {
+        return netProfitPercentage;
+    }
+
+    public void setNetProfitPercentage (double netProfitPercentage) {
+        this.netProfitPercentage = netProfitPercentage;
+    }
+
+    public double getProfitStd () {
+        return profitStd;
+    }
+
+    public void setProfitStd (double profitStd) {
+        this.profitStd = profitStd;
+    }
+
+    public double getSharpe () {
+        return sharpe;
+    }
+
+    public void setSharpe (double sharpe) {
+        this.sharpe = sharpe;
+    }
+
+    public double getSortino () {
+        return sortino;
+    }
+
+    public void setSortino (double sortino) {
+        this.sortino = sortino;
+    }
+
     public static BackTestResultBean valueOf(BackTestResult btr){
         BackTestResultBean btrBean = new BackTestResultBean ();
         btrBean.setNetProfit (btr.getResultAsDouble (MetricType.NET_PROFIT));
+        btrBean.setNetProfitPercentage (btr.getResultAsDouble (MetricType.NET_PROFIT_PERCENTAGE));
         btrBean.setMdd (btr.getResultAsDouble (MetricType.MAX_TRADE_DRAWDOWN));
         btrBean.setStability (btr.getResultAsDouble (MetricType.STABILITY));
+        btrBean.setProfitStd (btr.getResultAsDouble (MetricType.PROFIT_STD));
+        btrBean.setSharpe (btr.getResultAsDouble (MetricType.SHARPE));
+        btrBean.setSortino (btr.getResultAsDouble (MetricType.SORTINO));
         btrBean.setPositionList (btr.getPositionList ());
         BasicTimeSeries<EquityBar> equityTimeSeries = (BasicTimeSeries<EquityBar>)
                 btr.getResult (MetricType.EQUITY_SERIES).getValue ();

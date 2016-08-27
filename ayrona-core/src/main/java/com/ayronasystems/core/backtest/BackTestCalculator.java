@@ -8,12 +8,10 @@ import com.ayronasystems.core.timeseries.moment.EquityBar;
 import com.ayronasystems.core.timeseries.moment.Moment;
 import com.ayronasystems.core.timeseries.series.BasicTimeSeries;
 import com.ayronasystems.core.timeseries.series.TimeSeries;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gorkemgok on 19/05/16.
@@ -25,9 +23,12 @@ public class BackTestCalculator {
         List<Position> openPositionList = new ArrayList<Position> ();
         TimeSeries<EquityBar> equitySeries = BasicTimeSeries.getDynamicSizeInstance (EquityBar.class);
         double mdd;
+        double mddPercentage;
         double instantProfit;
+        double instantProfitPercentage;
         double equity = 0;
         double grossProfit = 0, grossLoss = 0, maxWinning = 0, maxLosing = 0, winningBarCount = 0, losingBarCount = 0;
+        double grossProfitPercentage = 0, grossLossPercentage = 0, maxWinningPercentage = 0, maxLosingPercentage = 0, winningBarCountPercentage = 0, losingBarCountPercentage = 0;
         int maxConsWinning = 0, maxConsLosing = 0, losingTradeCount = 0, winningTradeCount = 0;
         double tradeMDD = 0;
         int wcc = 0;
@@ -49,16 +50,20 @@ public class BackTestCalculator {
             }
             mdd = 0;
             instantProfit = 0;
+            instantProfitPercentage = 0;
             Iterator<Position> iterator = openPositionList.iterator ();
             while ( iterator.hasNext ()){
                 Position position = iterator.next ();
                 if (position.isClosed () && (position.getIdealCloseDate ().equals (momentDate) || position.getIdealCloseDate ().before (momentDate))){
-                    mdd = Math.min (mdd, position.getDirection () == Direction.LONG ? position.getIdealOpenPrice () - low : low -position.getIdealOpenPrice ());
+                    mdd = Math.min (mdd, position.getDirection () == Direction.LONG ? position.getOpenPrice () - low : low -position.getOpenPrice ());
                     double profit = position.calculateProfit ();
+                    double profitPercentage = position.calculateProfit ();
                     if (profit > 0){
                         grossProfit += profit;
+                        grossLossPercentage += profitPercentage;
                         winningTradeCount++;
                         maxWinning = Math.max (maxWinning, profit);
+                        maxWinningPercentage = Math.max (maxWinningPercentage, profitPercentage);
                         wcc++;
                         if (lcc > 0){
                             maxConsLosing = Math.max (maxConsLosing, lcc);
@@ -66,8 +71,10 @@ public class BackTestCalculator {
                         }
                     }else if (profit < 0){
                         grossLoss += profit;
+                        grossLossPercentage += profitPercentage;
                         losingTradeCount++;
                         maxLosing = Math.min (maxLosing, profit);
+                        maxLosingPercentage = Math.min (maxLosingPercentage, profitPercentage);
                         lcc++;
                         if (wcc > 0){
                             maxConsWinning = Math.max (maxConsWinning, wcc);
@@ -75,6 +82,7 @@ public class BackTestCalculator {
                         }
                     }
                     instantProfit += profit;
+                    instantProfitPercentage += profitPercentage;
                     iterator.remove ();
                 }
             }
@@ -95,8 +103,10 @@ public class BackTestCalculator {
         long start = System.currentTimeMillis ();
         result.setResult (MetricType.STABILITY, rSquared (equitySeries));
         long end = System.currentTimeMillis ();
+        double std = std (equitySeries, false);
+        double negativeStd = std (equitySeries, true);
         //System.out.println((end - start)+"ms");
-        calculateDerivatives (result, grossProfit, grossLoss, maxWinning, maxLosing, winningBarCount, losingBarCount, maxConsWinning, maxConsLosing, losingTradeCount, winningTradeCount);
+        calculateDerivatives (result, grossProfit, grossProfitPercentage, grossLoss, grossLossPercentage, std, negativeStd, maxWinning, maxLosing, winningBarCount, losingBarCount, maxConsWinning, maxConsLosing, losingTradeCount, winningTradeCount);
         return result;
     }
 
@@ -109,13 +119,41 @@ public class BackTestCalculator {
         return regression.regress ().getRSquared ();
     }
 
-    private static void calculateDerivatives (Summary result, double grossProfit, double grossLoss, double maxWinning, double maxLosing, double winningBarCount, double losingBarCount, int maxConsWinning, int maxConsLosing, int losingTradeCount, int winningTradeCount) {
+    private double std(TimeSeries<EquityBar> equitySeries, boolean onlyLoss){
+        StandardDeviation std = new StandardDeviation ();
+        double[] values = new double[equitySeries.size ()];
+        int j = 0;
+        for(int i = 0; i < equitySeries.size (); i++){
+            double ip = equitySeries.getMoment (i)
+                                    .getInstantProfit ();
+            if (ip != 0) {
+                if ( !onlyLoss ) {
+                    values[j] = ip;
+                    j++;
+                } else if ( ip < 0 ) {
+                    values[j] = ip;
+                    j++;
+                }
+            }
+        }
+        double[] valuesTrim = Arrays.copyOf (values, j);
+        return std.evaluate (valuesTrim);
+    }
+
+    private static void calculateDerivatives (Summary result, double grossProfit, double grossProfitPercentage, double grossLoss, double grossLossPercentage, double std, double negativeStd, double maxWinning, double maxLosing, double winningBarCount, double losingBarCount, int maxConsWinning, int maxConsLosing, int losingTradeCount, int winningTradeCount) {
         int totalTradeCount = winningTradeCount + losingTradeCount;
         double netProfit = grossProfit + grossLoss;
+        double netProfitPercentage = grossProfitPercentage + grossLossPercentage;
         result.setResult (MetricType.NET_PROFIT, new MetricValue<Double> (netProfit));
         result.setResult (MetricType.GROSS_PROFIT, new MetricValue<Double> (grossProfit));
         result.setResult (MetricType.GROSS_LOSS, new MetricValue<Double> (grossLoss));
+        result.setResult (MetricType.NET_PROFIT_PERCENTAGE, new MetricValue<Double> (netProfitPercentage));
+        result.setResult (MetricType.GROSS_PROFIT_PERCENTAGE, new MetricValue<Double> (grossProfitPercentage));
+        result.setResult (MetricType.GROSS_LOSS_PERCENTAGE, new MetricValue<Double> (grossLossPercentage));
         result.setResult (MetricType.PROFIT_FACTOR, new MetricValue<Double> (grossLoss != 0 ? Math.abs(grossProfit / grossLoss) : 0));
+
+        result.setResult (MetricType.PROFIT_STD, std);
+        result.setResult (MetricType.NEGATIVE_PROFIT_STD, negativeStd);
 
         result.setResult (MetricType.TOTAL_NUMBER_OF_TRADES, new MetricValue<Integer>(totalTradeCount));
         result.setResult (MetricType.PROFITABLE_PERCENT, new MetricValue<Double> (losingTradeCount != 0 ? 100 * (double)winningTradeCount / (double)losingTradeCount : 0));
@@ -135,5 +173,8 @@ public class BackTestCalculator {
         result.setResult (MetricType.MAX_CONSECUTIVE_LOSING_TRADES, new MetricValue<Integer> (maxConsLosing));
         result.setResult (MetricType.AVE_BARS_IN_WINNING_TRADES, new MetricValue<Double> (winningTradeCount != 0 ? winningBarCount / winningTradeCount : 0));
         result.setResult (MetricType.AVE_BARS_IN_LOSING_TRADES, new MetricValue<Double> (losingTradeCount != 0 ? losingBarCount / losingTradeCount : 0));
+
+        result.setResult (MetricType.SHARPE, totalTradeCount != 0 ? (netProfitPercentage / totalTradeCount) / std : 0);
+        result.setResult (MetricType.SORTINO, totalTradeCount != 0 ? (netProfitPercentage / totalTradeCount) / negativeStd : 0 );
     }
 }
