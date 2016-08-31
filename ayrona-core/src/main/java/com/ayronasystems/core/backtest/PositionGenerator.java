@@ -1,8 +1,6 @@
 package com.ayronasystems.core.backtest;
 
-import com.ayronasystems.core.*;
 import com.ayronasystems.core.account.Account;
-import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.exception.PrerequisiteException;
@@ -21,7 +19,7 @@ public class PositionGenerator {
 
     private OrderHandler orderHandler = new BasicOrderHandler ();
 
-    private Account account = new BasicAccount ();
+    private Account account = new BackTestAccount ();
 
     public PositionGenerator (SignalGenerator signalGenerator) {
         this.signalGenerator = signalGenerator;

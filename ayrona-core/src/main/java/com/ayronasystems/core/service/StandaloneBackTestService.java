@@ -2,10 +2,7 @@ package com.ayronasystems.core.service;
 
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.algo.Algo;
-import com.ayronasystems.core.backtest.BackTestCalculator;
-import com.ayronasystems.core.backtest.BackTestResult;
-import com.ayronasystems.core.backtest.MarketSimulator;
-import com.ayronasystems.core.backtest.PositionGenerator;
+import com.ayronasystems.core.backtest.*;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
@@ -26,7 +23,7 @@ public class StandaloneBackTestService implements BackTestService{
     public BackTestResult doSimulationBackTest (String code, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
         MarketData marketData = marketDataService.getOHLC (symbol, period, startDate, endDate);
         MarketSimulator marketSimulator = new MarketSimulator (code, marketData);
-        BackTestCalculator calculator = new BackTestCalculator ();
+        BackTestCalculator calculator = new BasicBackTestCalculator ();
         Account account = marketSimulator.simulate ();
         return  calculator.calculate (account.getPositions (), marketData);
     }
@@ -38,9 +35,9 @@ public class StandaloneBackTestService implements BackTestService{
 
     public BackTestResult doBackTest (SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
         MarketData ohlc = marketDataService.getOHLC (symbol, period, startDate, endDate);
-
         PositionGenerator positionGenerator = new PositionGenerator (signalGenerator);
-        BackTestCalculator calculator = new BackTestCalculator ();
+        BackTestCalculator calculator = new BasicBackTestCalculator ();
+        //BackTestCalculator calculator = new PeriodicBackTestCalculator ();
         List<Position> positionList = positionGenerator.generate (ohlc);
         BackTestResult result = calculator.calculate (positionList, ohlc);
         return result;

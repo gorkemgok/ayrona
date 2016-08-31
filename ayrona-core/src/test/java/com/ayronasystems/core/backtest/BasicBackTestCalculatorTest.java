@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Created by gorkemgok on 22/05/16.
  */
-public class BackTestCalculatorTest {
+public class BasicBackTestCalculatorTest {
 
     public static final double DELTA = 0.01;
 
@@ -89,7 +89,7 @@ public class BackTestCalculatorTest {
 
     @Test
     public void calculate () throws Exception {
-        BackTestCalculator calculator = new BackTestCalculator ();
+        BasicBackTestCalculator calculator = new BasicBackTestCalculator ();
         BackTestResult result = calculator.calculate (positionList, ohlc);
         double netProfit = (Double)result.getResult (MetricType.NET_PROFIT).getValue ();
         double mdd = (Double)result.getResult (MetricType.MAX_TRADE_DRAWDOWN).getValue ();

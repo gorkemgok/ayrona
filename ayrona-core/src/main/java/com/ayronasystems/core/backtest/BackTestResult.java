@@ -5,7 +5,9 @@ import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by gorkemgok on 21/05/16.
@@ -15,6 +17,16 @@ public class BackTestResult extends AbstractSummary {
     public static final String SPACE = "%30s";
 
     private List<Position> positionList;
+
+    private Map<ResultPeriod, List<ResultQuanta>> periodicResultMap = new HashMap<ResultPeriod, List<ResultQuanta>> ();
+
+    public Map<ResultPeriod, List<ResultQuanta>> getPeriodicResultMap () {
+        return periodicResultMap;
+    }
+
+    public void setPeriodicResultMap (Map<ResultPeriod, List<ResultQuanta>> periodicResultMap) {
+        this.periodicResultMap = periodicResultMap;
+    }
 
     public BackTestResult (Date startDate, Date endDate) {
         super (startDate, endDate);

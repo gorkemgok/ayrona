@@ -139,7 +139,7 @@ public class Position {
 
     public double calculateProfitPercentage(){
         double diff = direction == Direction.LONG ? closePrice - openPrice : openPrice - closePrice;
-        return diff / openPrice;
+        return (diff / openPrice) * 100;
     }
 
     public double getIdealOpenPrice () {
