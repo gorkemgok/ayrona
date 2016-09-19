@@ -24,6 +24,7 @@ public class AyronaApplication extends Application {
         resources.add (new MarketDataResourceImpl ());
         resources.add (new ATEResourceImpl ());
         resources.add (new EdrResourceImpl ());
+        resources.add (new StrategySessionResourceImpl ());
     }
 
     @Override

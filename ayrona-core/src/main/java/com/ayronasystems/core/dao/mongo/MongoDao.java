@@ -2,6 +2,8 @@ package com.ayronasystems.core.dao.mongo;
 
 import com.ayronasystems.core.batchjob.BatchJob;
 import com.ayronasystems.core.dao.Dao;
+import com.ayronasystems.core.dao.LimitOffset;
+import com.ayronasystems.core.dao.PaginatedResult;
 import com.ayronasystems.core.dao.model.*;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
@@ -12,6 +14,7 @@ import com.google.common.base.Optional;
 import com.mongodb.*;
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
+import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
 import org.mongodb.morphia.mapping.Mapper;
 import org.mongodb.morphia.query.Query;
@@ -371,6 +374,38 @@ public class MongoDao implements Dao{
     public List<MarketCalendarModel> findAllMarketCalendars () {
         List<MarketCalendarModel> marketCalendarModelList = appDatastore.createQuery (MarketCalendarModel.class).asList ();
         return marketCalendarModelList;
+    }
+
+    public OptimizerSessionModel createOptimizerSession (OptimizerSessionModel optimizerSessionModel) {
+        appDatastore.save (optimizerSessionModel);
+        return optimizerSessionModel;
+    }
+
+    public boolean updateOptimizerSession (OptimizerSessionModel optimizerSessionModel) {
+        Key<OptimizerSessionModel> key = appDatastore.save (optimizerSessionModel);
+        return key != null;
+    }
+
+    public List<OptimizerSessionModel> findWaitingOptimizerSessions () {
+        List<OptimizerSessionModel> optimizerSessionModelList = appDatastore.createQuery (OptimizerSessionModel.class)
+                    .field ("state").equal (TrainingSessionModel.State.WAITING).asList ();
+        return optimizerSessionModelList;
+    }
+
+    public PaginatedResult<OptimizerSessionModel> findOptimizerSessions (LimitOffset limitOffset) {
+        long totalCount = appDatastore.getCount (OptimizerSessionModel.class);
+        List<OptimizerSessionModel> optimizerSessionModelList = appDatastore.find (OptimizerSessionModel.class)
+                    .order ("-createDate")
+                    .offset (limitOffset.getOffset ()).limit (limitOffset.getLimit ()).asList ();
+        return new PaginatedResult<OptimizerSessionModel> (totalCount, optimizerSessionModelList);
+    }
+
+    public boolean addOptimizedCode (String sessionId, GeneratedCode generatedCode) {
+        UpdateOperations<OptimizerSessionModel> operations = appDatastore.createUpdateOperations (OptimizerSessionModel.class)
+                                                                 .add ("generatedCodeList", generatedCode);
+        Query<OptimizerSessionModel> query = appDatastore.createQuery (OptimizerSessionModel.class).filter (
+                Mapper.ID_KEY, new ObjectId (sessionId));
+        return appDatastore.update (query, operations).getUpdatedExisting ();
     }
 
 }

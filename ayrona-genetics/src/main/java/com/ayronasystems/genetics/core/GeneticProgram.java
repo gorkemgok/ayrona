@@ -1,10 +1,15 @@
 package com.ayronasystems.genetics.core;
 
+import com.ayronasystems.genetics.core.listener.ListenerContext;
 import com.ayronasystems.genetics.core.listener.NewFittestListener;
 import com.ayronasystems.genetics.core.listener.NewGenerationListener;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Created by gorkemgok on 28.03.2016.
@@ -25,7 +30,10 @@ public class GeneticProgram {
 
     private final GPConfiguration configuration;
 
-    public GeneticProgram(Population population, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, MutationMethod mutationMethod, FitnessFunction<Chromosome> fitnessFunction, StopCondition stopCondition, GPConfiguration configuration) {
+    private final int threadCount;
+
+    public GeneticProgram(int threadCount, Population population, SelectionMethod selectionMethod, CrossoverMethod crossoverMethod, MutationMethod mutationMethod, FitnessFunction<Chromosome> fitnessFunction, StopCondition stopCondition, GPConfiguration configuration) {
+        this.threadCount = threadCount;
         this.population = population;
         this.selectionMethod = selectionMethod;
         this.crossoverMethod = crossoverMethod;
@@ -36,20 +44,22 @@ public class GeneticProgram {
     }
 
     public void evolve(){
+        ExecutorService executor = Executors.newFixedThreadPool (threadCount);
         long start = System.currentTimeMillis ();
         NewFittestListener newFittestListener = configuration.getNewFittestListener ();
         NewGenerationListener newGenerationListener = configuration.getNewGenerationListener ();
         double mutationProbability = configuration.getMutationProbability ();
-        while (!stopCondition.satisfy(population)){
+        while (!stopCondition.satisfy(population) && !Thread.currentThread ().isInterrupted ()){
+            long s0 = System.currentTimeMillis ();
             //Calculate fitness
+            Collection<Callable<Double>> tasks = new ArrayList<Callable<Double>> ();
             for (Chromosome chromosome : population){
-                chromosome.setFitnessValue (fitnessFunction.calculateFitness(chromosome));
-                //System.out.println(chromosome.getGen ()+ " ("+chromosome.getFitnessValue ()+ ")");
-                if (population.compareWithFittest (chromosome)){
-                    if (newFittestListener != null) {
-                        newFittestListener.onNewFittest (population);
-                    }
-                }
+                tasks.add (new FitnessFunctionCallable (population, fitnessFunction, chromosome, newFittestListener));
+            }
+            try {
+                executor.invokeAll (tasks);
+            } catch ( InterruptedException e ) {
+                break;
             }
             population.sort();
 
@@ -73,8 +83,9 @@ public class GeneticProgram {
 
             //Make way for the young
             population.replacePopulation(offsetChromosomesList);
+            long e0 = System.currentTimeMillis ();
             if (newGenerationListener != null){
-                newGenerationListener.onNewGeneration (population);
+                newGenerationListener.onNewGeneration (new ListenerContext (population, (e0-s0)));
             }
         }
         long end = System.currentTimeMillis ();

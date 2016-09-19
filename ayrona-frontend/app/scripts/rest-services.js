@@ -32,9 +32,17 @@ restServicesModule.factory("AynRest", function (Rest) {
             successCallback, errorCallback
         );
     };
+
+    var createSession = function (session, successCallback, errorCallback) {
+        Rest.all("session").post(session).then(
+            successCallback, errorCallback
+        );
+    };
+
     return {
         unbindAccount : unbindAccount,
         updateAccountBinder : updateAccountBinder,
-        checkEdr : checkEdr
+        checkEdr : checkEdr,
+        createSession : createSession
     };
 });

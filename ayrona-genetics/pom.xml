@@ -10,13 +10,18 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>ayrona-genetics</artifactId>
-
+    <name>Ayrona Genetics Core</name>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.12</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.ayronasystems</groupId>
+            <artifactId>ayrona-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

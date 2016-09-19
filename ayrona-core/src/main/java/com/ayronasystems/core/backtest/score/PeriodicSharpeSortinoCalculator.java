@@ -68,7 +68,8 @@ public class PeriodicSharpeSortinoCalculator implements ScoreCalculator<Map<Date
                 if (comparator.isSamePeriod (stdDate, date)){
                     double netProfit = resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT_PERCENTAGE);
                     double tradeCount = resultQuanta.getValue (ResultQuantaMetric.TOTAL_NUMBER_OF_TRADES);
-                    double sharpe = (netProfit / tradeCount) / (stdValue != 0 && !Double.isNaN (stdValue) ? stdValue : 1);
+                    //TODO : consider stdValue below 1
+                    double sharpe = (netProfit / tradeCount) / (stdValue > 1 && !Double.isNaN (stdValue) ? stdValue : 1);
                     sharpeMap.put (stdDate, sharpe);
                     break;
                 }

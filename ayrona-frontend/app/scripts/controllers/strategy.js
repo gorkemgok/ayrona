@@ -239,7 +239,16 @@ angular.module('ayronaApp')
         $scope.onClick = function (points, evt) {
             console.log(points, evt);
         };
-        $scope.datasetOverride = [{ yAxisID: 'y-axis-1' }, { yAxisID: 'y-axis-2' }];
+        $scope.datasetOverride = [
+            {
+                yAxisID: 'y-axis-1',
+                pointRadius : 0
+            },
+            {
+                yAxisID: 'y-axis-2',
+                pointRadius : 0,
+            }
+        ];
         $scope.options = {
             scales: {
                 xAxes: [{

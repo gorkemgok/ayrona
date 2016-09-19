@@ -42,4 +42,9 @@ public class DateUtils {
     public static Date convertFromISO(String date){
         return new DateTime (date).toDate ();
     }
+
+    public static String toISO(Date date){
+        DateTime dateTime = new DateTime (date);
+        return dateTime.toString ();
+    }
 }

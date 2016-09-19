@@ -1,5 +1,7 @@
 package com.ayronasystems.core.dao.mongo;
 
+import com.ayronasystems.core.dao.LimitOffset;
+import com.ayronasystems.core.dao.PaginatedResult;
 import com.ayronasystems.core.strategy.BasicInitiator;
 import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.Singletons;
@@ -446,5 +448,68 @@ public class MongoDaoTestITCase {
                 })
         );
         return marketCalendarModel;
+    }
+
+    @Test
+    public void createAndFindOptimizerSession() throws InterruptedException {
+        OptimizerSessionModel actualOptimizerModel1 = newOptimizerSessionModel (Symbols.of ("TEST1"), Period.M1, 1);
+        OptimizerSessionModel actualOptimizerModel2 = newOptimizerSessionModel (Symbols.of ("TEST2"), Period.M5, 2);
+        OptimizerSessionModel actualOptimizerModel3 = newOptimizerSessionModel (Symbols.of ("TEST3"), Period.M15, 3);
+        OptimizerSessionModel actualOptimizerModel4 = newOptimizerSessionModel (Symbols.of ("TEST4"), Period.M30, 4);
+
+        dao.createOptimizerSession (actualOptimizerModel1);
+        Thread.currentThread ().sleep (500);
+        dao.createOptimizerSession (actualOptimizerModel2);
+        Thread.currentThread ().sleep (500);
+        dao.createOptimizerSession (actualOptimizerModel3);
+        Thread.currentThread ().sleep (500);
+        dao.createOptimizerSession (actualOptimizerModel4);
+
+        PaginatedResult<OptimizerSessionModel> optimizerSessionResult1 = dao.findOptimizerSessions (new LimitOffset (1, 4));
+        PaginatedResult<OptimizerSessionModel> optimizerSessionResult2 = dao.findOptimizerSessions (new LimitOffset (1, 2));
+        PaginatedResult<OptimizerSessionModel> optimizerSessionResult3 = dao.findOptimizerSessions (new LimitOffset (2, 2));
+
+        assertEquals (4 ,optimizerSessionResult1.getList ().size ());
+        assertEquals (2 ,optimizerSessionResult2.getList ().size ());
+        assertEquals (4 ,optimizerSessionResult2.getCount ());
+        assertEquals (2 ,optimizerSessionResult3.getList ().size ());
+
+        OptimizerSessionModel expected1 = optimizerSessionResult1.getList ().get (0);
+        OptimizerSessionModel expected2 = optimizerSessionResult1.getList ().get (1);
+        OptimizerSessionModel expected3 = optimizerSessionResult1.getList ().get (2);
+        OptimizerSessionModel expected4 = optimizerSessionResult1.getList ().get (3);
+
+        OptimizerSessionModel expected1_1 = optimizerSessionResult2.getList ().get (0);
+        OptimizerSessionModel expected2_1 = optimizerSessionResult2.getList ().get (1);
+
+        OptimizerSessionModel expected1_2 = optimizerSessionResult3.getList ().get (0);
+        OptimizerSessionModel expected2_2 = optimizerSessionResult3.getList ().get (1);
+
+        assertTrue (expected1.equals (actualOptimizerModel4));
+        assertTrue (expected2.equals (actualOptimizerModel3));
+        assertTrue (expected3.equals (actualOptimizerModel2));
+        assertTrue (expected4.equals (actualOptimizerModel1));
+
+        assertTrue (expected1_1.equals (actualOptimizerModel4));
+        assertTrue (expected2_1.equals (actualOptimizerModel3));
+
+        assertTrue (expected1_2.equals (actualOptimizerModel2));
+        assertTrue (expected2_2.equals (actualOptimizerModel1));
+
+    }
+
+    public static OptimizerSessionModel newOptimizerSessionModel(Symbol symbol, Period period, int offset){
+        OptimizerSessionModel optimizerSessionModel = new OptimizerSessionModel ();
+        optimizerSessionModel.setCode ("code:"+offset);
+        optimizerSessionModel.setSymbol (symbol.getCode ());
+        optimizerSessionModel.setPeriod (period);
+        optimizerSessionModel.setEliteCount (10*offset);
+        optimizerSessionModel.setPopulationSize (50*offset);
+        optimizerSessionModel.setMutationProbability (0.1*offset);
+        optimizerSessionModel.setStartDate (new Date(10000*offset));
+        optimizerSessionModel.setEndDate (new Date(20000*offset));
+        optimizerSessionModel.setThreadCount (offset);
+        optimizerSessionModel.setState (OptimizerSessionModel.State.WAITING);
+        return optimizerSessionModel;
     }
 }

@@ -76,6 +76,26 @@ angular.module('ayronaApp', [
         };
 
         checkEdr();
+    })
+    .controller("StartEndDatePickerCtrl", function ($scope) {
+        $scope.startDate = new Date(2015, 1, 1);
+        $scope.endDate = new Date();
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            maxDate: new Date(2020, 5, 22),
+            minDate: new Date(2010, 1, 1),
+            startingDay: 1
+        };
+
+        $scope.format = "dd-MM-yyyy";
+
+        $scope.openStart = function () {
+            $scope.startDatePopupOpen = true;
+        };
+
+        $scope.openEnd = function () {
+            $scope.endDatePopupOpen = true;
+        };
     });
 
 

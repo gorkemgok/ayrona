@@ -15,6 +15,8 @@
         <module>ayrona-rest</module>
         <module>ayrona-data</module>
         <module>ayrona-frontend</module>
+        <module>ayrona-genetics</module>
+        <module>ayrona-gpe</module>
     </modules>
 
 

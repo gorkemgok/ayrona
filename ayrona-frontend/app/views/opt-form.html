@@ -1,0 +1,95 @@
+<div class="container-fluid">
+    <div class="row">
+        <form class="form-horizontal">
+            <div class="col-sm-6  well">
+                <label>Kod:</label>
+                <div class="form-group" ng-class="{'has-error':prerequisite.code}">
+                    <div class="col-sm-12">
+                        <textarea ui-ace="{mode:'javascript', theme:'terminal'}" id="code" class="form-control input-sm" ng-model="opt.code"></textarea>
+                        <span ng-if="prerequisite.code" class="help-block">{{prerequisite.code}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6  well">
+                <div class="form-group" ng-class="{'has-error':prerequisite.name}">
+                    <label for="name" class="col-sm-4 control-label">İsim</label>
+                    <div class="col-sm-6">
+                        <input id="name" class="form-control input-sm" ng-model="opt.name">
+                        <span ng-if="prerequisite.name" class="help-block">{{prerequisite.name}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.symbol}">
+                    <label for="symbol" class="col-sm-4 control-label">Sembol</label>
+                    <div class="col-sm-4">
+                        <select id="symbol" class="form-control input-sm" ng-model="opt.symbol">
+                            <option ng-repeat="symbol in SYMBOLS" value="{{ symbol.value }}">{{ symbol.text }}</option>
+                        </select>
+                        <span ng-if="prerequisite.symbol" class="help-block">{{prerequisite.symbol}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.period}">
+                    <label for="period" class="col-sm-4 control-label">Periyot</label>
+                    <div class="col-sm-4">
+                        <select id="period" ng-model="opt.period" class="form-control input-sm">
+                            <option ng-repeat="period in PERIODS" value="{{ period.value }}">{{ period.text }}</option>
+                        </select>
+                        <span ng-if="prerequisite.period" class="help-block">{{prerequisite.period}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.populationSize}">
+                    <label for="populationSize" class="col-sm-4 control-label">Popülayson Boyutu</label>
+                    <div class="col-sm-6">
+                        <input id="populationSize" class="form-control input-sm" ng-model="opt.populationSize">
+                        <span ng-if="prerequisite.populationSize" class="help-block">{{prerequisite.populationSize}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.eliteCount}">
+                    <label for="eliteCount" class="col-sm-4 control-label">Elit Sayısı</label>
+                    <div class="col-sm-6">
+                        <input id="eliteCount" class="form-control input-sm" ng-model="opt.eliteCount">
+                        <span ng-if="prerequisite.eliteCount" class="help-block">{{prerequisite.eliteCount}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.mutationProbability}">
+                    <label for="mutationProbability" class="col-sm-4 control-label">Mutasyon Olasılığı</label>
+                    <div class="col-sm-6">
+                        <input id="mutationProbability" class="form-control input-sm" ng-model="opt.mutationProbability">
+                        <span ng-if="prerequisite.mutationProbability" class="help-block">{{prerequisite.mutationProbability}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.threadCount}">
+                    <label for="threadCount" class="col-sm-4 control-label">İşlemci Çekirdek Sayısı</label>
+                    <div class="col-sm-6">
+                        <input id="threadCount" class="form-control input-sm" ng-model="opt.threadCount">
+                        <span ng-if="prerequisite.threadCount" class="help-block">{{prerequisite.threadCount}}</span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.optStartDate}">
+                    <label for="startDate" class="col-sm-4 control-label">Başlangıç</label>
+                    <div class="input-group col-sm-4">
+                        <input id="startDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                               ng-model="startDate" is-open="startDatePopupOpen"
+                               datepicker-options="dateOptions" close-text="Kapat" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openStart()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.optEndDate}">
+                    <label for="endDate" class="col-sm-4 control-label">Bitiş</label>
+                    <div class="input-group col-sm-4">
+                        <input id="endDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                               ng-model="endDate" is-open="endDatePopupOpen"
+                               datepicker-options="dateOptions" close-text="Kapat" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openEnd()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-lg-offset-4 col-sm-4">
+                    <button ng-hide="session.id" class="btn btn-primary" ng-click="create(opt)">Başlat</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

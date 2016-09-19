@@ -40,4 +40,20 @@ public class Prerequisites {
         }
     };
 
+    public static final BeanPrerequisite<OptimizerSessionBean> SAVE_OPT = new BeanPrerequisite<OptimizerSessionBean> () {
+        public PrerequisiteCheck check (OptimizerSessionBean optimizerSessionBean) {
+            PrerequisiteCheck prerequisiteCheck = new PrerequisiteCheck ();
+            if (optimizerSessionBean.getCode () == null || optimizerSessionBean.getCode ().isEmpty ()){
+                prerequisiteCheck.shouldBe ("code", PrerequisiteCheck.ShouldBe.NOT_EMPTY);
+            }
+            if (optimizerSessionBean.getSymbol () == null){
+                prerequisiteCheck.shouldBe ("symbol", PrerequisiteCheck.ShouldBe.SELECTED);
+            }
+            if (optimizerSessionBean.getPeriod () == null){
+                prerequisiteCheck.shouldBe ("period", PrerequisiteCheck.ShouldBe.SELECTED);
+            }
+            return prerequisiteCheck;
+        }
+    };
+
 }

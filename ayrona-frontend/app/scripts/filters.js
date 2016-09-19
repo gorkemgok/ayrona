@@ -133,6 +133,13 @@ filtersModule.filter("millisToDate", function () {
     };
 });
 
+filtersModule.filter("ISODateFormat", function () {
+    return function (ISODate) {
+        var date = moment(ISODate);
+        return date.format("DD.MM.YYYY HH:mm");
+    };
+});
+
 filtersModule.filter("directionIcon", function () {
     return function (direction) {
         var icon;

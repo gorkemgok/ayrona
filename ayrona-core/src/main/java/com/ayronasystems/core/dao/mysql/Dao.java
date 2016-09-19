@@ -1,5 +1,7 @@
 package com.ayronasystems.core.dao.mysql;
 
+import com.ayronasystems.core.dao.LimitOffset;
+import com.ayronasystems.core.dao.PaginatedResult;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

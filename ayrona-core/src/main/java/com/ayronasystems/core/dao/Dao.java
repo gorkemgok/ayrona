@@ -119,4 +119,16 @@ public interface Dao {
 
     List<MarketCalendarModel> findAllMarketCalendars();
 
+    //Optimizer session
+
+    OptimizerSessionModel createOptimizerSession(OptimizerSessionModel optimizerSessionModel);
+
+    boolean updateOptimizerSession(OptimizerSessionModel optimizerSessionModel);
+
+    List<OptimizerSessionModel> findWaitingOptimizerSessions ();
+
+    PaginatedResult<OptimizerSessionModel> findOptimizerSessions (LimitOffset limitOffset);
+
+    boolean addOptimizedCode(String sessionId, GeneratedCode generatedCode);
+
 }

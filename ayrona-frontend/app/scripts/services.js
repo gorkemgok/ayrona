@@ -308,6 +308,7 @@ servicesModule.factory("Helper", function(METRICS){
         }
         return pages;
         };
+
     var preparePagesFromBean = function(paginatedBean){
         return preparePages(paginatedBean.totalPage, paginatedBean.currentBean);
     };
@@ -323,6 +324,18 @@ servicesModule.factory("Helper", function(METRICS){
         });
     };
 
+    var generateRandomName = function () {
+        var prefix = ["Karizma", "Sinsi", "Civelek", "Kurnaz", "Atılgan", "Zehir"];
+        var names = ["Haydar","Ziya","Cabbar","Berksan","Ciguli","Sezai","Tonguc", "Kamil"];
+        var city = ["Oflu","Trabzonlu","Bigalı","Kasımpaşalı","Fikirtepeli","Yozgatlı","Beyoğlu Çocuğu"];
+
+        var r1 = Math.floor((Math.random() * prefix.length));
+        var r2 = Math.floor((Math.random() * names.length));
+        var r3 = Math.floor((Math.random() * city.length));
+
+        return city[r3]+" "+prefix[r1]+" "+names[r2];
+    };
+
     return {
         removeById : removeById,
         prepareStrategy : prepareStrategy,
@@ -331,7 +344,8 @@ servicesModule.factory("Helper", function(METRICS){
         preparePages : preparePages,
         preparePagesFromBean : preparePagesFromBean,
         preparePrerequisite : preparePrerequisite,
-        calculateProfit: calculateProfit
+        calculateProfit: calculateProfit,
+        generateRandomName : generateRandomName
     }
 });
 

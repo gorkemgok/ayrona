@@ -1,5 +1,7 @@
 package com.ayronasystems.core.dao.mysql;
 
+import com.ayronasystems.core.dao.LimitOffset;
+import com.ayronasystems.core.dao.PaginatedResult;
 import com.ayronasystems.core.dao.mysql.model.*;
 import com.ayronasystems.core.dao.mysql.result.DaoResult;
 import com.ayronasystems.core.definition.Period;
