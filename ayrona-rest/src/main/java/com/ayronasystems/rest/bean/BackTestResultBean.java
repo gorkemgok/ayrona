@@ -1,44 +1,86 @@
 package com.ayronasystems.rest.bean;
 
-import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.backtest.BackTestResult;
 import com.ayronasystems.core.backtest.MetricType;
+import com.ayronasystems.core.backtest.ResultPeriod;
+import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.timeseries.moment.EquityBar;
 import com.ayronasystems.core.timeseries.series.BasicTimeSeries;
 import org.joda.time.DateTime;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by gorkemgok on 20/06/16.
  */
 public class BackTestResultBean {
 
-    private double netProfit;
+    public static class SeriesBean{
 
-    private double netProfitPercentage;
+        private ResultPeriod period;
 
-    private double mdd;
+        private List<Date> dateSeries;
 
-    private double stability;
+        private List<Double> equitySeries;
 
-    private double profitStd;
+        private List<Double> mddSeries;
 
-    private double sharpe;
+        private List<Double> profitSeries;
 
-    private double sortino;
+        public ResultPeriod getPeriod () {
+            return period;
+        }
 
-    private List<Date> dateSeries;
+        public void setPeriod (ResultPeriod period) {
+            this.period = period;
+        }
 
-    private List<Double> equitySeries;
+        public List<Date> getDateSeries () {
+            return dateSeries;
+        }
 
-    private List<Double> mddSeries;
+        public void setDateSeries (List<Date> dateSeries) {
+            this.dateSeries = dateSeries;
+        }
 
-    private List<Double> profitSeries;
+        public List<Double> getEquitySeries () {
+            return equitySeries;
+        }
+
+        public void setEquitySeries (List<Double> equitySeries) {
+            this.equitySeries = equitySeries;
+        }
+
+        public List<Double> getMddSeries () {
+            return mddSeries;
+        }
+
+        public void setMddSeries (List<Double> mddSeries) {
+            this.mddSeries = mddSeries;
+        }
+
+        public List<Double> getProfitSeries () {
+            return profitSeries;
+        }
+
+        public void setProfitSeries (List<Double> profitSeries) {
+            this.profitSeries = profitSeries;
+        }
+    }
+
+    private Map<MetricType, Double> results;
+
+    private List<SeriesBean> series;
 
     private List<Position> positionList;
+
+    public Map<MetricType, Double> getResults () {
+        return results;
+    }
+
+    public void setResults (Map<MetricType, Double> results) {
+        this.results = results;
+    }
 
     public List<Position> getPositionList () {
         return positionList;
@@ -48,107 +90,25 @@ public class BackTestResultBean {
         this.positionList = positionList;
     }
 
-    public double getNetProfit () {
-        return netProfit;
+    public List<SeriesBean> getSeries () {
+        return series;
     }
 
-    public void setNetProfit (double netProfit) {
-        this.netProfit = netProfit;
-    }
-
-    public double getMdd () {
-        return mdd;
-    }
-
-    public void setMdd (double mdd) {
-        this.mdd = mdd;
-    }
-
-    public double getStability () {
-        return stability;
-    }
-
-    public void setStability (double stability) {
-        this.stability = stability;
-    }
-
-    public List<Date> getDateSeries() {
-        return dateSeries;
-    }
-
-    public void setDateSeries(List<Date> dateSeries) {
-        this.dateSeries = dateSeries;
-    }
-
-    public List<Double> getEquitySeries() {
-        return equitySeries;
-    }
-
-    public void setEquitySeries(List<Double> equitySeries) {
-        this.equitySeries = equitySeries;
-    }
-
-    public List<Double> getMddSeries() {
-        return mddSeries;
-    }
-
-    public void setMddSeries(List<Double> mddSeries) {
-        this.mddSeries = mddSeries;
-    }
-
-    public List<Double> getProfitSeries() {
-        return profitSeries;
-    }
-
-    public void setProfitSeries(List<Double> profitSeries) {
-        this.profitSeries = profitSeries;
-    }
-
-    public double getNetProfitPercentage () {
-        return netProfitPercentage;
-    }
-
-    public void setNetProfitPercentage (double netProfitPercentage) {
-        this.netProfitPercentage = netProfitPercentage;
-    }
-
-    public double getProfitStd () {
-        return profitStd;
-    }
-
-    public void setProfitStd (double profitStd) {
-        this.profitStd = profitStd;
-    }
-
-    public double getSharpe () {
-        return sharpe;
-    }
-
-    public void setSharpe (double sharpe) {
-        this.sharpe = sharpe;
-    }
-
-    public double getSortino () {
-        return sortino;
-    }
-
-    public void setSortino (double sortino) {
-        this.sortino = sortino;
+    public void setSeries (List<SeriesBean> series) {
+        this.series = series;
     }
 
     public static BackTestResultBean valueOf(BackTestResult btr){
-        BackTestResultBean btrBean = new BackTestResultBean ();
-        btrBean.setNetProfit (btr.getResultAsDouble (MetricType.NET_PROFIT));
-        btrBean.setNetProfitPercentage (btr.getResultAsDouble (MetricType.NET_PROFIT_PERCENTAGE));
-        btrBean.setMdd (btr.getResultAsDouble (MetricType.MAX_TRADE_DRAWDOWN));
-        btrBean.setStability (btr.getResultAsDouble (MetricType.STABILITY));
-        btrBean.setProfitStd (btr.getResultAsDouble (MetricType.PROFIT_STD));
-        btrBean.setSharpe (btr.getResultAsDouble (MetricType.SHARPE));
-        btrBean.setSortino (btr.getResultAsDouble (MetricType.SORTINO));
-        btrBean.setPositionList (btr.getPositionList ());
+        Map<MetricType, Double> results = new TreeMap<MetricType, Double> ();
+        for (MetricType metricType : btr.getSummarizedMetricTypes ()){
+            if (metricType.getValueType ().equals (Double.TYPE))
+                results.put (metricType, btr.getResultAsDouble (metricType));
+            else if (metricType.getValueType ().equals (Integer.TYPE))
+                results.put (metricType, btr.getResultAsInteger (metricType));
+        }
+
         BasicTimeSeries<EquityBar> equityTimeSeries = (BasicTimeSeries<EquityBar>)
                 btr.getResult (MetricType.EQUITY_SERIES).getValue ();
-
         List<Date> dateSeries = new ArrayList<Date>();
         List<Double> equitySeries = new ArrayList<Double>();
         List<Double> profitSeries = new ArrayList<Double>();
@@ -174,10 +134,17 @@ public class BackTestResultBean {
             mdd = Math.min(equityBar.getMdd (), mdd);
             lastDate = currentDate;
         }
-        btrBean.setDateSeries(dateSeries);
-        btrBean.setEquitySeries (equitySeries);
-        btrBean.setProfitSeries (profitSeries);
-        btrBean.setMddSeries (mddSeries);
+        SeriesBean seriesBean = new SeriesBean ();
+        seriesBean.setPeriod (ResultPeriod.DAY);
+        seriesBean.setDateSeries (dateSeries);
+        seriesBean.setEquitySeries (equitySeries);
+        seriesBean.setProfitSeries (profitSeries);
+        seriesBean.setMddSeries (mddSeries);
+
+        BackTestResultBean btrBean = new BackTestResultBean ();
+        btrBean.setPositionList (btr.getPositionList ());
+        btrBean.setResults (results);
+        btrBean.setSeries (Arrays.asList (new SeriesBean[]{seriesBean}));
         return btrBean;
     }
 }
