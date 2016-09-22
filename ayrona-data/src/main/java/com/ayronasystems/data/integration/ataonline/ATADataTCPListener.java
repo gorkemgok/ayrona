@@ -45,6 +45,8 @@ public class ATADataTCPListener implements Runnable {
     public void connect(String host, int port) throws IOException {
         log.info ("Connecting to host:{} port:{}", host, port);
         clientSocket = new Socket (host, port);
+        clientSocket.setKeepAlive (true);
+        clientSocket.setSoTimeout (10000);
         log.info ("Connected to host:{} port:{}", host, port);
 
     }
