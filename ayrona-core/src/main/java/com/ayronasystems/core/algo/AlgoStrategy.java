@@ -1,9 +1,6 @@
 package com.ayronasystems.core.algo;
 
-import com.ayronasystems.core.strategy.Order;
-import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBinder;
-import com.ayronasystems.core.account.BasicAccount;
 import com.ayronasystems.core.data.GrowingStrategyOHLC;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.data.SlidingStrategyOHLC;
@@ -11,6 +8,7 @@ import com.ayronasystems.core.data.StrategyOHLC;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.definition.Signal;
 import com.ayronasystems.core.definition.SymbolPeriod;
+import com.ayronasystems.core.edr.EdrBuilder;
 import com.ayronasystems.core.exception.CorruptedMarketDataException;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.strategy.*;
@@ -32,15 +30,13 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
     private static Logger log = LoggerFactory.getLogger (AlgoStrategy.class);
 
+    private static EdrBuilder edr = EdrBuilder.getInstance ();
+
     private String id;
 
     private Algo algo;
 
     private OrderGenerator orderGenerator;
-
-    private OrderHandler orderHandler;
-
-    private Account dummyAccount;
 
     private double takeProfitRatio;
 
@@ -64,9 +60,6 @@ public class AlgoStrategy implements SPStrategy<Bar> {
 
         orderGenerator = new BasicOrderGenerator ();
         executor = Executors.newFixedThreadPool(50);
-
-        orderHandler = new BasicOrderHandler ();
-        dummyAccount = new BasicAccount ();
 
         try {
             if (slidingData){
@@ -105,6 +98,7 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             if ( signalList.size () > 0 ) {
                 signalList = signalList.subList (signalList.size () - 1, signalList.size ());
             }
+            edr.newSignal ().strategy (this).signal (ohlc.getSymbol (), signalList).success ().putQueue ();
             log.info ("NEW SIGNAL {}, Strategy: {}", signalList.get (0), getName ());
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
             synchronized (this) {
