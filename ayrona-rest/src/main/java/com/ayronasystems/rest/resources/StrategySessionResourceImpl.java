@@ -9,6 +9,7 @@ import com.ayronasystems.rest.bean.OptimizerSessionBean;
 import com.ayronasystems.rest.bean.PrerequisiteCheck;
 import com.ayronasystems.rest.bean.Prerequisites;
 import com.ayronasystems.rest.resources.definition.StrategySessionResource;
+import com.google.common.base.Optional;
 
 import javax.ws.rs.core.Response;
 import java.util.ArrayList;
@@ -30,6 +31,14 @@ public class StrategySessionResourceImpl implements StrategySessionResource{
         }else{
             return Response.status (Response.Status.BAD_REQUEST).entity (check.toBean ()).build ();
         }
+    }
+
+    public Response get (String sessionId) {
+        Optional<OptimizerSessionModel> optimizerSessionModelOptional = dao.findOptimizerSessionById (sessionId);
+        if (optimizerSessionModelOptional.isPresent ()){
+            return Response.ok (OptimizerSessionBean.valueOf (optimizerSessionModelOptional.get ())).build ();
+        }
+        return Response.noContent ().build ();
     }
 
     public Response list (int page, int item) {

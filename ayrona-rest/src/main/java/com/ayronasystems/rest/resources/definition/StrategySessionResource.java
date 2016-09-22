@@ -20,6 +20,11 @@ public interface StrategySessionResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @Path ("/{sessionId}")
+    Response get(@PathParam ("sessionId") String sessionId);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("list")
     Response list(@QueryParam ("page") int page, @QueryParam ("item") int item);
 

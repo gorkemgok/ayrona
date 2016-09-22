@@ -381,6 +381,16 @@ public class MongoDao implements Dao{
         return optimizerSessionModel;
     }
 
+    public Optional<OptimizerSessionModel> findOptimizerSessionById (String id) {
+        OptimizerSessionModel optimizerSessionModel =
+                appDatastore.find (OptimizerSessionModel.class, Mapper.ID_KEY, new ObjectId(id)).get ();
+        if (optimizerSessionModel != null){
+            return Optional.of (optimizerSessionModel);
+        }else{
+            return Optional.absent ();
+        }
+    }
+
     public boolean updateOptimizerSession (OptimizerSessionModel optimizerSessionModel) {
         Key<OptimizerSessionModel> key = appDatastore.save (optimizerSessionModel);
         return key != null;

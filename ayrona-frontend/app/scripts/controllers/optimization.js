@@ -19,16 +19,21 @@ angular.module('ayronaApp')
                 templateUrl: 'views/opt-form.html',
                 controller: 'OptCreateCtrl'
             })
-            .state('opt_update', {
-                url: '/opt/edit/:sessionId',
-                templateUrl: 'views/opt-form.html',
-                controller: 'OptUpdateCtrl',
+            .state('opt_detail', {
+                url: '/opt/:optId',
+                templateUrl: 'views/opt-detail.html',
+                controller: 'OptDetailCtrl',
                 resolve : {
-                    strategy : ["$stateParams","Rest", function ($stateParams, Rest) {
-                        return Rest.one("strategy/"+$stateParams.strategyId).get();
+                    opt : ["$stateParams","Rest", function ($stateParams, Rest) {
+                        return Rest.one("session/"+$stateParams.optId).get();
                     }]
                 }
             })
+    })
+    .controller("OptBaseCtrl", function ($scope, $location) {
+        $scope.gotoCreateSession = function () {
+            $location.path("/opt/create");
+        }
     })
     .controller("OptCreateCtrl", function ($scope, $controller, AynRest, Helper, SYMBOLS, PERIODS) {
         $controller("StartEndDatePickerCtrl", {$scope:$scope});
@@ -53,10 +58,14 @@ angular.module('ayronaApp')
         }
     })
     .controller("OptListCtrl", function ($scope, $controller, $location, sessions) {
+        $controller("OptBaseCtrl", {$scope:$scope});
         $scope.sessions = sessions.list;
         $scope.sessionCount = sessions.count;
-
-        $scope.gotoCreateSession = function () {
-            $location.path("/opt/create");
-        }
+        $scope.gotoDetail = function (sessionId) {
+            $location.path("/opt/"+sessionId);
+        };
+    })
+    .controller("OptDetailCtrl", function ($scope, $controller, opt) {
+        $controller("OptBaseCtrl", {$scope:$scope});
+        $scope.session = opt;
     });

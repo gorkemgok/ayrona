@@ -123,6 +123,8 @@ public interface Dao {
 
     OptimizerSessionModel createOptimizerSession(OptimizerSessionModel optimizerSessionModel);
 
+    Optional<OptimizerSessionModel> findOptimizerSessionById(String id);
+
     boolean updateOptimizerSession(OptimizerSessionModel optimizerSessionModel);
 
     List<OptimizerSessionModel> findWaitingOptimizerSessions ();

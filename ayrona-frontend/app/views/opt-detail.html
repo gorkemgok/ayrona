@@ -1,0 +1,24 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>Optimizasyon <small>{{ session.name }}</small>
+            <small><button class="btn btn-xs btn-success" ng-click="gotoCreateSession()">Ekle</button> </small></h1>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <table class="table table-condensed">
+                <thead>
+                    <th>Gen.</th>
+                    <th>Score</th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="code in session.generatedCodeList | orderBy:'-fitness'">
+                        <td> {{ code.generationCount}} </td>
+                        <td> {{ code.fitness | decimalFormat}}</td>
+                        <td> <button class="btn btn-xs btn-primary">Backtest<i class="glyphicon glyphicon-arrow-right"></i></button> </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
