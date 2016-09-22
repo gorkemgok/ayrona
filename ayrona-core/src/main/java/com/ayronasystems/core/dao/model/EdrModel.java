@@ -1,6 +1,6 @@
 package com.ayronasystems.core.dao.model;
 
-import com.ayronasystems.core.edr.Edr;
+import com.ayronasystems.core.edr.EdrRecord;
 import com.ayronasystems.core.edr.EdrModule;
 import com.ayronasystems.core.edr.EdrStatus;
 import com.ayronasystems.core.edr.EdrType;
@@ -39,12 +39,12 @@ public class EdrModel extends BaseModel{
         return properties;
     }
 
-    public static EdrModel valueOf(Edr edr){
+    public static EdrModel valueOf(EdrRecord edrRecord){
         EdrModel edrModel = new EdrModel();
-        edrModel.module = edr.getType().getEdrModule();
-        edrModel.type= edr.getType();
-        edrModel.status = edr.getStatus();
-        edrModel.properties = edr.getProperties();
+        edrModel.module = edrRecord.getType().getEdrModule();
+        edrModel.type= edrRecord.getType();
+        edrModel.status = edrRecord.getStatus();
+        edrModel.properties = edrRecord.getProperties();
         return edrModel;
     }
 }
