@@ -53,4 +53,8 @@ public class BasicOrderGenerator implements OrderGenerator {
         }
         return orderList;
     }
+
+    public Signal getLastSignal () {
+        return lastSignal;
+    }
 }

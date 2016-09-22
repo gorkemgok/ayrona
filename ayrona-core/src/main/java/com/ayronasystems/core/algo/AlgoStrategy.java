@@ -78,13 +78,15 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             }else {
                 ohlc = GrowingStrategyOHLC.valueOf (initialMarketData);
             }
-            ohlc.prepareForNextData ();
 
             int nic = algo.getNeededInputCount ();
             if (nic <= ohlc.size ()) {
                 List<Signal> signalList = algo.getSignalList (ohlc);
                 orderGenerator.process (ohlc, signalList);
+                log.info ("LAST SIGNAL for {} is {}", algo.getName (), orderGenerator.getLastSignal ());
             }
+
+            ohlc.prepareForNextData ();
         } catch ( CorruptedMarketDataException e ) {
             assert(false);
         }
@@ -105,7 +107,6 @@ public class AlgoStrategy implements SPStrategy<Bar> {
             }
             log.info ("NEW SIGNAL {}, Strategy: {}", signalList.get (0), getName ());
             List<Order> orderList = orderGenerator.process (ohlc, signalList);
-            orderHandler.process (orderList, this, dummyAccount, 1, takeProfit, stopLoss);
             synchronized (this) {
                 for ( AccountBinder accountBinder : accountBinderList ) {
                     RunnableOrderHandler runnableOrderHandler = new RunnableOrderHandler (orderList,

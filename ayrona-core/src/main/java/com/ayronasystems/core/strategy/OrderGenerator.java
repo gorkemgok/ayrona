@@ -12,4 +12,6 @@ public interface OrderGenerator {
 
     List<Order> process(MarketData marketData, List<Signal> signals);
 
+    Signal getLastSignal();
+
 }
