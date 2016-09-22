@@ -14,7 +14,7 @@ import java.util.Map;
 /**
  * Created by gorkemg on 10.06.2016.
  */
-public class Edr {
+public class EdrRecord {
 
     private static EdrLogger edrLogger = EdrLogger.getLogger();
 
@@ -30,94 +30,88 @@ public class Edr {
 
     public static class Builder{
 
-        private Edr edr;
+        private EdrRecord edrRecord;
 
         public Builder(EdrType edrType) {
-            edr = new Edr();
-            edr.createDate = new Date();
-            edr.type = edrType;
+            edrRecord = new EdrRecord ();
+            edrRecord.createDate = new Date();
+            edrRecord.type = edrType;
         }
 
         public Builder error(){
-            edr.status = EdrStatus.FAILED;
+            edrRecord.status = EdrStatus.FAILED;
             return this;
         }
 
         public Builder success(){
-            edr.status = EdrStatus.SUCCESSFUL;
+            edrRecord.status = EdrStatus.SUCCESSFUL;
             return this;
         }
 
         public Builder signal(Symbol symbol, List<Signal> signalList){
-            edr.properties.put("symbol", symbol.getName ());
-            edr.properties.put("signal", signalList.get(0).toString());
+            edrRecord.properties.put("symbol", symbol.getName ());
+            edrRecord.properties.put("signal", signalList.get(0).toString());
             return this;
         }
 
         public Builder strategy(Strategy strategy){
-            edr.properties.put("strategy", strategy.getName ());
-            edr.properties.put ("strategyId", strategy.getId ());
+            edrRecord.properties.put("strategy", strategy.getName ());
+            edrRecord.properties.put ("strategyId", strategy.getId ());
             return this;
         }
 
 
         public Builder strategyName(String name){
-            edr.properties.put("strategy", name);
+            edrRecord.properties.put("strategy", name);
             return this;
         }
 
         public Builder account(Account account){
-            edr.properties.put("account", account.getName ());
-            edr.properties.put ("accountId", account.getId ());
+            edrRecord.properties.put("account", account.getName ());
+            edrRecord.properties.put ("accountId", account.getId ());
             return this;
         }
 
         public Builder accountName(String name){
-            edr.properties.put("account", name);
+            edrRecord.properties.put("account", name);
             return this;
         }
 
         public Builder strategyId(String id){
-            edr.properties.put("strategyId", id);
+            edrRecord.properties.put("strategyId", id);
             return this;
         }
 
         public Builder accountId(String id){
-            edr.properties.put("accountId", id);
+            edrRecord.properties.put("accountId", id);
             return this;
         }
 
         public Builder lot(double lot){
-            edr.properties.put("lot", String.valueOf(lot));
+            edrRecord.properties.put("lot", String.valueOf(lot));
             return this;
         }
 
         public Builder position(Position position){
-            edr.properties.put("position", position.getDirection().toString());
-            edr.properties.put("position_symbol", position.getSymbol().getName ());
+            edrRecord.properties.put("position", position.getDirection().toString());
+            edrRecord.properties.put("position_symbol", position.getSymbol().getName ());
             //TODO: Add more info
             return this;
         }
         public void save(){
-            edrLogger.save(edr);
+            edrLogger.save(edrRecord);
         }
 
         public void putQueue(){
-            edrQueue.putQueue(edr);
+            edrQueue.putQueue(edrRecord);
         }
 
     }
-    private Edr() {
+
+    private EdrRecord () {
     }
 
-    public static Builder boundAccount(){return new Builder(EdrType.BOUND_ACCOUNT);}
-    public static Builder unboundAccount(){return new Builder(EdrType.UNBOUND_ACCOUNT);}
-    public static Builder startStrategy(){return new Builder(EdrType.START_STRATEGY);}
-    public static Builder stopStrategy(){return new Builder(EdrType.STOP_STRATEGY);}
-    public static Builder newSignal(){return new Builder(EdrType.NEW_SIGNAL);}
-    public static Builder startAccount(){return new Builder(EdrType.START_ACCOUNT);}
-    public static Builder stopAccount(){return new Builder(EdrType.STOP_ACCOUNT);}
-    public static Builder newPosition(){return new Builder(EdrType.NEW_POSITION);}
+
 
     public Date getCreateDate() {
         return createDate;

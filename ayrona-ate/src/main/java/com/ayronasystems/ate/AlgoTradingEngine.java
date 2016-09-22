@@ -1,8 +1,5 @@
 package com.ayronasystems.ate;
 
-import com.ayronasystems.core.edr.Edr;
-import com.ayronasystems.core.jms.JMSDestination;
-import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.Singletons;
 import com.ayronasystems.core.account.Account;
 import com.ayronasystems.core.account.AccountBinder;
@@ -20,8 +17,11 @@ import com.ayronasystems.core.dao.model.StrategyModel;
 import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Period;
 import com.ayronasystems.core.definition.Symbol;
+import com.ayronasystems.core.edr.EdrBuilder;
 import com.ayronasystems.core.exception.PrerequisiteException;
 import com.ayronasystems.core.integration.mt4.MT4ConnectionPool;
+import com.ayronasystems.core.jms.JMSDestination;
+import com.ayronasystems.core.jms.JMSManager;
 import com.ayronasystems.core.service.MarketDataService;
 import com.ayronasystems.core.service.StandaloneMarketDataService;
 import com.ayronasystems.core.strategy.SPStrategy;
@@ -51,6 +51,8 @@ public class AlgoTradingEngine {
     private static final long A_WEEK_IN_MILLIS = 1000 * 60 *60 *24 * 7;
 
     private Date prevWeek;
+
+    private static EdrBuilder edr = EdrBuilder.getInstance ();
 
     private static Logger log = LoggerFactory.getLogger (AlgoTradingEngine.class);
 
@@ -132,7 +134,7 @@ public class AlgoTradingEngine {
         synchronized (this) {
             strategyRunners.add (strategyRunner);
         }
-        Edr.startStrategy ().strategy (strategy).success ().putQueue ();
+        edr.startStrategy ().strategy (strategy).success ().putQueue ();
         log.info ("Initialized strategy {} with {} accounts", name, accountBinderList.size ());
     }
 
@@ -256,7 +258,7 @@ public class AlgoTradingEngine {
                                                             BasicAccount.createAccountRemoteUsing (accountModel));
                         AccountBinder accountBinder = new AccountBinder (account, accountBinderModel.getLot ());
                         strategy.registerAccount (accountBinder);
-                        Edr.startAccount ().account (account).lot (accountBinder.getLot ()).success ().putQueue ();
+                        edr.startAccount ().account (account).lot (accountBinder.getLot ()).success ().putQueue ();
                         log.info ("Registered account {} to strategy {} with {} lot(s)", account.getName (),
                                   strategy.getName (),
                                   accountBinder.getLot ());
@@ -276,7 +278,7 @@ public class AlgoTradingEngine {
             }
             if (!exists){
                 strategy.deregisterAccount (account.getId ());
-                Edr.stopAccount ().account (account).success ().putQueue ();
+                edr.stopAccount ().account (account).success ().putQueue ();
                 log.info ("Deregistered account {} to strategy {}", account.getName (),
                           strategy.getName ());
             }
@@ -292,7 +294,7 @@ public class AlgoTradingEngine {
             SPStrategy<Bar> strategy = strategyRunners.get (i).unwrapRunnable ();
             if (strategy.getId ().equals (strategyId)){
                 strategyRunners.remove (i);
-                Edr.stopStrategy ().strategy (strategy).success ().putQueue ();
+                edr.stopStrategy ().strategy (strategy).success ().putQueue ();
                 log.info ("Deregistered strategy {}", strategy.getName ());
                 break;
             }

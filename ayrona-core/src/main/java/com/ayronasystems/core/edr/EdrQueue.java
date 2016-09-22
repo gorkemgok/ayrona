@@ -11,7 +11,7 @@ public class EdrQueue {
 
     private EdrLogger edrLogger;
 
-    private QueueRunner<Edr, EdrLogger> queue;
+    private QueueRunner<EdrRecord, EdrLogger> queue;
 
     public static EdrQueue getQueue(){
         return edrQueue;
@@ -19,12 +19,12 @@ public class EdrQueue {
 
     private EdrQueue() {
         edrLogger = EdrLogger.getLogger();
-        queue = new QueueRunner<Edr, EdrLogger>(edrLogger);
+        queue = new QueueRunner<EdrRecord, EdrLogger>(edrLogger);
         queue.start();
     }
 
-    public void putQueue(Edr edr){
-        queue.put(edr);
+    public void putQueue(EdrRecord edrRecord){
+        queue.put(edrRecord);
     }
 
     public boolean isIdle(){

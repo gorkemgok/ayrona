@@ -8,7 +8,7 @@ import com.ayronasystems.core.dao.model.EdrModel;
 /**
  * Created by gorkemg on 10.06.2016.
  */
-public class EdrLogger implements QueueRunnable<Edr>{
+public class EdrLogger implements QueueRunnable<EdrRecord>{
 
     private long edrCount;
 
@@ -23,23 +23,23 @@ public class EdrLogger implements QueueRunnable<Edr>{
         return edrLogger;
     }
 
-    public void save(Edr edr){
-        EdrModel edrModel = EdrModel.valueOf(edr);
+    public void save(EdrRecord edrRecord){
+        EdrModel edrModel = EdrModel.valueOf(edrRecord);
         dao.createEdr(edrModel);
         edrCount++;
     }
 
-    public void success(Edr edr){
-        edr.status = EdrStatus.SUCCESSFUL;
-        save(edr);
+    public void success(EdrRecord edrRecord){
+        edrRecord.status = EdrStatus.SUCCESSFUL;
+        save(edrRecord);
     }
 
-    public void error(Edr edr){
-        edr.status = EdrStatus.FAILED;
-        save(edr);
+    public void error(EdrRecord edrRecord){
+        edrRecord.status = EdrStatus.FAILED;
+        save(edrRecord);
     }
 
-    public void process(Edr element) {
+    public void process(EdrRecord element) {
         save(element);
     }
 
