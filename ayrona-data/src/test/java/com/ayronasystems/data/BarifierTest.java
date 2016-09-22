@@ -44,7 +44,14 @@ public class BarifierTest {
                             new LiveTick (DateUtils.parseDate ("01.01.2016 01:03:23"), Symbols.of("TEST"), 0, 0, 2.11,  false),
                             new LiveTick (DateUtils.parseDate ("01.01.2016 01:03:53"), Symbols.of("TEST"), 0, 0, 3.11,  false),
 
-                            new LiveTick (DateUtils.parseDate ("01.01.2016 01:04:03"), Symbols.of("TEST"), 0, 7.8, 0,  true)
+                            new LiveTick (DateUtils.parseDate ("01.01.2016 01:04:59"), Symbols.of("TEST"), 0, 0, 7.8,  false),
+
+                            new LiveTick (DateUtils.parseDate ("01.01.2016 01:05:59"), Symbols.of("TEST"), 0, 0, 8.8,  true),
+
+                            new LiveTick (DateUtils.parseDate ("01.01.2016 01:07:59"), Symbols.of("TEST"), 0, 0, 8.8,  false),
+
+                            new LiveTick (DateUtils.parseDate ("01.01.2016 01:08:59"), Symbols.of("TEST"), 0, 0, 9.8,  false),
+
 
                     }
             )
@@ -56,12 +63,13 @@ public class BarifierTest {
         for (LiveTick tick : tickList){
             barifier.newTick (tick);
         }
+        Thread.currentThread ().sleep (1100);
 
         Optional<TimeSeries<Bar>> actualSeriesOptional = barifier.getSeries (Symbols.of("TEST"));
         assertTrue (actualSeriesOptional.isPresent ());
 
         TimeSeries<Bar> timeSeries = actualSeriesOptional.get ();
-        assertEquals (3, timeSeries.size ());
+        assertEquals (6, timeSeries.size ());
         assertEquals (1.4, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:00:00")).get (ColumnDefinition.OPEN), 0);
         assertEquals (2, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:00:00")).get (ColumnDefinition.HIGH), 0);
         assertEquals (0.1, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:00:00")).get (ColumnDefinition.LOW), 0);
@@ -77,6 +85,11 @@ public class BarifierTest {
         assertEquals (1.11, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:03:00")).get (ColumnDefinition.LOW), 0);
         assertEquals (3.11, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:03:00")).get (ColumnDefinition.CLOSE), 0);
 
+        assertEquals (7.8, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:04:00")).get (ColumnDefinition.OPEN), 0);
+
+        assertEquals (8.8, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:07:00")).get (ColumnDefinition.OPEN), 0);
+
+        assertEquals (9.8, timeSeries.getMoment (DateUtils.parseDate ("01.01.2016 01:08:00")).get (ColumnDefinition.OPEN), 0);
 
     }
 

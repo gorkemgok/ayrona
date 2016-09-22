@@ -20,11 +20,57 @@ import java.util.Map;
  */
 public class Barifier {
 
+    private static class BarTimer extends Thread{
+
+        private Barifier barifier;
+
+        private Symbol symbol;
+
+        private long timerStep;
+
+        private long remainingTime;
+
+        private boolean wait;
+
+        public BarTimer (Barifier barifier, Symbol symbol, long timerStep) {
+            this.barifier = barifier;
+            this.symbol = symbol;
+            this.timerStep = timerStep;
+        }
+
+        public void setToWaitMode(){
+            wait = true;
+            remainingTime = 0;
+        }
+        public void setRemainingTime (long remainingTime) {
+            this.remainingTime = remainingTime;
+            wait = false;
+        }
+
+        public void run(){
+            while ( !isInterrupted () ){
+                if (!wait && remainingTime <= 0){
+                    wait = true;
+                    remainingTime = 0;
+                    barifier.timeoutBar (symbol);
+                }
+                try {
+                    sleep (timerStep);
+                } catch ( InterruptedException e ) {
+                    break;
+                }
+                remainingTime -= timerStep;
+            }
+        }
+    }
+
     private static Logger log = LoggerFactory.getLogger (Barifier.class);
 
     private Map<Symbol, TempBar> tempStack = new HashMap<Symbol, TempBar> ();
 
     private Map<Symbol, TimeSeries<Bar>> seriesStack = new HashMap<Symbol, TimeSeries<Bar>> ();
+
+    private Map<Symbol, BarTimer> barTimerStack = new HashMap<Symbol, BarTimer> ();
 
     private List<BarListener> barListenerList = new ArrayList<BarListener> ();
 
@@ -35,22 +81,21 @@ public class Barifier {
     }
 
     public void newTick(LiveTick tick){
-        log.debug ("{}, {}, {}", tick.getSymbol (), tick.getDate (), tick.getBid ());
+        log.debug ("New Tick : {}, {}, {}", tick.getSymbol (), tick.getDate (), tick.getBid ());
         long timeMillis = tick.getDate ().getTime ();
         long periodMillis = timeMillis - (timeMillis % period.getAsMillis ());
+        long remainingMillis = periodMillis + period.getAsMillis () - timeMillis;
         TempBar tempBar = getOrCreate (tick.getSymbol ());
-        if (tempBar.isClosed()){
+        BarTimer barTimer = getOrCreateTimer (tick.getSymbol ());
+        if (tempBar.isClosed() && periodMillis > tempBar.getPeriodMillis ()){
             if (!tick.isDirty ()) {
                 tempBar.beginPeriod (periodMillis, tick.getBid ());
             }
         }else{
-            if (tempBar.getCurrentMillis () != periodMillis){
+            if (tempBar.getPeriodMillis () != periodMillis){
+                Symbol symbol = tick.getSymbol ();
                 Bar bar = tempBar.endPeriod ();
-                getOrCreateSeries (tick.getSymbol ()).addMoment (bar);
-                log.info ("Added {} bar to timeseries: {}", tick.getSymbol (), bar);
-                for (BarListener barListener : barListenerList){
-                    barListener.newBar (tick.getSymbol (), period, bar);
-                }
+                newBar (symbol, bar);
                 if (!tick.isDirty ()){
                     tempBar.beginPeriod (periodMillis, tick.getBid ());
                 }
@@ -60,7 +105,26 @@ public class Barifier {
                 }
             }
         }
-        tempBar.setCurrentMillis (periodMillis);
+        if (!tick.isDirty ()) {
+            barTimer.setRemainingTime (remainingMillis);
+        }else{
+            barTimer.setToWaitMode ();
+        }
+        //tempBar.setPeriodMillis (periodMillis);
+    }
+
+    private void timeoutBar(Symbol symbol){
+        TempBar tempBar = getOrCreate (symbol);
+        Bar bar = tempBar.endPeriod ();
+        newBar (symbol, bar);
+    }
+
+    private void newBar (Symbol symbol, Bar bar) {
+        getOrCreateSeries (symbol).addMoment (bar);
+        log.info ("Added {} bar to timeseries: {}", symbol, bar);
+        for (BarListener barListener : barListenerList){
+            barListener.newBar (symbol, period, bar);
+        }
     }
 
     private TempBar getOrCreate(Symbol symbol){
@@ -70,6 +134,16 @@ public class Barifier {
             tempStack.put (symbol, tempBar);
         }
         return tempBar;
+    }
+
+    private BarTimer getOrCreateTimer(Symbol symbol){
+        BarTimer barTimer = barTimerStack.get (symbol);
+        if (barTimer == null){
+            barTimer = new BarTimer (this, symbol, 100);
+            barTimer.start ();
+            barTimerStack.put (symbol, barTimer);
+        }
+        return barTimer;
     }
 
     private TimeSeries<Bar> getOrCreateSeries(Symbol symbol){

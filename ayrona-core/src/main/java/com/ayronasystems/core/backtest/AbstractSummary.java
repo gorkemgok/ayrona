@@ -45,11 +45,21 @@ public abstract class AbstractSummary implements Summary{
     }
 
     public double getResultAsDouble(MetricType metricType){
-        return (Double)getResult (metricType).getValue ();
+        Object obj = getResult (metricType).getValue ();
+        if (obj != null) {
+            return (Double) obj;
+        } else {
+            return Double.NaN;
+        }
     }
 
     public double getResultAsInteger(MetricType metricType){
-        return (Integer)getResult (metricType).getValue ();
+        Object obj = getResult (metricType).getValue ();
+        if (obj != null) {
+            return (Integer) obj;
+        } else {
+            return Double.NaN;
+        }
     }
 
     public Date getStartDate () {

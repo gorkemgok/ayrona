@@ -9,8 +9,6 @@ import java.util.Date;
  */
 public class TempBar{
 
-    private long currentMillis;
-
     private double open = 0;
 
     private double high = 0;
@@ -46,12 +44,12 @@ public class TempBar{
         return bar;
     }
 
-    public long getCurrentMillis () {
-        return currentMillis;
+    public long getPeriodMillis () {
+        return periodMillis;
     }
 
-    public void setCurrentMillis (long currentMillis) {
-        this.currentMillis = currentMillis;
+    public void setPeriodMillis (long periodMillis) {
+        this.periodMillis = periodMillis;
     }
 
     private void reset(){
