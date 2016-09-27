@@ -1,10 +1,19 @@
 <div class="container-fluid">
-  <div class="row well">
-    <input type="file" nv-file-select="" uploader="uploader" />
-    <button type="button" class="btn btn-success btn-xs"
-            ng-click="uploader.uploadAll()"
-            ng-disabled="!uploader.getNotUploadedItems().length">
-      <span class="glyphicon glyphicon-upload"></span> Upload all
-    </button>
-  </div>
+    <div class="row well">
+        <div class="form-group col-sm-2" ng-class="{'has-error':prerequisite.symbol}">
+            <label for="symbol" class="control-label">Sembol</label>
+            <select id="symbol" class="form-control input-sm" ng-model="symbol">
+                <option ng-repeat="symbol in SYMBOLS" value="{{ symbol.value }}">{{ symbol.text }}</option>
+            </select>
+            <span ng-if="prerequisite.symbol" class="help-block">{{prerequisite.symbol}}</span>
+        </div>
+        <div ng-if="uploader" class="col-sm-4">
+            <input type="file" nv-file-select="" uploader="uploader" />
+            <button type="button" class="btn btn-success btn-xs"
+                ng-click="uploader.uploadAll()">
+                <!--ng-disabled="!uploader.getNotUploadedItems().length"-->
+                <span class="glyphicon glyphicon-upload"></span> Upload all
+            </button>
+        </div>
+    </div>
 </div>
