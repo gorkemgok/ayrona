@@ -54,7 +54,7 @@ public class Population<C extends Chromosome> implements Iterable<C>{
     }
 
     public boolean compareWithFittest(C chromosome){
-        if (fittestChromosome == null || comparator.compare (fittestChromosome, chromosome) == -1){
+        if (chromosome != null && !Double.isNaN (chromosome.getFitnessValue ()) && (fittestChromosome == null || comparator.compare (fittestChromosome, chromosome) == -1)){
             synchronized (this) {
                 if (fittestChromosome == null || comparator.compare (fittestChromosome, chromosome) == -1){
                     fittestChromosome = chromosome;
