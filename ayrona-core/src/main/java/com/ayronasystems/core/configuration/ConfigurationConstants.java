@@ -63,7 +63,7 @@ public class ConfigurationConstants {
 
     public static final String ENV_HOST = "HOST";
 
-    public static final String PROP_AMQ_URI = AYRONA_PROP_PREFIX + "ds.amq.uri";
+    public static final String PROP_AMQ_URI = AYRONA_PROP_PREFIX + "amq.uri";
 
     public static final String ENV_AMQ_URI = "AMQ_URI";
 

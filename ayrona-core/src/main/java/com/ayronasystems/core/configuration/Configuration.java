@@ -14,6 +14,8 @@ import java.util.Properties;
  */
 public class Configuration {
 
+    public static final String AYRN_CONF_ENV = "AYRN_CONF_ENV";
+
     private static Logger log = LoggerFactory.getLogger (Configuration.class);
 
     private static transient Configuration configuration = null;
@@ -89,7 +91,7 @@ public class Configuration {
     }
 
     public String getConfDir(){
-        String dir = System.getenv ("AYRN_CONF");
+        String dir = System.getenv (AYRN_CONF_ENV);
         if (dir == null){
             dir = getString (ConfKey.CONFIG_DIR);
         }
@@ -100,7 +102,7 @@ public class Configuration {
     public String toString(){
         StringBuilder stringBuilder = new StringBuilder ("Configuration : ").append ("\n");
         stringBuilder.append ("\t")
-                     .append ("AYRN_CONF")
+                     .append ("AYRN_CONF_ENV")
                      .append (" = ")
                      .append (Configuration.getInstance ()
                                            .getConfDir ())
