@@ -34,19 +34,27 @@
         <div class="col-sm-3">
             <table class="table table-condensed">
                 <thead>
+                    <th></th>
                     <th>Gen.</th>
                     <th>Score</th>
                     <th></th>
                 </thead>
                 <tbody>
                     <tr ng-repeat="code in session.generatedCodeList | orderBy:'-fitness'">
+                        <td>
+                            <button class="btn btn-xs btn-success"
+                                    ng-click="saveAsStrategy(session, code)">
+                                <i class="glyphicon glyphicon-plus"></i>
+                            </button>
+                        </td>
                         <td> {{ code.generationCount}} </td>
                         <td> {{ code.fitness | decimalFormat}}</td>
                         <td>
                             <button class="btn btn-xs btn-primary"
                                     ng-click="doDetailedBackTest(code.code, session.symbol, session.period, startDate, endDate)">
-                                Backtest<i class="glyphicon glyphicon-arrow-right"></i>
-                            </button> </td>
+                                Backtest <i class="glyphicon glyphicon-flash"></i>
+                            </button>
+                        </td>
                     </tr>
                 </tbody>
             </table>

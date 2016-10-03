@@ -30,7 +30,7 @@ angular.module('ayronaApp')
                 }
             })
     })
-    .controller("OptBaseCtrl", function ($scope, $location, AynRest) {
+    .controller("OptBaseCtrl", function ($scope, $location, AynRest, STRATEGY_STATE) {
         $scope.gotoCreateSession = function () {
             $location.path("/opt/create");
         };
@@ -50,6 +50,24 @@ angular.module('ayronaApp')
 
             }, function () {
                 session.state = state;
+            });
+        };
+
+        $scope.saveAsStrategy = function (session, code) {
+            var name = session.name+"["+code.generationCount+"-"+Number(code.fitness).toFixed(4)+"]";
+            var strategy = {
+                name : name,
+                code : code.code,
+                state : STRATEGY_STATE.inactive,
+                symbol : session.symbol,
+                period : session.period,
+                initialBarCount : 500
+            };
+            AynRest.createStrategy(strategy, function (response) {
+                $location.path("/strategy/edit/"+response.id);
+            },
+            function (error) {
+                console.error(error);
             });
         };
     })

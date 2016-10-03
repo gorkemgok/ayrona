@@ -219,7 +219,6 @@ angular.module('ayronaApp')
 
         $scope.strategy = strategy;
         $scope.update = function (strategy) {
-            strategy.state = STRATEGY_STATE.active;
             AynRest.updateStrategy(strategy,
                 function (response) {
                     $scope.compilationResult = 0;
