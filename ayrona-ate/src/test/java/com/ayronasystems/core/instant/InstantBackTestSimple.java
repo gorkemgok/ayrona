@@ -59,7 +59,7 @@ public class InstantBackTestSimple {
         BackTestService bts = new StandaloneBackTestService ();
         BackTestResult result = bts.doBackTest (code, Symbols.of("VOB_X030"), Period.M5,
                                                 DateUtils.parseDate ("01.01.2010 00:00:00"),
-                                                DateUtils.parseDate ("01.01.2017 00:00:00")
+                                                DateUtils.parseDate ("01.01.2017 00:00:00"),false
         );
         //BackTestResult result2 = bts.doSimulationBackTest (code, Symbols.of("TEST"), Period.M5, null, null);
 

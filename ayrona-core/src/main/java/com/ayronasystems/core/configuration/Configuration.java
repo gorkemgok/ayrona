@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class Configuration {
 
-    public static final String AYRN_CONF_ENV = "AYRN_CONF_ENV";
+    public static final String AYRN_CONF_ENV = "AYRN_CONF";
 
     private static Logger log = LoggerFactory.getLogger (Configuration.class);
 

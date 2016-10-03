@@ -32,10 +32,10 @@ public class InstantBackTest {
         BackTestService bts = new StandaloneBackTestService ();
         try {
             long start = System.currentTimeMillis ();
-            BackTestResult result1 = bts.doBackTest (algo1, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result2 = bts.doBackTest (algo2, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result3 = bts.doBackTest (algo3, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
-            BackTestResult result4 = bts.doBackTest (algo4, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"));
+            BackTestResult result1 = bts.doBackTest (algo1, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"), false);
+            BackTestResult result2 = bts.doBackTest (algo2, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"), false);
+            BackTestResult result3 = bts.doBackTest (algo3, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"), false);
+            BackTestResult result4 = bts.doBackTest (algo4, Symbols.of("TEST"), Period.M5, DateUtils.parseDate ("01.01.2010 00:00:00"), DateUtils.parseDate ("01.01.2016 00:00:00"), false);
             long end = System.currentTimeMillis ();
             System.out.println ("Elapsed Time : "+(end - start)+"ms");
             System.out.println (result1);

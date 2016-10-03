@@ -127,7 +127,7 @@ public interface Dao {
 
     boolean updateOptimizerSession(OptimizerSessionModel optimizerSessionModel);
 
-    List<OptimizerSessionModel> findWaitingOptimizerSessions ();
+    List<OptimizerSessionModel> findOptimizerSessions (TrainingSessionModel.State state);
 
     PaginatedResult<OptimizerSessionModel> findOptimizerSessions (LimitOffset limitOffset);
 

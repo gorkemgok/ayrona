@@ -49,7 +49,9 @@ public class BaseModel {
     @PrePersist
     public void prePersist(){
         Date date = new Date();
-        createDate = date;
+        if (createDate == null){
+            createDate = date;
+        }
         updateDate = date;
     }
 }

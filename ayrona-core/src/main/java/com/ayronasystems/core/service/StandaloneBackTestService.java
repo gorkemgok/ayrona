@@ -28,23 +28,22 @@ public class StandaloneBackTestService implements BackTestService{
         return  calculator.calculate (account.getPositions (), marketData);
     }
 
-    public BackTestResult doBackTest (String code, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException {
+    public BackTestResult doBackTest (String code, Symbol symbol, Period period, Date startDate, Date endDate, boolean isDetailed) throws PrerequisiteException {
         SignalGenerator signalGenerator = Algo.createInstance (code);
-        return doBackTest (signalGenerator, symbol, period, startDate, endDate);
+        return doBackTest (signalGenerator, symbol, period, startDate, endDate, isDetailed);
     }
 
-    public BackTestResult doBackTest (SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
+    public BackTestResult doBackTest (SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate, boolean isDetailed) throws PrerequisiteException{
         MarketData ohlc = marketDataService.getOHLC (symbol, period, startDate, endDate);
         PositionGenerator positionGenerator = new PositionGenerator (signalGenerator);
-        BackTestCalculator calculator = new BasicBackTestCalculator ();
-        //BackTestCalculator calculator = new PeriodicBackTestCalculator ();
+        BackTestCalculator calculator;
+        if (isDetailed) {
+            calculator = new PeriodicBackTestCalculator ();
+        }else{
+            calculator = new BasicBackTestCalculator ();
+        }
         List<Position> positionList = positionGenerator.generate (ohlc);
         BackTestResult result = calculator.calculate (positionList, ohlc);
         return result;
-    }
-
-    public boolean doBackTestAndSave (SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate) throws PrerequisiteException{
-        BackTestResult result = doBackTest (signalGenerator, symbol, period, startDate, endDate);
-        return false;
     }
 }

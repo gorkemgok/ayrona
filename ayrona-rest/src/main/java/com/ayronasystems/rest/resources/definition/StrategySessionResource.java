@@ -18,6 +18,17 @@ public interface StrategySessionResource {
     @Path("/")
     Response createSession(OptimizerSessionBean optimizerSessionBean);
 
+    @PUT
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/")
+    Response updateSession(OptimizerSessionBean optimizerSessionBean);
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("cancel/{sessionId}")
+    Response cancelSession(@PathParam ("sessionId") String sessionId);
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path ("/{sessionId}")

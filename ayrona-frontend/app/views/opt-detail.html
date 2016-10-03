@@ -4,7 +4,34 @@
             <small><button class="btn btn-xs btn-success" ng-click="gotoCreateSession()">Ekle</button> </small></h1>
     </div>
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-sm-2">{{ session.symbol }} - {{ session.period }}</div>
+    </div>
+    <div class="row">
+            <div class="col-sm-6" ng-class="{'has-error':prerequisite.optStartDate}">
+                <label for="startDate" class="control-label">Başlangıç</label>
+                <div class="input-group input-group-sm">
+                    <input id="startDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                           ng-model="startDate" is-open="startDatePopupOpen"
+                           datepicker-options="dateOptions" close-text="Kapat" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openStart()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                </div>
+            </div>
+            <div class="col-sm-6" ng-class="{'has-error':prerequisite.optEndDate}">
+                <label for="endDate" class="control-label">Bitiş</label>
+                <div class="input-group input-group-sm">
+                    <input id="endDate" type="text" class="form-control" uib-datepicker-popup="{{format}}"
+                           ng-model="endDate" is-open="endDatePopupOpen"
+                           datepicker-options="dateOptions" close-text="Kapat" />
+                        <span class="input-group-btn">
+                            <button type="button" class="btn btn-default" ng-click="openEnd()"><i class="glyphicon glyphicon-calendar"></i></button>
+                        </span>
+                </div>
+            </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
             <table class="table table-condensed">
                 <thead>
                     <th>Gen.</th>
@@ -15,10 +42,29 @@
                     <tr ng-repeat="code in session.generatedCodeList | orderBy:'-fitness'">
                         <td> {{ code.generationCount}} </td>
                         <td> {{ code.fitness | decimalFormat}}</td>
-                        <td> <button class="btn btn-xs btn-primary">Backtest<i class="glyphicon glyphicon-arrow-right"></i></button> </td>
+                        <td>
+                            <button class="btn btn-xs btn-primary"
+                                    ng-click="doDetailedBackTest(code.code, session.symbol, session.period, startDate, endDate)">
+                                Backtest<i class="glyphicon glyphicon-arrow-right"></i>
+                            </button> </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        <div class="col-sm-9">
+            <uib-tabset active="active">
+                <uib-tab index="$index"
+                         ng-repeat="tab in btrTabs"
+                         heading="{{tab.title}}">
+                    <div>
+                        <canvas class="chart chart-line" chart-data="tab.data"
+                                chart-labels="tab.labels" chart-options="lineOptions"
+                                chart-dataset-override="datasetOverride">
+                        </canvas>
+                    </div>
+                </uib-tab>
+            </uib-tabset>
+        </div>
         </div>
     </div>
 </div>

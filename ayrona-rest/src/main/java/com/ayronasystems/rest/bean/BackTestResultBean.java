@@ -1,8 +1,6 @@
 package com.ayronasystems.rest.bean;
 
-import com.ayronasystems.core.backtest.BackTestResult;
-import com.ayronasystems.core.backtest.MetricType;
-import com.ayronasystems.core.backtest.ResultPeriod;
+import com.ayronasystems.core.backtest.*;
 import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.timeseries.moment.EquityBar;
 import com.ayronasystems.core.timeseries.series.BasicTimeSeries;
@@ -19,13 +17,28 @@ public class BackTestResultBean {
 
         private ResultPeriod period;
 
-        private List<Date> dateSeries;
+        private List<Date> dateList;
 
-        private List<Double> equitySeries;
+        private Map<ResultQuantaMetric, List<Double>> map = new TreeMap<ResultQuantaMetric, List<Double>> ();
 
-        private List<Double> mddSeries;
+        public Map<ResultQuantaMetric, List<Double>> getMap () {
+            return map;
+        }
 
-        private List<Double> profitSeries;
+        public void setMap (Map<ResultQuantaMetric, List<Double>> map) {
+            this.map = map;
+        }
+
+        public void addToSeries(ResultQuantaMetric metric, Double value){
+            List<Double> series = this.map.get (metric);
+            if (series != null){
+                series.add (value);
+            }else{
+                List<Double> newSeries = new ArrayList<Double> ();
+                newSeries.add (value);
+                this.map.put (metric, newSeries);
+            }
+        }
 
         public ResultPeriod getPeriod () {
             return period;
@@ -35,36 +48,12 @@ public class BackTestResultBean {
             this.period = period;
         }
 
-        public List<Date> getDateSeries () {
-            return dateSeries;
+        public List<Date> getDateList () {
+            return dateList;
         }
 
-        public void setDateSeries (List<Date> dateSeries) {
-            this.dateSeries = dateSeries;
-        }
-
-        public List<Double> getEquitySeries () {
-            return equitySeries;
-        }
-
-        public void setEquitySeries (List<Double> equitySeries) {
-            this.equitySeries = equitySeries;
-        }
-
-        public List<Double> getMddSeries () {
-            return mddSeries;
-        }
-
-        public void setMddSeries (List<Double> mddSeries) {
-            this.mddSeries = mddSeries;
-        }
-
-        public List<Double> getProfitSeries () {
-            return profitSeries;
-        }
-
-        public void setProfitSeries (List<Double> profitSeries) {
-            this.profitSeries = profitSeries;
+        public void setDateList (List<Date> dateList) {
+            this.dateList = dateList;
         }
     }
 
@@ -106,45 +95,60 @@ public class BackTestResultBean {
             else if (metricType.getValueType ().equals (Integer.TYPE))
                 results.put (metricType, btr.getResultAsInteger (metricType));
         }
-
+        List<SeriesBean> seriesBeanList = new ArrayList<SeriesBean> ();
         BasicTimeSeries<EquityBar> equityTimeSeries = (BasicTimeSeries<EquityBar>)
                 btr.getResult (MetricType.EQUITY_SERIES).getValue ();
-        List<Date> dateSeries = new ArrayList<Date>();
-        List<Double> equitySeries = new ArrayList<Double>();
-        List<Double> profitSeries = new ArrayList<Double>();
-        List<Double> mddSeries = new ArrayList<Double>();
-        int i = 0;
-        Date lastDate = null;
-        double ip = 0;
-        double mdd = Double.MAX_VALUE;
-        double equity = 0;
-        for (EquityBar equityBar : equityTimeSeries){
-            DateTime dateTime = new DateTime(equityBar.getDate());
-            Date currentDate = dateTime.withMillisOfDay(0).toDate();
-            if (lastDate != null && !currentDate.equals(lastDate)){
-                dateSeries.add(lastDate);
-                equitySeries.add(equity);
-                profitSeries.add(ip);
-                mddSeries.add(mdd);
-                ip = 0;
-                mdd = Double.MAX_VALUE;
+        if (equityTimeSeries != null) {
+            List<Date> dateSeries = new ArrayList<Date> ();
+            SeriesBean seriesBean = new SeriesBean ();
+            Date lastDate = null;
+            double ip = 0;
+            double mdd = Double.MAX_VALUE;
+            double equity = 0;
+            for ( EquityBar equityBar : equityTimeSeries ) {
+                DateTime dateTime = new DateTime (equityBar.getDate ());
+                Date currentDate = dateTime.withMillisOfDay (0)
+                                           .toDate ();
+                if ( lastDate != null && !currentDate.equals (lastDate) ) {
+                    dateSeries.add (lastDate);
+                    seriesBean.addToSeries (ResultQuantaMetric.EQUITY, equity);
+                    seriesBean.addToSeries (ResultQuantaMetric.NET_PROFIT, ip);
+                    seriesBean.addToSeries (ResultQuantaMetric.MDD, mdd);
+                    ip = 0;
+                    mdd = Double.MAX_VALUE;
+                }
+                equity = equityBar.getEquity ();
+                ip += equityBar.getInstantProfit ();
+                mdd = Math.min (equityBar.getMdd (), mdd);
+                lastDate = currentDate;
             }
-            equity = equityBar.getEquity ();
-            ip += equityBar.getInstantProfit ();
-            mdd = Math.min(equityBar.getMdd (), mdd);
-            lastDate = currentDate;
+
+            seriesBean.setPeriod (ResultPeriod.DAY);
+            seriesBean.setDateList (dateSeries);
+
+            seriesBeanList.add (seriesBean);
+        }else{
+            for (Map.Entry<ResultPeriod, List<ResultQuanta>> entry: btr.getPeriodicResultMap ().entrySet ()){
+                SeriesBean seriesBean = new SeriesBean ();
+                seriesBean.setPeriod (entry.getKey ());
+
+                List<Date> dateSeries = new ArrayList<Date> ();
+                for (ResultQuanta resultQuanta : entry.getValue ()){
+                    dateSeries.add (resultQuanta.getDate ());
+                    seriesBean.addToSeries (ResultQuantaMetric.NET_PROFIT, resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT));
+                    seriesBean.addToSeries (ResultQuantaMetric.EQUITY, resultQuanta.getValue (ResultQuantaMetric.EQUITY));
+                    seriesBean.addToSeries (ResultQuantaMetric.MDD, resultQuanta.getValue (ResultQuantaMetric.MDD));
+                }
+
+                seriesBean.setDateList (dateSeries);
+                seriesBeanList.add (seriesBean);
+            }
         }
-        SeriesBean seriesBean = new SeriesBean ();
-        seriesBean.setPeriod (ResultPeriod.DAY);
-        seriesBean.setDateSeries (dateSeries);
-        seriesBean.setEquitySeries (equitySeries);
-        seriesBean.setProfitSeries (profitSeries);
-        seriesBean.setMddSeries (mddSeries);
 
         BackTestResultBean btrBean = new BackTestResultBean ();
         btrBean.setPositionList (btr.getPositionList ());
         btrBean.setResults (results);
-        btrBean.setSeries (Arrays.asList (new SeriesBean[]{seriesBean}));
+        btrBean.setSeries (seriesBeanList);
         return btrBean;
     }
 }

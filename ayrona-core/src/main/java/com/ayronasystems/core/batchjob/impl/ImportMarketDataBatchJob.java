@@ -86,6 +86,11 @@ public class ImportMarketDataBatchJob extends AbstractBatchJob {
                 iu = 0;
             }
         }
+        try {
+            BulkWriteResult bwr = bwo.execute ();
+        }catch ( BulkWriteException ex){
+            failedRowCount += ex.getWriteErrors ().size ();
+        }
         long end = System.currentTimeMillis ();
         BatchJobResult<Long> batchJobResult = new BatchJobResult (this, (end - start));
         batchJobCallback.complete (batchJobResult);

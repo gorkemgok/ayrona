@@ -396,9 +396,10 @@ public class MongoDao implements Dao{
         return key != null;
     }
 
-    public List<OptimizerSessionModel> findWaitingOptimizerSessions () {
-        List<OptimizerSessionModel> optimizerSessionModelList = appDatastore.createQuery (OptimizerSessionModel.class)
-                    .field ("state").equal (TrainingSessionModel.State.WAITING).asList ();
+    public List<OptimizerSessionModel> findOptimizerSessions (TrainingSessionModel.State state) {
+        List<OptimizerSessionModel> optimizerSessionModelList = appDatastore
+                .createQuery (OptimizerSessionModel.class)
+                .field ("state").equal (state).asList ();
         return optimizerSessionModelList;
     }
 

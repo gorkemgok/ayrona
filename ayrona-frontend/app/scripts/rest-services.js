@@ -39,10 +39,24 @@ restServicesModule.factory("AynRest", function (Rest) {
         );
     };
 
+    var updateSession = function (session, successCallback, errorCallback) {
+        Rest.one("session").customPUT(session).then(
+            successCallback, errorCallback
+        );
+    };
+
+    var cancelSession = function(sessionId,successCallback, errorCallback) {
+        Rest.all("session/cancel/"+sessionId).remove().then(
+            successCallback, errorCallback
+        );
+    };
+
     return {
         unbindAccount : unbindAccount,
         updateAccountBinder : updateAccountBinder,
         checkEdr : checkEdr,
-        createSession : createSession
+        createSession : createSession,
+        cancelSession : cancelSession,
+        updateSession : updateSession
     };
 });

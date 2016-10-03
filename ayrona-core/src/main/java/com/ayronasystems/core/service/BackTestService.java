@@ -16,12 +16,9 @@ public interface BackTestService {
     BackTestResult doSimulationBackTest (String code, Symbol symbol, Period period, Date startDate, Date endDate)
             throws PrerequisiteException;
 
-    BackTestResult doBackTest(String code, Symbol symbol, Period period, Date startDate, Date endDate)
+    BackTestResult doBackTest(String code, Symbol symbol, Period period, Date startDate, Date endDate, boolean isDetailed)
             throws PrerequisiteException;
 
-    BackTestResult doBackTest(SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate)
+    BackTestResult doBackTest(SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate, boolean isDetailed)
             throws PrerequisiteException;
-
-    boolean doBackTestAndSave(SignalGenerator signalGenerator, Symbol symbol, Period period, Date startDate, Date endDate)
-            throws PrerequisiteException;;
 }

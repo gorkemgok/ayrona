@@ -77,6 +77,7 @@ public class PeriodicBackTestCalculator implements BackTestCalculator {
                 resultMap.put (periodicAggregator.getResultPeriod (), periodicAggregator.getResultList ());
             }
             btr.setPeriodicResultMap (resultMap);
+            setBTRMetricsByInfinity (btr);
             return btr;
         }
         return null;
@@ -97,6 +98,16 @@ public class PeriodicBackTestCalculator implements BackTestCalculator {
     private void addMdd(double mdd, double mddPercentage){
         for(PeriodicAggregator periodicAggregator : periodicAggregatorList){
             periodicAggregator.addMdd (mdd, mddPercentage);
+        }
+    }
+
+    private void setBTRMetricsByInfinity(BackTestResult btr){
+        List<ResultQuanta> resultQuantaList = btr.getPeriodicResultMap ().get (ResultPeriod.INFINITY);
+        if (resultQuantaList != null && resultQuantaList.size () > 0) {
+            ResultQuanta resultQuanta = resultQuantaList.get (0);
+            btr.setResult (MetricType.NET_PROFIT, resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT));
+            btr.setResult (MetricType.NET_PROFIT_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT_PERCENTAGE));
+            btr.setResult (MetricType.MAX_TRADE_DRAWDOWN, resultQuanta.getValue (ResultQuantaMetric.MDD));
         }
     }
 }

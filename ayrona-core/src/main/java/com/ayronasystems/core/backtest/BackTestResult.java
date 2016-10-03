@@ -4,10 +4,7 @@ import com.ayronasystems.core.strategy.Position;
 import com.ayronasystems.core.util.DateUtils;
 
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by gorkemgok on 21/05/16.
@@ -18,7 +15,7 @@ public class BackTestResult extends AbstractSummary {
 
     private List<Position> positionList;
 
-    private Map<ResultPeriod, List<ResultQuanta>> periodicResultMap = new HashMap<ResultPeriod, List<ResultQuanta>> ();
+    private Map<ResultPeriod, List<ResultQuanta>> periodicResultMap = new TreeMap<ResultPeriod, List<ResultQuanta>> ();
 
     public Map<ResultPeriod, List<ResultQuanta>> getPeriodicResultMap () {
         return periodicResultMap;

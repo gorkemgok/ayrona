@@ -19,6 +19,7 @@ public class BarDBSaverListener implements BarListener {
     private Dao dao = Singletons.INSTANCE.getDao ();
 
     public void newBar (Symbol symbol, Period period, Bar bar) {
+        //TODO handle exceptions
         MarketDataModel marketDataModel = new MarketDataModel ();
         marketDataModel.setSymbol (symbol);
         marketDataModel.setPeriod (period);

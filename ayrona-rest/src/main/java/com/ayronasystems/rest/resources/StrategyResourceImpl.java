@@ -126,12 +126,15 @@ public class StrategyResourceImpl implements StrategyResource {
         }
     }
 
-    public Response doBackTest (BackTestBean backTestBean) {
+    public Response doBackTest (BackTestBean backTestBean, Boolean isDetailed) {
+        if ( isDetailed == null ) {
+            isDetailed = false;
+        }
         BackTestResult btr = bts.doBackTest (backTestBean.getCode (),
-                                             Symbols.of(backTestBean.getSymbol ()),
-                                             Period.valueOf (backTestBean.getPeriod ()),
-                                             DateUtils.convertFromISO (backTestBean.getBeginDate ()),
-                                             DateUtils.convertFromISO (backTestBean.getEndDate ()));
+                                                 Symbols.of (backTestBean.getSymbol ()),
+                                                 Period.valueOf (backTestBean.getPeriod ()),
+                                                 DateUtils.convertFromISO (backTestBean.getBeginDate ()),
+                                                 DateUtils.convertFromISO (backTestBean.getEndDate ()), isDetailed);
         return Response.ok (BackTestResultBean.valueOf (btr)).build ();
     }
 

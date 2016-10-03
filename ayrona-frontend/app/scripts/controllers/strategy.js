@@ -148,13 +148,13 @@ angular.module('ayronaApp')
                     var equitySeries = [];
                     var profitSeries = [];
                     var mddSeries = [];
-                    angular.forEach(result.series[0].equitySeries, function (value) {
+                    angular.forEach(result.series[0].map.EQUITY, function (value) {
                         equitySeries.push(Number(value).toFixed(4));
                     });
-                    angular.forEach(result.series[0].profitSeries, function (value) {
+                    angular.forEach(result.series[0].map.NET_PROFIT, function (value) {
                         profitSeries.push(Number(value).toFixed(4));
                     });
-                    angular.forEach(result.series[0].mddSeries, function (value) {
+                    angular.forEach(result.series[0].map.MDD, function (value) {
                         mddSeries.push(Number(value).toFixed(4));
                     });
                     graphData = [
@@ -169,7 +169,7 @@ angular.module('ayronaApp')
                     ];
                     var i = 0;
                     var labels = [];
-                    angular.forEach(result.series[0].dateSeries, function (value) {
+                    angular.forEach(result.series[0].dateList, function (value) {
                         labels.push(moment(value).format("DD-MM-YYYY"));
                     });
                     $scope.labels = labels;

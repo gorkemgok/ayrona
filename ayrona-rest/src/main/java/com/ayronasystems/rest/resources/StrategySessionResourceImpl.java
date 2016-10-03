@@ -5,6 +5,7 @@ import com.ayronasystems.core.dao.Dao;
 import com.ayronasystems.core.dao.LimitOffset;
 import com.ayronasystems.core.dao.PaginatedResult;
 import com.ayronasystems.core.dao.model.OptimizerSessionModel;
+import com.ayronasystems.core.dao.model.TrainingSessionModel;
 import com.ayronasystems.rest.bean.OptimizerSessionBean;
 import com.ayronasystems.rest.bean.PrerequisiteCheck;
 import com.ayronasystems.rest.bean.Prerequisites;
@@ -31,6 +32,23 @@ public class StrategySessionResourceImpl implements StrategySessionResource{
         }else{
             return Response.status (Response.Status.BAD_REQUEST).entity (check.toBean ()).build ();
         }
+    }
+
+    public Response updateSession (OptimizerSessionBean optimizerSessionBean) {
+        OptimizerSessionModel model = optimizerSessionBean.to ();
+        dao.updateOptimizerSession (model);
+        return Response.ok ().build ();
+    }
+
+    public Response cancelSession (String sessionId) {
+        Optional<OptimizerSessionModel> optimizerSessionModelOptional = dao.findOptimizerSessionById (sessionId);
+        if (optimizerSessionModelOptional.isPresent ()){
+            OptimizerSessionModel sessionModel = optimizerSessionModelOptional.get ();
+            sessionModel.setState (TrainingSessionModel.State.CANCELED);
+            dao.updateOptimizerSession (sessionModel);
+            return Response.ok ().build ();
+        }
+        return Response.noContent ().build ();
     }
 
     public Response get (String sessionId) {

@@ -60,7 +60,7 @@ public interface StrategyResource {
     @Path ("backtest")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    Response doBackTest(BackTestBean backTestBean);
+    Response doBackTest(BackTestBean backTestBean, @QueryParam ("detailed") Boolean isDetailed);
 
     @POST
     @Path ("{id}/account")

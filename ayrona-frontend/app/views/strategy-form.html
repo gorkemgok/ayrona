@@ -57,10 +57,10 @@
         </div>
         <div class="col-sm-6 well">
             <p>Net Profit : {{ backTestResult.results.NET_PROFIT | decimalFormat }}</p>
-            <p>Maxdrawdown : {{ backTestResult.mdd | decimalFormat }}</p>
-            <p>Stability : {{ backTestResult.stability | decimalFormat }}</p>
-            <p>Sharpe : {{ backTestResult.sharpe | decimalFormat }}</p>
-            <p>Sortino : {{ backTestResult.sortino | decimalFormat }}</p>
+            <p>Maxdrawdown : {{ backTestResult.results.MDD | decimalFormat }}</p>
+            <p>Stability : {{ backTestResult.results.STABILITY | decimalFormat }}</p>
+            <p>Sharpe : {{ backTestResult.results.SHARPE | decimalFormat }}</p>
+            <p>Sortino : {{ backTestResult.result.SORTINO | decimalFormat }}</p>
             <div>
                 <canvas id="line" class="chart chart-line" chart-data="data"
                         chart-labels="labels" chart-options="options"

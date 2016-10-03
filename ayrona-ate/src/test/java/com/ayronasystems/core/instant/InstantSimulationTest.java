@@ -37,7 +37,7 @@ public class InstantSimulationTest {
                         "Sistem.BUY = Sistem.GT(SMA_5, SMA_20);" +
                         "Sistem.SELL = Sistem.LT(Sistem.C, SAR);";
         long start = System.currentTimeMillis ();
-        BackTestResult result = bts.doBackTest (code, Symbols.of("TEST"), Period.M5, null, null);
+        BackTestResult result = bts.doBackTest (code, Symbols.of("TEST"), Period.M5, null, null, false);
         BackTestResult result2 = bts.doSimulationBackTest (code, Symbols.of("TEST"), Period.M5, null, null);
         BackTestResult result3 = bts.doSimulationBackTest (code2, Symbols.of("TEST"), Period.M5, null, null);
         BackTestResult result4 = bts.doSimulationBackTest (code3, Symbols.of("TEST"), Period.M5, null, null);

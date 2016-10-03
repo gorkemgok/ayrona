@@ -8,6 +8,7 @@ constantsModule.constant('REST', {
     base : 'http://localhost:18050/ayrona/rest/v1'
     //base : 'http://aol.ayrona.co/ayrona/rest/v1'
     //base : 'http://atanatro:18050/ayrona/rest/v1'
+    //base : 'http://172.16.192.77/ayrona/rest/v1'
 });
 
 constantsModule.constant('METRICS', [
