@@ -101,52 +101,11 @@ angular.module('ayronaApp')
             $location.path("/opt/"+sessionId);
         };
     })
-    .controller("OptDetailCtrl", function ($scope, $controller, opt, AynRest) {
+    .controller("OptDetailCtrl", function ($scope, $controller, opt, AynRest, BackTestService) {
         $controller("StartEndDatePickerCtrl", {$scope:$scope});
         $controller("OptBaseCtrl", {$scope:$scope});
         $controller("GraphCtrl", {$scope:$scope});
         $scope.session = opt;
-        var processBtr = function (btr) {
-            var btrTabs = [];
-            console.log(btr.series.length);
-            for (var i = 0; i < btr.series.length; i++) {
-                var series = btr.series[i];
-                var tab = {};
-                tab.title = series.period;
-                var equitySeries = [];
-                var profitSeries = [];
-                var mddSeries = [];
-                angular.forEach(series.map.EQUITY, function (value) {
-                    equitySeries.push(Number(value).toFixed(4));
-                });
-                angular.forEach(series.map.NET_PROFIT, function (value) {
-                    profitSeries.push(Number(value).toFixed(4));
-                });
-                angular.forEach(series.map.MDD, function (value) {
-                    mddSeries.push(Number(value).toFixed(4));
-                });
-                tab.data = [
-                    equitySeries,
-                    profitSeries,
-                    mddSeries
-                ];
-                $scope.data = [
-                    equitySeries,
-                    profitSeries,
-                    mddSeries
-                ];
-                var labels = [];
-                angular.forEach(series.dateList, function (value) {
-                    labels.push(moment(value).format("DD-MM-YYYY"));
-                });
-                tab.labels = labels;
-                btrTabs.push(tab);
-            }
-            return {
-                btrTabs : btrTabs,
-                backTestResult : btr
-            }
-        };
         $scope.doDetailedBackTest = function (code, symbol, period, startDate, endDate){
             var backtest = {
                 symbol: symbol,
@@ -157,7 +116,7 @@ angular.module('ayronaApp')
             };
             AynRest.doBackTest(backtest, true,
                 function (response) {
-                    var btr = processBtr(response);
+                    var btr = BackTestService.processDetailed(response);
                     $scope.btrTabs = btr.btrTabs;
                     $scope.backTestResult = btr.backTestResult;
                 },
