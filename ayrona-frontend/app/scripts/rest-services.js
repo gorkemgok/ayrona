@@ -45,10 +45,22 @@ restServicesModule.factory("AynRest", function (Rest) {
         );
     };
 
-    var cancelSession = function(sessionId,successCallback, errorCallback) {
+    var cancelSession = function(sessionId, successCallback, errorCallback) {
         Rest.all("session/cancel/"+sessionId).remove().then(
             successCallback, errorCallback
         );
+    };
+
+    var createStrategy = function (strategy, successCallback, errorCallback) {
+        Rest.all("strategy").post(strategy).then(successCallback, errorCallback);
+    };
+
+    var updateStrategy = function (strategy, successCallback, errorCallback) {
+        Rest.all("strategy").customPUT(strategy).then(successCallback, errorCallback);
+    };
+
+    var doBackTest = function (backtest, isDetailed, successCallback, errorCallback) {
+        Rest.all("strategy/backtest?detailed="+isDetailed).post(backtest).then(successCallback, errorCallback);
     };
 
     return {
@@ -57,6 +69,9 @@ restServicesModule.factory("AynRest", function (Rest) {
         checkEdr : checkEdr,
         createSession : createSession,
         cancelSession : cancelSession,
-        updateSession : updateSession
+        updateSession : updateSession,
+        createStrategy : createStrategy,
+        updateStrategy : updateStrategy,
+        doBackTest : doBackTest
     };
 });

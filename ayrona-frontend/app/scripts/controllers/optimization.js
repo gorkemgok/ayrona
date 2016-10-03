@@ -83,7 +83,7 @@ angular.module('ayronaApp')
             $location.path("/opt/"+sessionId);
         };
     })
-    .controller("OptDetailCtrl", function ($scope, $controller, opt, Rest) {
+    .controller("OptDetailCtrl", function ($scope, $controller, opt, AynRest) {
         $controller("StartEndDatePickerCtrl", {$scope:$scope});
         $controller("OptBaseCtrl", {$scope:$scope});
         $controller("GraphCtrl", {$scope:$scope});
@@ -137,7 +137,7 @@ angular.module('ayronaApp')
                 beginDate : startDate.toISOString(),
                 endDate : endDate.toISOString()
             };
-            Rest.all("strategy/backtest?detailed=true").post(backtest).then(
+            AynRest.doBackTest(backtest, true,
                 function (response) {
                     var btr = processBtr(response);
                     $scope.btrTabs = btr.btrTabs;

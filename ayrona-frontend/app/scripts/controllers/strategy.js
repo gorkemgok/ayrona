@@ -193,14 +193,14 @@ angular.module('ayronaApp')
             }
         };
     })
-    .controller("StrategyCreateCtrl", function ($scope, $controller, $location, Rest, Notify, STRATEGY_STATE) {
+    .controller("StrategyCreateCtrl", function ($scope, $controller, $location, AynRest, Notify, STRATEGY_STATE) {
         $controller("StrategyBase", {$scope:$scope});
         $scope.strategy = {};
         $scope.strategy.symbol = 'VOB30';
         $scope.strategy.period = 'M5';
         $scope.create = function (strategy) {
             strategy.state = STRATEGY_STATE.inactive;
-            Rest.all("strategy").post(strategy).then(
+            AynRest.createStrategy(strategy,
                 function (response) {
                     $scope.compilationResult = 0;
                     $scope.compilationMessage = "Kaydedildi";
@@ -214,13 +214,13 @@ angular.module('ayronaApp')
             );
         };
     })
-    .controller("StrategyUpdateCtrl", function ($scope, $controller, strategy, Rest, Notify, STRATEGY_STATE) {
+    .controller("StrategyUpdateCtrl", function ($scope, $controller, strategy, AynRest, Notify, STRATEGY_STATE) {
         $controller("StrategyBase", {$scope:$scope});
 
         $scope.strategy = strategy;
         $scope.update = function (strategy) {
             strategy.state = STRATEGY_STATE.active;
-            Rest.all("strategy").customPUT(strategy).then(
+            AynRest.updateStrategy(strategy,
                 function (response) {
                     $scope.compilationResult = 0;
                     $scope.compilationMessage = "Kaydedildi";
@@ -231,7 +231,7 @@ angular.module('ayronaApp')
                     $scope.compilationMessage = msg;
                 }
             );
-        }
+        };
 
         $scope.labels = [];
         $scope.series = ['Equity', 'Profit', 'MDD'];
@@ -273,7 +273,7 @@ angular.module('ayronaApp')
 
         
     })
-    .controller("BackTestCtrl", function ($scope, symbol, period, code, Rest) {
+    .controller("BackTestCtrl", function ($scope, symbol, period, code, AynRest) {
         $scope.beginDate = new Date(2015, 1, 1);
         $scope.endDate = new Date();
         $scope.dateOptions = {
@@ -301,7 +301,7 @@ angular.module('ayronaApp')
                 beginDate : beginDate.toISOString(),
                 endDate : endDate.toISOString()
             };
-            Rest.all("strategy/backtest").post(backtest).then(
+            AynRest.doBackTest(backtest, false,
                 function (response) {
                     console.log(response);
                     $scope.$close(response);
