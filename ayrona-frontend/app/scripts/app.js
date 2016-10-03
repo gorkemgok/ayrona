@@ -18,8 +18,9 @@ angular.module('ayronaApp', [
     'angularFileUpload',
     'ui.ace'
     ])
-    .config(function ($stateProvider, $urlRouterProvider) {
+    .config(function ($stateProvider, $urlRouterProvider, $httpProvider) {
         $urlRouterProvider.otherwise('/dashboard');
+        $httpProvider.defaults.cache = false;
     })
     .run(function ($state, $rootScope, $timeout, Session, AynRest, Rest, SYMBOLS, PERIODS) {
         $rootScope.SYMBOLS = SYMBOLS;
@@ -63,7 +64,6 @@ angular.module('ayronaApp', [
                 AynRest.checkEdr('','', date.toISOString(),
                     function (response) {
                         updateEdrList(response);
-                        console.log(response);
                     },
                     function (error) {
                         console.log(response);
@@ -76,26 +76,6 @@ angular.module('ayronaApp', [
         };
 
         checkEdr();
-    })
-    .controller("StartEndDatePickerCtrl", function ($scope) {
-        $scope.startDate = new Date(2015, 1, 1);
-        $scope.endDate = new Date();
-        $scope.dateOptions = {
-            formatYear: 'yy',
-            maxDate: new Date(2020, 5, 22),
-            minDate: new Date(2010, 1, 1),
-            startingDay: 1
-        };
-
-        $scope.format = "dd-MM-yyyy";
-
-        $scope.openStart = function () {
-            $scope.startDatePopupOpen = true;
-        };
-
-        $scope.openEnd = function () {
-            $scope.endDatePopupOpen = true;
-        };
     });
 
 
