@@ -41,6 +41,16 @@ public class TrainingSessionModel extends BaseModel{
 
     private List<GeneratedCode> generatedCodeList;
 
+    private String scoreEquation;
+
+    public String getScoreEquation () {
+        return scoreEquation;
+    }
+
+    public void setScoreEquation (String scoreEquation) {
+        this.scoreEquation = scoreEquation;
+    }
+
     public List<GeneratedCode> getGeneratedCodeList () {
         return generatedCodeList;
     }

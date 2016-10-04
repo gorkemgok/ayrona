@@ -71,8 +71,9 @@ angular.module('ayronaApp')
             });
         };
     })
-    .controller("OptCreateCtrl", function ($scope, $controller, AynRest, Helper, SYMBOLS, PERIODS) {
+    .controller("OptCreateCtrl", function ($scope, $controller, AynRest, Helper, SYMBOLS, PERIODS, METRICS) {
         $controller("StartEndDatePickerCtrl", {$scope:$scope});
+        $scope.METRICS = METRICS;
         $scope.opt = {};
         $scope.opt.name = Helper.generateRandomName();
         $scope.opt.symbol = SYMBOLS[1].value;
@@ -81,6 +82,7 @@ angular.module('ayronaApp')
         $scope.opt.mutationProbability = 0.7;
         $scope.opt.eliteCount = 10;
         $scope.opt.threadCount = 2;
+        $scope.opt.scoreEquation = "np";
         $scope.create = function (session) {
             session.startDate = $scope.startDate.toISOString();
             session.endDate = $scope.endDate.toISOString();

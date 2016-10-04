@@ -17,7 +17,7 @@
         <github.global.server>github</github.global.server>	<!-- github server corresponds to entry in ~/.m2/settings.xml -->
         <javolution.version>6.0.0</javolution.version>
         <junit.version>4.12</junit.version>
-        <exp4j.version>0.4.4</exp4j.version>
+        <exp4j.version>0.4.7</exp4j.version>
 
         <javacsv.version>1.0</javacsv.version>
         <talib.version>1.0</talib.version>

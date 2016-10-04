@@ -39,6 +39,8 @@ public class OptimizerSessionBean {
 
     private String createDate;
 
+    private String scoreEquation;
+
     private List<GeneratedCode> generatedCodeList;
 
     public String getId () {
@@ -153,6 +155,14 @@ public class OptimizerSessionBean {
         this.createDate = createDate;
     }
 
+    public String getScoreEquation () {
+        return scoreEquation;
+    }
+
+    public void setScoreEquation (String scoreEquation) {
+        this.scoreEquation = scoreEquation;
+    }
+
     public static OptimizerSessionBean valueOf(OptimizerSessionModel model){
         OptimizerSessionBean bean = new OptimizerSessionBean ();
         bean.setId (model.getId ());
@@ -169,6 +179,7 @@ public class OptimizerSessionBean {
         bean.setState (model.getState ().toString ());
         bean.setGeneratedCodeList (model.getGeneratedCodeList ());
         bean.setCreateDate ( DateUtils.toISO (model.getCreateDate ()));
+        bean.setScoreEquation (model.getScoreEquation ());
         return bean;
     }
 
@@ -187,6 +198,7 @@ public class OptimizerSessionBean {
         model.setEndDate (DateUtils.convertFromISO (this.endDate));
         model.setGeneratedCodeList (this.getGeneratedCodeList ());
         model.setState (TrainingSessionModel.State.valueOf (this.state));
+        model.setScoreEquation (this.scoreEquation);
         return model;
     }
 }

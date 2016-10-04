@@ -36,6 +36,16 @@
                         <span ng-if="prerequisite.period" class="help-block">{{prerequisite.period}}</span>
                     </div>
                 </div>
+                <div class="form-group" ng-class="{'has-error':prerequisite.scoreEquation}">
+                    <label for="scoreEquation" class="col-sm-4 control-label">Skor Formülü</label>
+                    <div class="col-sm-6">
+                        <select id="scoreEquationSelect" ng-model="opt.scoreEquation" class="form-control input-sm">
+                            <option ng-repeat="metric in METRICS" ng-if="metric.scoreVar" value="{{ metric.scoreVar }}">{{ metric.label }} ( {{ metric.scoreVar }} )</option>
+                        </select>
+                        <input id="scoreEquation" class="form-control input-sm" ng-model="opt.scoreEquation">
+                        <span ng-if="prerequisite.scoreEquation" class="help-block">{{prerequisite.scoreEquation}}</span>
+                    </div>
+                </div>
                 <div class="form-group" ng-class="{'has-error':prerequisite.populationSize}">
                     <label for="populationSize" class="col-sm-4 control-label">Popülayson Boyutu</label>
                     <div class="col-sm-6">

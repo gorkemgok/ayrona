@@ -30,6 +30,7 @@ public class Optimizer extends Thread{
     private int                       eliteCount;
     private List<OptimizerChromosome> initialOptimizerChromosomeList;
     private int                       threadCount;
+    private String                    scoreEquation;
 
     public Optimizer (OptimizerSessionModel optimizerSessionModel, List<OptimizerChromosome> initialOptimizerChromosomeList) {
         this.id = optimizerSessionModel.getId ();
@@ -43,6 +44,7 @@ public class Optimizer extends Thread{
         this.eliteCount = optimizerSessionModel.getEliteCount ();
         this.threadCount = optimizerSessionModel.getThreadCount ();
         this.initialOptimizerChromosomeList = initialOptimizerChromosomeList;
+        this.scoreEquation = optimizerSessionModel.getScoreEquation ();
     }
 
     public void run () {
@@ -50,7 +52,7 @@ public class Optimizer extends Thread{
 
         List<OptimizerDef> optimizerDefList = Algo.getOptimizerDefList (code);
 
-        ScoreCalculator scoreCalculator = new ScoreCalculator ();
+        ScoreCalculator scoreCalculator = new ScoreCalculator (scoreEquation);
 
         FitnessFunction fitnessFunction = new OptimizerFitnessFunction (code, ohlc, scoreCalculator);
 

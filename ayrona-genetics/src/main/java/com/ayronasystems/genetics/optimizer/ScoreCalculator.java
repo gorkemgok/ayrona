@@ -1,20 +1,39 @@
 package com.ayronasystems.genetics.optimizer;
 
 import com.ayronasystems.core.backtest.BackTestResult;
-import com.ayronasystems.core.backtest.ResultPeriod;
-import com.ayronasystems.core.backtest.score.SharpeSortinoType;
-import com.ayronasystems.core.backtest.score.WMASharpeSortinoCalculator;
+import com.ayronasystems.core.backtest.MetricType;
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
 
 /**
  * Created by gorkemgok on 17/07/16.
  */
 public class ScoreCalculator {
 
-    private WMASharpeSortinoCalculator calc = new WMASharpeSortinoCalculator (ResultPeriod.YEAR, SharpeSortinoType.SORTINO);
+    private final String scoreEquation;
 
-    public double calculate(BackTestResult result){
-        return calc.calculate (result);
-        //return result.getPeriodicResultMap ().get (ResultPeriod.INFINITY).get (0).getValue (ResultQuantaMetric.NET_PROFIT_PERCENTAGE);
+    private final Expression expression;
+
+    public ScoreCalculator (String scoreEquation) {
+        this.scoreEquation = scoreEquation;
+        ExpressionBuilder expressionBuilder = new ExpressionBuilder (scoreEquation);
+        for ( MetricType metricType : MetricType.values ()){
+            expressionBuilder.variable (metricType.getEquationSymbol ());
+        }
+        this.expression = expressionBuilder.build ();
     }
 
+    public double calculate(BackTestResult result){
+        for ( MetricType metricType : MetricType.values ()){
+            Double value = result.getResultAsDouble (metricType);
+            if (value != null && !Double.isNaN (value)){
+                expression.setVariable (metricType.getEquationSymbol (), value);
+            }
+        }
+        return expression.evaluate ();
+    }
+
+    public String getScoreEquation () {
+        return scoreEquation;
+    }
 }
