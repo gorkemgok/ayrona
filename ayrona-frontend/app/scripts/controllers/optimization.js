@@ -101,28 +101,47 @@ angular.module('ayronaApp')
             $location.path("/opt/"+sessionId);
         };
     })
-    .controller("OptDetailCtrl", function ($scope, $controller, opt, AynRest, BackTestService) {
+    .controller("OptDetailCtrl", function ($scope, $controller, $timeout, opt, AynRest, BackTestService, METRICS) {
         $controller("StartEndDatePickerCtrl", {$scope:$scope});
         $controller("OptBaseCtrl", {$scope:$scope});
         $controller("GraphCtrl", {$scope:$scope});
+        $scope.metrics = METRICS;
+        $scope.btrList = [];
         $scope.session = opt;
-        $scope.doDetailedBackTest = function (code, symbol, period, startDate, endDate){
+        $scope.activeTab = -1;
+        $scope.doDetailedBackTest = function (code, session, startDate, endDate){
+            var sYear = startDate.getFullYear();
+            var eYear = endDate.getFullYear();
+            var name = code.generationCount+".gen - "+Number(code.fitness).toFixed(4)+" ["+sYear+"-"+eYear+"]";
             var backtest = {
-                symbol: symbol,
-                period: period,
-                code: code,
+                symbol: session.symbol,
+                period: session.period,
+                code: code.code,
                 beginDate : startDate.toISOString(),
                 endDate : endDate.toISOString()
             };
             AynRest.doBackTest(backtest, true,
                 function (response) {
                     var btr = BackTestService.processDetailed(response);
-                    $scope.btrTabs = btr.btrTabs;
-                    $scope.backTestResult = btr.backTestResult;
+                    $scope.btrList.push({
+                        name : name,
+                        tabs : btr.btrTabs,
+                        results : btr.backTestResult.results
+                    });
+                    $timeout(function(){$scope.activeTab = $scope.activeTab + 1;}, 0);
                 },
                 function (error) {
                     console.log(error);
                 }
             );
+        };
+        
+        $scope.showCodeDetail = function (code) {
+                
+        };
+
+        $scope.closeBtrTab = function (index) {
+            $scope.btrList.splice(index, 1);
+            $scope.activeTab = $scope.activeTab - 1;
         };
     });

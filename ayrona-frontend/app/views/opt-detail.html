@@ -40,7 +40,7 @@
                     <th></th>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="code in session.generatedCodeList | orderBy:'-fitness'">
+                    <tr ng-repeat="code in session.generatedCodeList | orderBy:'-fitness'" ng-if="notNaN(code.fitness)">
                         <td>
                             <button class="btn btn-xs btn-success"
                                     ng-click="saveAsStrategy(session, code)">
@@ -51,7 +51,7 @@
                         <td> {{ code.fitness | decimalFormat}}</td>
                         <td>
                             <button class="btn btn-xs btn-primary"
-                                    ng-click="doDetailedBackTest(code.code, session.symbol, session.period, startDate, endDate)">
+                                    ng-click="doDetailedBackTest(code, session, startDate, endDate)">
                                 Backtest <i class="glyphicon glyphicon-flash"></i>
                             </button>
                         </td>
@@ -60,15 +60,42 @@
             </table>
         </div>
         <div class="col-sm-9">
-            <uib-tabset active="active">
+            <uib-tabset active="activeTab">
                 <uib-tab index="$index"
-                         ng-repeat="tab in btrTabs"
-                         heading="{{tab.title}}">
+                         ng-repeat="btr in btrList">
+                    <uib-tab-heading>
+                        <span style="font-size:10px">{{btr.name}}</span>
+                        <!--<button class="btn btn-xs btn-default" ng-click="closeBtrTab($index)"><i class="glyphicon glyphicon-remove"></i></button>-->
+                    </uib-tab-heading>
                     <div>
-                        <canvas class="chart chart-line" chart-data="tab.data"
-                                chart-labels="tab.labels" chart-options="lineOptions"
-                                chart-dataset-override="datasetOverride">
-                        </canvas>
+                        <uib-tabset active="0">
+                            <uib-tab index="0" heading="Genel">
+                                    <div class="metric-outer col-sm-3" ng-repeat=" metric in metrics" ng-if="notNaN(btr.results[metric.key])">
+                                        <div class="metric-header">{{ metric.label }}</div>
+                                        <div class="metric-value {{metric.defaultColorClass}}"
+                                             ng-class="[
+                                                { 'positive-metric' : !metric.defaultColorClass && btr.results[metric.key] > (metric.level2 ? metric.level2 : 0) },
+                                                { 'negative-metric' : !metric.defaultColorClass && btr.results[metric.key] < (metric.level1 ? metric.level1 : 0) },
+                                                { 'balanced-metric' : !metric.defaultColorClass && btr.results[metric.key] > (metric.level1 ? metric.level1 : 0) && btr.results[metric.key] < (metric.level2 ? metric.level2 : 0) }
+                                             ]">
+                                            {{ metric.prefix }}{{ btr.results[metric.key] | decimalFormat : metric.toFixed }}{{ metric.suffix }}
+                                            <small class="metric-percent" ng-if="metric.percent">
+                                                ( {{ metric.percent.prefix }}{{ btr.results[metric.percent.key] | decimalFormat : metric.percent.toFixed }}{{ metric.percent.suffix }} )
+                                            </small>
+                                        </div>
+                                    </div>
+                            </uib-tab>
+                            <uib-tab index="$index + 1"
+                                     ng-repeat="tab in btr.tabs"
+                                     heading="{{tab.title}} Grafik">
+                                <div>
+                                    <canvas class="chart chart-line" chart-data="tab.data"
+                                            chart-labels="tab.labels" chart-options="lineOptions"
+                                            chart-dataset-override="datasetOverride">
+                                    </canvas>
+                                </div>
+                            </uib-tab>
+                        </uib-tabset>
                     </div>
                 </uib-tab>
             </uib-tabset>

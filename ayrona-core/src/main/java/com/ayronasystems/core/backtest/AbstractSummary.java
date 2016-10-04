@@ -47,7 +47,13 @@ public abstract class AbstractSummary implements Summary{
     public double getResultAsDouble(MetricType metricType){
         Object obj = getResult (metricType).getValue ();
         if (obj != null) {
-            return (Double) obj;
+            if (obj instanceof Double) {
+                return (Double) obj;
+            }else if (obj instanceof Integer){
+                return (Integer) obj;
+            }else {
+                return Double.NaN;
+            }
         } else {
             return Double.NaN;
         }

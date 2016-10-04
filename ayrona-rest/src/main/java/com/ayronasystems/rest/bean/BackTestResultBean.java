@@ -90,10 +90,7 @@ public class BackTestResultBean {
     public static BackTestResultBean valueOf(BackTestResult btr){
         Map<MetricType, Double> results = new TreeMap<MetricType, Double> ();
         for (MetricType metricType : btr.getSummarizedMetricTypes ()){
-            if (metricType.getValueType ().equals (Double.TYPE))
-                results.put (metricType, btr.getResultAsDouble (metricType));
-            else if (metricType.getValueType ().equals (Integer.TYPE))
-                results.put (metricType, btr.getResultAsInteger (metricType));
+            results.put (metricType, btr.getResultAsDouble (metricType));
         }
         List<SeriesBean> seriesBeanList = new ArrayList<SeriesBean> ();
         BasicTimeSeries<EquityBar> equityTimeSeries = (BasicTimeSeries<EquityBar>)

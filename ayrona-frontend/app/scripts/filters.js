@@ -27,6 +27,12 @@ filtersModule.filter("period", function (PERIODS) {
 
 });
 
+filtersModule.filter("result_period", function(RESULT_PERIOD){
+    return function (input) {
+        return RESULT_PERIOD[input];
+    }    
+});
+
 filtersModule.filter("edr_module_icon", function (EDR) {
     return function (input) {
         var icon;

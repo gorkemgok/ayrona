@@ -90,10 +90,10 @@ public class PeriodicAggregator {
         valueList.put (MDD_PERCENTAGE, minMddPercentage);
 
         double tradeCount = winCount + lossCount;
-        valueList.put (TOTAL_NUMBER_OF_TRADES, winCount + lossCount);
+        valueList.put (TOTAL_NUMBER_OF_TRADES, tradeCount);
         valueList.put (WINNING_TRADE_COUNT, winCount);
         valueList.put (LOSING_TRADE_COUNT, lossCount);
-        valueList.put (PROFITABLE_PERCENT, lossCount > 0 ? 100 * (winCount / lossCount) : winCount);
+        valueList.put (PROFITABLE_PERCENT, lossCount > 0 ? 100 * (winCount / tradeCount) : winCount);
 
         valueList.put (AVE_NET_PROFIT, netProfit / tradeCount);
         valueList.put (AVE_NET_PROFIT_PERCENT, netProfitPercentage / tradeCount);

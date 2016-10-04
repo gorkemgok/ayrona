@@ -26,6 +26,9 @@ angular.module('ayronaApp', [
         $rootScope.SYMBOLS = SYMBOLS;
         $rootScope.PERIODS = PERIODS;
         $rootScope.uiState = $state;
+        $rootScope.notNaN = function(number){
+            return !isNaN(number);
+        };
         $rootScope.logout = function () {
             Session.stop();
             Rest.setDefaultHeaders({"Access-Control-Allow-Origin": "*", token:''});

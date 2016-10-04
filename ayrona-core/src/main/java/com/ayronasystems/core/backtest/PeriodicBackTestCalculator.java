@@ -4,6 +4,9 @@ import com.ayronasystems.core.data.MarketData;
 import com.ayronasystems.core.definition.Direction;
 import com.ayronasystems.core.definition.PriceColumn;
 import com.ayronasystems.core.strategy.Position;
+import org.apache.commons.math3.exception.NoDataException;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
+import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import java.util.*;
 
@@ -83,6 +86,36 @@ public class PeriodicBackTestCalculator implements BackTestCalculator {
         return null;
     }
 
+    private double calculateSTD(List<ResultQuanta> resultQuantaList){
+        try {
+            int size = resultQuantaList.size ();
+            StandardDeviation std = new StandardDeviation ();
+            double[] values = new double[size];
+            for ( int i = 0; i < size; i++ ) {
+                values[i] = resultQuantaList.get (i)
+                                            .getValue (ResultQuantaMetric.NET_PROFIT_PERCENTAGE);
+            }
+            return std.evaluate (values);
+        }catch ( NoDataException ex){
+            return Double.NaN;
+        }
+    }
+
+    private double calculateRSquared(List<ResultQuanta> resultQuantaList){
+        try {
+            int size = resultQuantaList.size ();
+            SimpleRegression regression = new SimpleRegression ();
+            for ( int i = 0; i < size; i++ ) {
+                regression.addData (i, resultQuantaList.get (i)
+                                                       .getValue (ResultQuantaMetric.EQUITY));
+            }
+            return regression.regress ()
+                             .getRSquared ();
+        }catch ( NoDataException ex){
+            return Double.NaN;
+        }
+    }
+
     private void forwardDate(Date date){
         for(PeriodicAggregator periodicAggregator : periodicAggregatorList) {
             periodicAggregator.forwardDate (date);
@@ -107,7 +140,36 @@ public class PeriodicBackTestCalculator implements BackTestCalculator {
             ResultQuanta resultQuanta = resultQuantaList.get (0);
             btr.setResult (MetricType.NET_PROFIT, resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT));
             btr.setResult (MetricType.NET_PROFIT_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.NET_PROFIT_PERCENTAGE));
+            btr.setResult (MetricType.GROSS_PROFIT, resultQuanta.getValue (ResultQuantaMetric.GROSS_PROFIT));
+            btr.setResult (MetricType.GROSS_PROFIT_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.GROSS_PROFIT_PERCENTAGE));
+            btr.setResult (MetricType.GROSS_LOSS, resultQuanta.getValue (ResultQuantaMetric.GROSS_LOSS));
+            btr.setResult (MetricType.GROSS_LOSS_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.GROSS_LOSS_PERCENTAGE));
+            btr.setResult (MetricType.PROFIT_FACTOR, resultQuanta.getValue (ResultQuantaMetric.PROFIT_FACTOR));
+
+            btr.setResult (MetricType.TOTAL_NUMBER_OF_TRADES, resultQuanta.getValue (ResultQuantaMetric.TOTAL_NUMBER_OF_TRADES));
+            btr.setResult (MetricType.PROFITABLE_PERCENT, resultQuanta.getValue (ResultQuantaMetric.PROFITABLE_PERCENT));
+            btr.setResult (MetricType.WINNING_TRADE_COUNT, resultQuanta.getValue (ResultQuantaMetric.WINNING_TRADE_COUNT));
+            btr.setResult (MetricType.LOSING_TRADE_COUNT, resultQuanta.getValue (ResultQuantaMetric.LOSING_TRADE_COUNT));
+
+            btr.setResult (MetricType.AVE_TRADE_NET_PROFIT, resultQuanta.getValue (ResultQuantaMetric.AVE_NET_PROFIT));
+            btr.setResult (MetricType.AVE_TRADE_NET_PROFIT_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.AVE_NET_PROFIT_PERCENT));
+            btr.setResult (MetricType.AVE_WINNING_TRADE, resultQuanta.getValue (ResultQuantaMetric.AVE_WINNING_TRADE));
+            btr.setResult (MetricType.AVE_WINNING_TRADE_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.AVE_WINNING_TRADE_PERCENT));
+            btr.setResult (MetricType.AVE_LOSING_TRADE, resultQuanta.getValue (ResultQuantaMetric.AVE_LOSING_TRADE));
+            btr.setResult (MetricType.AVE_LOSING_TRADE_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.AVE_LOSING_TRADE_PERCENT));
+
             btr.setResult (MetricType.MAX_TRADE_DRAWDOWN, resultQuanta.getValue (ResultQuantaMetric.MDD));
+            btr.setResult (MetricType.MAX_TRADE_DRAWDOWN_PERCENTAGE, resultQuanta.getValue (ResultQuantaMetric.MDD_PERCENTAGE));
+
+            btr.setResult (MetricType.DAILY_STD, calculateSTD (btr.getPeriodicResultMap ().get (ResultPeriod.DAY)));
+            btr.setResult (MetricType.DAILY_RSQUARED, calculateRSquared (btr.getPeriodicResultMap ().get (ResultPeriod.DAY)));
+            btr.setResult (MetricType.WEEKLY_STD, calculateSTD (btr.getPeriodicResultMap ().get (ResultPeriod.WEEK)));
+            btr.setResult (MetricType.WEEKLY_RSQUARED, calculateRSquared (btr.getPeriodicResultMap ().get (ResultPeriod.WEEK)));
+            btr.setResult (MetricType.MONTHLY_STD, calculateSTD (btr.getPeriodicResultMap ().get (ResultPeriod.MONTH)));
+            btr.setResult (MetricType.MONTHLY_RSQUARED, calculateRSquared (btr.getPeriodicResultMap ().get (ResultPeriod.MONTH)));
+            btr.setResult (MetricType.YEARLY_STD, calculateSTD (btr.getPeriodicResultMap ().get (ResultPeriod.YEAR)));
+            btr.setResult (MetricType.YEARLY_RSQUARED, calculateRSquared (btr.getPeriodicResultMap ().get (ResultPeriod.YEAR)));
+
         }
     }
 }

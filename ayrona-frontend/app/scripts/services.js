@@ -133,15 +133,15 @@ servicesModule.factory("Confirm", function ($uibModal) {
     }
 });
 
-servicesModule.factory("BackTestService", function () {
+servicesModule.factory("BackTestService", function ($filter) {
 
     var processDetailed = function (btr) {
         var btrTabs = [];
-        console.log(btr.series.length);
         for (var i = 0; i < btr.series.length; i++) {
             var series = btr.series[i];
             var tab = {};
-            tab.title = series.period;
+            tab.title = $filter("result_period")(series.period);
+            tab.period = series.period;
             var equitySeries = [];
             var profitSeries = [];
             var mddSeries = [];
@@ -166,8 +166,22 @@ servicesModule.factory("BackTestService", function () {
             tab.labels = labels;
             btrTabs.push(tab);
         }
+        var getTab = function (period) {
+            var result;
+            angular.forEach(btrTabs, function (tab) {
+                if (tab.period == period){
+                    result = tab;
+                }
+            });
+            return result;
+        };
+        var orderedBtrTabs = [];
+        orderedBtrTabs.push(getTab("DAY"));
+        orderedBtrTabs.push(getTab("WEEK"));
+        orderedBtrTabs.push(getTab("MONTH"));
+        orderedBtrTabs.push(getTab("YEAR"));
         return {
-            btrTabs : btrTabs,
+            btrTabs : orderedBtrTabs,
             backTestResult : btr
         }
     };
