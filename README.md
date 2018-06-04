@@ -1,1 +1,1 @@
-Algoritmic Trading Robot
+Algorithmic Trading Robot
